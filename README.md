@@ -2,10 +2,12 @@
 Appunti tratti dal corso di Calcolatori Elettronici, Anno Accademico 2023/24, Dipartimento di Ingegneria Civile, Informatica e delle Tecnologie Aeronautiche, Università degli Studi "Roma Tre". 
 
 ## Contenuti
+ - [Immagini](Immagini/), necessarie per compilare il [file sorgente](Calcolatori-Elettronici.tex) degli appunti;
  - [Appunti](Calcolatori-Elettronici.pdf) delle lezioni, tenute l'anno accademico 2023/24 dal Professore Riccardo Torlone. 
     
  
 ## Materiale Aggiuntivo
+ - Testo di Riferimento: A.S. Tanenbaum, T. Austin: Architettura dei Calcolatori: un approccio strutturale, VI edizione Pearson Italia, 2013; 
  - [Notion](https://certain-sweater-2c3.notion.site/Calcolatori-elettronici-df3affaf17d745d8abccfbd10580f1fb?pvs=25) relativo al corso di Calcolatori Elettronici.  
 ##
 
