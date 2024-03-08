@@ -91,7 +91,7 @@ Università degli Studi ``Roma Tre"}}
 
 %\section{Introduzione}
 
-\section{Storia e Topologia dei Calcolatori}
+\section{Storia e Tipologia dei Calcolatori}
 
 %% analisi degli aspetti hardware 
 % funzionamento di un microprocessore, facendo riferimento a processori moderni e reali. 
@@ -237,17 +237,66 @@ parte dei dati ``In Premise''.
 
 
 
-Verranno trattati tre diversi tipi di processori, appartenenti alla famiglia Intel e ARM, ed un processore appartenente alla famiglia dei microcontrollori della famiglia AVR. 
+Verranno trattati tre diversi tipi di processori, appartenenti alla famiglia Intel e ARM, ed un processore appartenente alla famiglia dei microcontrollori della famiglia AVR.
+%%\subsection{Architettura Intel}
+%% ppt
+
+Il primo processore commercializzato dalla Intel è il 4004, con una frequenze tra le frazioni di un MHz, ed in grado di gestire poche centinaia di bit di memoria. Una variante 
+di questo processore, specializzato per microcontrollori il 8008, fornì la base per la creazione del primo processore ``general purpose'' su un circuito integrato, il 8080.  
+
+La prima cifra nel nome corrisponde al tipo di architettura del processore, indica il numero di bit in cui vengono salvati e gestiti i dati sui registri del processore. 
+A partire dagli anni '90 si cominciò ad utilizzare nomi diversi dai numeri per indicare i processori. Si introdussero memorie cache, ed all'inizio degli anni 2000 si introdussero 
+diverse forme di parallelismo fisico, e non solo, mantenendo le frequenze inferiori ai 4 GHz. Per molti anni si utilizzava lo stesso processore anche per la gestione 
+dello schermo, ma già da parecchi anni è la norma utilizzare due processori separati. 
+%% core i3, i5, i7, i9, xeon
+Tutti i processori moderni della stessa famiglia sono compatibili con lo stesso linguaggio macchina. La denominazione di un processore indica le sue prestazioni, e sono 
+quindi destinati a diversi settori di mercato, per cui l'evoluzione non dipende più dal nome del processore, ma dalla generazione dei processori. Attualmente ci si trova 
+in una generazione intermedia tra la tredicesima e la quattordicesima, in generale un salto generazionale viene definito dal livello di integrazione, i processori moderni 
+hanno un livello di integrazione di 7 nanometri. 
+Sono tutte architetture che presentano fino ad otto core, ma recentemente invece di utilizzare core identici sullo stesso processore sono state introdotte architetture ibride 
+i cui core sono di almeno due forme diverse chiamati ``p-core'', per le prestazioni in termini di calcoli complessi, e gli ``e-core'', sono più efficienti in termini di consumo 
+di energia. POssono avere fino a 24 stadi di pipeline, che permettono di avere altre forme di parallelismo, senza utilizzare parallelismi fisici. 
+
+Utilizzando un'unica catena di produzione, in base alla qualità in cui vengono prodotti si ottengono diversi processori, disattivando le componenti che non funzionano 
+correttamente sul processore, e si vendono quindi come dei processori aventi prestazioni minori rispetto ad una versione completamente funzionante. 
+
+Il processore Intel Core i7 presenta sei core abilitati su otto core disponibili, la sua versione completamente abilitata corrisponde al processore Xeon. Presenta poco più di 
+un miliardo di transistor ed un livello di integrazione nell'ordine dei 22 nanometri. 
+
+%% ppt. 
+
+%%\subsection{Architetture ARM}
+
+La società Acorn inventò negli anni '80 questo tipo di architettura bastata sui principi RISC (Acorn RISC Machine). Venne usato sui primi tablet prodotti dalla Apple. Nasce come 
+un processore integrato ed a basso consumo energetico. Presenta un modello di commercializzazione diverso rispetto al resto del mercato, utilizzano un'architettura aperta, che 
+permette a diverse case produttrici di realizzare questi processori, vendendo le licenze per poter produrre il processore. Ogni processore ARM viene quindi accompagnato dal nome 
+dell'azienda che l'ha realizzato. 
+
+Si analizzerà in seguito l'Nvidia Tegra 2, un SOC ``System Of a Chip'' contenente due processori della famiglia ARM, una piccola GPU ed ulteriori componenti.  
+
+%%\subsection{Architettura AVR}
+L'architettura AVR corrisponde a processori progettati per elettro-domestici, e per funzioni specifiche. Nacque da un progetto universitario del NIT nel 1996, dal nome dei 
+suoi creatori Alf and Vergard RISC Processor. Presenta lo stesso pinout dell'8051 Intel. Presenta vari timer, un orologio interno, trasmettitore di impulso, interfaccia 
+di sensori, convertitori analogico-digitali, transponder e comparatore di tensioni. Presenta memorie nell'ordine delle centinaia dei kilobyte per la memoria persistente Flash, 
+una memoria programmabile da poche migliaia di byte ``EEPROM'', ed una memoria principale fino ad un massimo di 16 KB, per i microcontrollori più potenti. 
 
 \clearpage
 
+\section{Sistemi di Numerazione Binaria}
 
+%% unità di misura (ppt.)
 
+Quando si misura la memoria si utilizza l'unità di misura byte, corrispondente a 8 bit, e si tende ad utilizzare potenze di due invece di potenze di dieci, utilizzando 
+i bit quando si considera una velocità. 
 
+Si utilizza questa notazione per la struttura fisica della memoria, la cua dimensione viene definita dal numero di bit di un indirizzo binario. Dato un indirizzo definito da 
+$n$ bit, sono possibili $2^n$ indirizzi distinti di memoria. Per cui è più semplice lavorare con potenze di due quando si analizza la memoria. 
 
-
-
-
-
+Nei sistemi di numerazione binaria è presente una differenza sostanziale tra il concetto di numero ed il concetto di numerale, un numero è un entità astratta, mentre un 
+numerale è una sua possibile rappresentazione in un dato sistema di numerazione. 
+Nell'ambito dei calcolatori elettronici il numero di caratteri diversi per poter rappresentare un numero è finito, poiché lo è la dimensione dei registri di memoria. Per cui 
+i numeri possono essere rappresentati a precisione finita, e si perdono alcune proprietà come la chiusura rispetto alle sue operazioni, sono presenti errori di arrotondamento di 
+un numero. Inoltre quando si vuole rappresentare numeri reali non si possono rappresentare tutti i numeri reali, per cui possono essere rappresentati solo numeri con un numero 
+finito di cifre decimali in un dato intervallo. 
 
 \end{document}
