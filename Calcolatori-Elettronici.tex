@@ -292,11 +292,71 @@ i bit quando si considera una velocità.
 Si utilizza questa notazione per la struttura fisica della memoria, la cua dimensione viene definita dal numero di bit di un indirizzo binario. Dato un indirizzo definito da 
 $n$ bit, sono possibili $2^n$ indirizzi distinti di memoria. Per cui è più semplice lavorare con potenze di due quando si analizza la memoria. 
 
-Nei sistemi di numerazione binaria è presente una differenza sostanziale tra il concetto di numero ed il concetto di numerale, un numero è un entità astratta, mentre un 
-numerale è una sua possibile rappresentazione in un dato sistema di numerazione. 
+Nei sistemi di numerazione binaria è presente una differenza sostanziale tra il concetto di numero, un entità astratta, ed il concetto di numerale, 
+una sua possibile rappresentazione in un dato sistema di numerazione. 
 Nell'ambito dei calcolatori elettronici il numero di caratteri diversi per poter rappresentare un numero è finito, poiché lo è la dimensione dei registri di memoria. Per cui 
 i numeri possono essere rappresentati a precisione finita, e si perdono alcune proprietà come la chiusura rispetto alle sue operazioni, sono presenti errori di arrotondamento di 
-un numero. Inoltre quando si vuole rappresentare numeri reali non si possono rappresentare tutti i numeri reali, per cui possono essere rappresentati solo numeri con un numero 
-finito di cifre decimali in un dato intervallo. 
+un numero, ciò corrisponde ad un errore di ``overflow''. Inoltre non è possibile rappresentare tutti i numeri reali, essendo infiniti, per cui possono essere rappresentati solo 
+numeri con un numero finito di cifre decimali in un dato intervallo. 
+
+\subsection{Rappresentazione a Virgola Fissa}
+
+In generale un numero viene rappresentato rispetto ad una base $b$, dove ciascuna cifra $a_i$ del numerale rappresenta il coefficiente di una potenza della base $b$:
+\begin{gather*}
+    N:a_m\cdots a_0,a_{-1}\cdots a_{-k}\\
+    N=\displaystyle\sum_{i=-k}^ma_ib^i
+\end{gather*}
+Questa rappresentazione viene chiamata posizionale. 
+Per rappresentare un numero utilizzando una base $b$, sono necessari $b$ simboli distinti per poter rappresentare tutte i possibili coefficienti. Dopo aver 
+esaurito le dieci cifre arabe $0,\cdots,9$ bisogna utilizzare diversi caratteri, per basi esadecimali si usano lettere dell'alfabeto per completare l'alfabeto di simboli 
+utilizzato $A,\cdots,F$. 
+Ogni numerale deve essere quindi associato alla sua base per poter ricavare le informazioni del numero che rappresenta.  
+
+Questa rappresentazione si dice a virgola fissa, poiché viene definito a priori tramite il parametro $k$ il numero di cifre dopo la virgola utilizzate. 
+
+
+Per rappresentare l'insieme dei numeri naturali, viene utilizzata il sistema posizionale, in notazione binaria con $n$ bit si possono esprimere tutti i numeri nell'intervallo 
+$[0,2^n-1]$. Si sfruttano quindi tutte le $2^n$ posizioni disponibili, dove devono essere rappresentati per ogni numerale anche gli $0$ non significativi.  
+
+Le operazioni aritmetiche di base come la somma si svolgono cifra a cifra, portando il resto sulla cifra successiva, in caso il risultato non possa essere rappresentato 
+utilizzando $n$ bit si ha un errore di overflow, o trabocco, nella propagazione del resto. 
+Anche la moltiplicazione viene effettuata cifra a cifra tra i due numerali, poiché sono presenti solo due simboli in base due, i prodotti parziali sono pari a zero, oppure 
+al moltiplicando, la somma tra i prodotti parziali si svolge come descritto precedentemente. Inoltre è possibile si verifichi un errore di overflow sulle moltiplicazioni, 
+molto più facilmente rispetto ad una somma. 
+
+Il sistema posizionale include la rappresentazione di numeri con una parte decimale, può essere rappresentato utilizzando $n$ bit, fissata la posizione della virgola nel 
+numerale. Si possono così rappresentare numeri a parte decimale positivi. In questo modo è possibile effettuare le operazioni di somma allo stesso modo dei numeri naturali. 
+Nella moltiplicazione non si possono rappresentare ulteriori cifre decimali, per cui si perde precisione effettuando questa operazione tra due numerali a virgola fissa. 
+Moltiplicare un numerale per $2^n$ corrisponde a spostare la virgola di $n$ posizioni a sinistra, mentre per $2^{-n}$ corrisponde a spostare la virgola di $n$ posizioni a 
+sinistra. 
+
+%%
+Per rappresentare i numeri con segni è necessario modificare il sistema posizionale, sono possibili diverse variazioni per ottenere questo risultato. 
+Una di queste si indica 
+come rappresentazione per modulo e segno, dove il primo bit del numerale indica il segno del numero, se è $0$ è positivo, mentre se è $-1$ è negativo, mentre si usano $n-1$ bit 
+per il modulo. In questo modo si riduce l'intervallo di rappresentazione, potendo rappresentare numeri su un intervallo simmetrico $[-2^{n-1}+1,2^{n-1}-1]$, ma sono 
+possibili due rappresentazioni per lo zero $\pm0$
+
+La rappresentazione complemento a $1$ si aggiunge uno zero a sinistra, si utilizza la rappresentazione posizionale per numeri positivi, mentre per numeri negativi si rappresenta 
+il modulo nella rappresentazione posizionale, ed in seguito si complementa il numerale bit a bit. L'intervallo di rappresentazione coincide per la rappresentazione per modulo e segno 
+$[-2^{n-1}+1,2^{n-1}-1]$, ed allo stesso modo è presente una doppia rappresentazione dello zero. 
+
+
+Per evitare la doppia rappresentazione dello zero si utilizza il sistema della complementazione a due, una piccola variante del complemento ad uno. Se il numero è positivo si 
+utilizza la rappresentazione posizionale, mentre per un numero negativo si rappresenta il suo modulo con la rappresentazione posizionale, si complementa bit per bit e si somma ad 
+uno. In questo modo l'intervallo di rappresentazione con $n$ bit coincide a $[-2^{n-1},2^{n-1}-1]$, ed è possibile un'unica rappresentazione dello zero. Per cambiare di segno 
+di un numerale in questa rappresentazione è sufficiente complementare a due il numerale. 
+%% ppt. somma cp2 
+Nel sistema a complemento a due per effettuare l'operazione di somma è sufficiente svolgere una somma bit a bit, si verifica un overflow se la somma tra due numerali dello 
+stesso segno cambia il segno. Per svolgere l'operazione di differenza si cambia di segno il secondo numerale e si svolge una somma.  
+Le moltiplicazioni tra due numerali in questa rappresentazione si svolgono tra i valori assoluti, e se necessario si complementa il risultato. 
+
+UnEsiste un'altra rappresentazione chiamata ad eccesso. Dati $n$ bit, si definisce un numero noto chiamato eccesso, generalmente $2^{n-1}$. Può rappresentare numeri sullo stesso 
+intervallo della rappresentazione a complemento a due. Per rappresentare un numero si somma all'eccesso, ottenendo un numero sicuramente positivo per cui si può rappresentare 
+utilizzando semplicemente il sistema posizionale. In pratica i numerali si ottengono da quelli della rappresentazione a complemento a due, complementando il bit più significativo. 
+In questa rappresentazione i numerali sono disposti sequenzialmente dal più piccolo al più grande, semplicemente sommando uno. 
+
+%% img. rappresentazioni a confronto / ex. varie rappresentazioni 
+
 
 \end{document}
