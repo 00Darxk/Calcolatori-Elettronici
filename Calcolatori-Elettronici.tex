@@ -351,12 +351,113 @@ Nel sistema a complemento a due per effettuare l'operazione di somma è sufficie
 stesso segno cambia il segno. Per svolgere l'operazione di differenza si cambia di segno il secondo numerale e si svolge una somma.  
 Le moltiplicazioni tra due numerali in questa rappresentazione si svolgono tra i valori assoluti, e se necessario si complementa il risultato. 
 
-UnEsiste un'altra rappresentazione chiamata ad eccesso. Dati $n$ bit, si definisce un numero noto chiamato eccesso, generalmente $2^{n-1}$. Può rappresentare numeri sullo stesso 
+Esiste un'altra rappresentazione chiamata ad eccesso. Dati $n$ bit, si definisce un numero noto chiamato eccesso, generalmente $2^{n-1}$. Può rappresentare numeri sullo stesso 
 intervallo della rappresentazione a complemento a due. Per rappresentare un numero si somma all'eccesso, ottenendo un numero sicuramente positivo per cui si può rappresentare 
 utilizzando semplicemente il sistema posizionale. In pratica i numerali si ottengono da quelli della rappresentazione a complemento a due, complementando il bit più significativo. 
 In questa rappresentazione i numerali sono disposti sequenzialmente dal più piccolo al più grande, semplicemente sommando uno. 
 
 %% img. rappresentazioni a confronto / ex. varie rappresentazioni 
+
+
+%% notazione a virgola mobile: appunti cartaceo 
+\subsection{Rappresentazione a Virgola Mobile}
+
+
+
+
+
+
+
+
+
+%% ASCII 0-1F, 20-7F
+Nella codifica ASCII si utilizza un bit in più, chiamato bit di parità, per controllare eventuali errori nella trasmissione. Ogni numerale esadecimale viene associato ad un 
+carattere $(0-1F)$, oppure un'istruzione di testo $(20-7F)$. In totale sono presenti $128$ caratteri in questa codifica. 
+Venne introdotto il codice Unicode, codificato mediante $16$ bit, in grado di codificare $65536$ elementi. Ma questo numero non basta per codificare diversi alfabeti che si basano s
+su ideogrammi, per cui si utilizza la codifica UTF-8, a lunghezza variabile basato su Unicode. 
+
+
+\section{Organizzazione Generale di un Calcolatore}
+
+I dispositivi elettronici sono in grado di eseguire direttamente solo un numero limitato di istruzioni semplici, il linguaggio macchina che fornisce al calcolatore la sequenza di 
+istruzioni da eseguire è il linguaggio al più basso livello, per cui non è adatto ale persone. Per poter fornire istruzioni ad un calcolatore bisogna utilizzare un linguaggio di 
+programmazione, ed un compilatore che lo traduce in linguaggio macchina, eseguibile dal calcolatore. 
+Un calcolatore è formato da un modulo %...
+dei registri interni al processore, essenziali per il suo funzionamento, zona di memoria diversa dalla RAM, memoria volatile esterna, collegata tramite un Bus. Altri dispositivi 
+di ingresso o uscita vengono collegati al Bus, il principale è la memoria secondaria, non volatile, sullo stesso canale di comunicazione. 
+La memoria secondaria, convenzionalmente realizzato tramite dischi rigidi, è un dispositivo di ingresso-uscita, poiché è possibile leggere e scrivere dati sul disco.
+
+\subsection{Ciclo di Fetch-Decode-Execute}
+%% data path
+All'interno della CPU sono presenti un numero di registri limitati, l'ALU ``Arithmetic Logic Unit'', ed un registro di uscita. Ogni istruzione esegue lo stesso percorso all'interno 
+della CPU. I dati vengono salvati sul registro interno, vengono trasferiti tramite dei Bus interni sui registri di entrata ed in seguito inviati alla ALU e il risultato viene 
+salvato su un registro di uscita. Questo ciclo macchina si ripete allo stesso modo per ogni singola istruzione eseguita dalla CPU. 
+%% ciclo F-D-E
+La CPU ripete continuamente una stessa serie di istruzioni; carica le istruzioni dalla memoria al registro delle istruzioni IR, ``Instruction Register'' in seguito il 
+Program Counter, o PC, viene incrementato, poiché contiene l'indirizzo di memoria dove è presente la seguente istruzione. In generale le istruzioni vengono salvate 
+sequenzialmente sulla memoria, per cui è sufficiente incrementare il PC per poter passare all'istruzione immediatamente successiva. Non sempre si viene eseguita l'istruzione 
+immediatamente successiva, poiché sono possibili istruzioni condizionali che possono generare dei salti, inviando un'indirizzo di memoria diverso dal successivo al PC. Dopo 
+aver aggiornato il PC, viene decodificata l'istruzione letta all'indirizzo contenuto nel PC. Queste istruzioni possono non richiedere espressamente dei dati, ma in caso lo 
+richieda nella fase successiva si cerca l'indirizzo di memoria dov'è contenuto il dato su cui bisogna applicare l'istruzione. L'operando viene calcolato su un registro. Dopo 
+aver salvato i dati, questi attraversano l'ALU, eseguendo l'istruzione, e si ripete questo ciclo cercando l'esecuzione successiva in memoria. 
+
+
+Per eseguire un'istruzione la CPU può effettuare un'esecuzione diretta, dove l'hardware stesso è costruito per eseguire una singola istruzione macchina. Invece è possibile 
+un'interpretazione dove ogni istruzione macchina viene scomposta in istruzione più semplici eseguibili dal processore. Per distinguere l'istruzione macchina dalle istruzione 
+eseguibili dal processore, più semplici ed elementari, vengono chiamate microistruzioni. Queste microistruzioni non sono note e sono incorporate all'interno del processore, 
+mentre le istruzioni macchina sono note, e vengono convertite all'interno del processore in una sequenza di microistruzioni. 
+Il vantaggio dell'esecuzione diretta è la capacità di eseguire direttamente l'istruzione sull'hardware, ma necessita di un hardware abbastanza complesso da poterle eseguire, 
+ma ha un'esecuzione molto più efficiente, a scapito della semplicità dell'hardware. Nel caso dell'interpretazione, avendo disaccoppiato le istruzioni macchina dalle istruzioni 
+eseguibili dal processore è possibile avere un repertorio di istruzioni molto più esteso, quindi l'hardware è relativamente semplice e più compatto, è quindi possibile una maggiore 
+flessibilità nel progetto. 
+
+
+Poiché l'efficienza è il parametro fondamentale su cui si basa la creazione di progetti informatici, il primo approccio è preferibile, poiché è molto più efficiente rispetto 
+al secondo. Per cui anche se un processore utilizza interpretazione, se non è più efficiente rispetto ad un processore ad esecuzione diretta, allora è preferibile 
+quest'ultimo, nonostante la sua complessità. Questi due architetture vengono chiamate RISC, ``Reduced Instruction Set Computer'', la prima, mentre CISC, ``Complex Instruction Set Computer'', 
+la seconda. Il numero di istruzioni eseguibili è una conseguenza dell'uso di uno dei due approcci, per cui questa classificazione non dipende dal numero di istruzioni eseguibili 
+da un processore, ma dal modo in cui vengono eseguite. 
+Nelle architetture RISC di esecuzione diretta sono possibile un numero ristretto di istruzioni, eseguite sui registri, dove sono presenti istruzioni apposite per poter 
+effettuare accessi in memoria, ed ogni istruzione segue un ciclo di macchina. 
+Nelle architetture CISC le istruzioni vengono interpretate tramite un microprogramma, aumentando il numero di istruzioni eseguibili, queste istruzioni vengono eseguite 
+in memoria, inoltre ogni istruzione essendo composta da molte microistruzione comprende più di un singolo ciclo di macchina. 
+Le prime architetture furono del tipo RISC, in seguito i progettisti utilizzarono l'architettura CISC, considerata migliore, ma considerando la migliore efficienza delle 
+architetture RISC i progettisti di sistemi veloci riconsiderarono l'approccio dell'esecuzione diretta verso gli anni '80. 
+
+Per la retrocompatibilità dei processori Intel, alcune istruzioni dei loro processori sono istruzioni CISC. Le ultime architetture commercializzate dalla Intel quindi contengono 
+molte istruzioni e sono di tipo ibrido per mantenere questa retrocompatibilità. 
+
+%% principi progettuali dei computer moderni
+I calcolatori moderni vengono progettati utilizzando l'approccio RISC, e sono utilizzate varie tecniche per massimizzare la banda, la velocità con la quale le istruzioni 
+vengono eseguite in un'unità di tempo, misurate tramite FLOPS, nell'ordine dei TFLOPS (Tera-FLOPS) per calcolatori moderni avanzati. Per aumentare questa banda si introducono 
+meccanismi di parallelismo fisico, o architetture super-scalari oppure basata su pipeline. Per semplificare la decodifica delle istruzioni vengono realizzate tramite formati 
+molto regolari. Inoltre vengono limitati i riferimenti alla memoria, accessibile solo tramite le istruzioni LOAD e STORE, tramite componenti hardware dedicate. Inoltre si tende 
+ad ampliare il numero di registri interni del processore. 
+
+Questi principi anche se proprio della filosofia RISC, vengono rispettati in parte anche dalle architetture CISC. 
+
+\subsection{Parallelismo}
+
+Per aumentare le prestazioni di un calcolatore è necessario introdurre forme di parallelismo, poiché non è più possibile aumentare la sua frequenza. A livello fisico è 
+possibile aumentare le componenti fisiche, utilizzando più di un core, a tutti gli effetti processori indipendenti sullo stesso chip che lavorano in parallelo. Alternativamente 
+è possibile introdurre forme di parallelismo senza duplicare le componenti fisiche dell'hardware, che opera a livello delle istruzioni. 
+Questo meccanismo viene chiamato Pipelining, rappresenta l'idea della catena di montaggio, in questo modo ogni istruzione eseguita dal processore viene divisa in fasi, ed 
+ognuna di questa fasi viene eseguita da una componente diverse del processore. Ognuna di queste esecuzioni vengono chiamati stadi, a livello hardware, che effettuano queste 
+operazioni. In questo modo più istruzioni possono essere eseguite contemporaneamente, avendo un'istruzione diversa ad ogni stadio, essendo componenti indipendenti. Viene 
+quindi completata un'istruzione ad ogni ciclo, ad ogni segnale ci clock, e si guadagna un fattore pari al numero di stadi nella pipeline, capaci di lavorare in parallelo. 
+Si chiama pipeline, storicamente, poiché rappresenta un tubo dove gli elementi inseriti escono ion ordine sequenziale ed osservando l'interno di un tubo ad un dato istante 
+sono presenti più di un elemento al suo interno, a diversa distanza dall'uscita. 
+L'efficienza della pipeline si misura tramite due parametri, la latenza e la sua ampiezza di banda. Questo metodo trova un compromesso tra queste due. La latenza è il tempo 
+impiegato per eseguire ogni istruzione, poiché ognuno degli $n$ stadi viene eseguito in un tempo di clock $T$, la latenza è del tipo $n\cdot T$. Mentre la banda viene 
+notevolmente aumentata utilizzando la pipeline, poiché a regime ogni periodo del segnale di clock viene completata un'istruzione: $T^{-1}$. Avendo tempi di clock nell'ordine 
+dei nano secondi si ottiene una banda di $1000\cdot T^{-1}$ MIPS, Milioni di Istruzioni Per Secondo. Poiché anche se sono presenti molti stadi, a regime, viene sempre completata 
+un'istruzione ogni periodo di clock. QUesto rappresenta una situazione ideale che non corrisponde alla realtà. Poiché sono presenti delle dipendenze tra un'istruzione ed un'altra, 
+per cui per eseguire un'istruzione bisogna aspettare il termine dell'esecuzione di un'altra, creando dei ``buchi'' nella pipeline, diminuendo la banda attuale. 
+
+
+Dentro uno stesso processore è possibile introdurre un parallelismo ulteriore su un'unico core tramite architetture superscalari, che raddoppiano il numero di pipeline 
+interne al singolo core, utilizzando una componente hardware dedicata che avvia più di un'istruzione insieme. 
+Inoltre è possibile introdurre un parallelismo a livello degli stadi più complessi, per cui solo lo stadio più lento viene parallelizzato per aumentare la sua velocità. 
 
 
 \end{document}
