@@ -238,7 +238,7 @@ parte dei dati ``In Premise''.
 
 
 Verranno trattati tre diversi tipi di processori, appartenenti alla famiglia Intel e ARM, ed un processore appartenente alla famiglia dei microcontrollori della famiglia AVR.
-%%\subsection{Architettura Intel}
+\subsubsection{Architettura Intel}
 %% ppt
 
 Il primo processore commercializzato dalla Intel è il 4004, con una frequenze tra le frazioni di un MHz, ed in grado di gestire poche centinaia di bit di memoria. Una variante 
@@ -265,7 +265,7 @@ un miliardo di transistor ed un livello di integrazione nell'ordine dei 22 nanom
 
 %% ppt. 
 
-%%\subsection{Architetture ARM}
+\subsubsection{Architetture ARM}
 
 La società Acorn inventò negli anni '80 questo tipo di architettura bastata sui principi RISC (Acorn RISC Machine). Venne usato sui primi tablet prodotti dalla Apple. Nasce come 
 un processore integrato ed a basso consumo energetico. Presenta un modello di commercializzazione diverso rispetto al resto del mercato, utilizzano un'architettura aperta, che 
@@ -274,7 +274,7 @@ dell'azienda che l'ha realizzato.
 
 Si analizzerà in seguito l'Nvidia Tegra 2, un SOC ``System Of a Chip'' contenente due processori della famiglia ARM, una piccola GPU ed ulteriori componenti.  
 
-%%\subsection{Architettura AVR}
+\subsubsection{Architettura AVR}
 L'architettura AVR corrisponde a processori progettati per elettro-domestici, e per funzioni specifiche. Nacque da un progetto universitario del NIT nel 1996, dal nome dei 
 suoi creatori Alf and Vergard RISC Processor. Presenta lo stesso pinout dell'8051 Intel. Presenta vari timer, un orologio interno, trasmettitore di impulso, interfaccia 
 di sensori, convertitori analogico-digitali, transponder e comparatore di tensioni. Presenta memorie nell'ordine delle centinaia dei kilobyte per la memoria persistente Flash, 
@@ -314,7 +314,7 @@ Ogni numerale deve essere quindi associato alla sua base per poter ricavare le i
 
 Questa rappresentazione si dice a virgola fissa, poiché viene definito a priori tramite il parametro $k$ il numero di cifre dopo la virgola utilizzate. 
 
-
+\subsubsection{Sistema Posizionale}
 Per rappresentare l'insieme dei numeri naturali, viene utilizzata il sistema posizionale, in notazione binaria con $n$ bit si possono esprimere tutti i numeri nell'intervallo 
 $[0,2^n-1]$. Si sfruttano quindi tutte le $2^n$ posizioni disponibili, dove devono essere rappresentati per ogni numerale anche gli $0$ non significativi.  
 
@@ -330,14 +330,15 @@ Nella moltiplicazione non si possono rappresentare ulteriori cifre decimali, per
 Moltiplicare un numerale per $2^n$ corrisponde a spostare la virgola di $n$ posizioni a sinistra, mentre per $2^{-n}$ corrisponde a spostare la virgola di $n$ posizioni a 
 sinistra. 
 
-%%
+\subsubsection{Rappresentazione tramite Modulo e Segno}
 Per rappresentare i numeri con segni è necessario modificare il sistema posizionale, sono possibili diverse variazioni per ottenere questo risultato. 
 Una di queste si indica 
 come rappresentazione per modulo e segno, dove il primo bit del numerale indica il segno del numero, se è $0$ è positivo, mentre se è $-1$ è negativo, mentre si usano $n-1$ bit 
 per il modulo. In questo modo si riduce l'intervallo di rappresentazione, potendo rappresentare numeri su un intervallo simmetrico $[-2^{n-1}+1,2^{n-1}-1]$, ma sono 
 possibili due rappresentazioni per lo zero $\pm0$
 
-La rappresentazione complemento a $1$ si aggiunge uno zero a sinistra, si utilizza la rappresentazione posizionale per numeri positivi, mentre per numeri negativi si rappresenta 
+\subsubsection{Rappresentazione Complemento ad Uno ed a Due}
+La rappresentazione complemento a 1 si aggiunge uno zero a sinistra, si utilizza la rappresentazione posizionale per numeri positivi, mentre per numeri negativi si rappresenta 
 il modulo nella rappresentazione posizionale, ed in seguito si complementa il numerale bit a bit. L'intervallo di rappresentazione coincide per la rappresentazione per modulo e segno 
 $[-2^{n-1}+1,2^{n-1}-1]$, ed allo stesso modo è presente una doppia rappresentazione dello zero. 
 
@@ -346,36 +347,136 @@ Per evitare la doppia rappresentazione dello zero si utilizza il sistema della c
 utilizza la rappresentazione posizionale, mentre per un numero negativo si rappresenta il suo modulo con la rappresentazione posizionale, si complementa bit per bit e si somma ad 
 uno. In questo modo l'intervallo di rappresentazione con $n$ bit coincide a $[-2^{n-1},2^{n-1}-1]$, ed è possibile un'unica rappresentazione dello zero. Per cambiare di segno 
 di un numerale in questa rappresentazione è sufficiente complementare a due il numerale. 
-%% ppt. somma cp2 
+%% TODO ppt. somma cp2  
 Nel sistema a complemento a due per effettuare l'operazione di somma è sufficiente svolgere una somma bit a bit, si verifica un overflow se la somma tra due numerali dello 
-stesso segno cambia il segno. Per svolgere l'operazione di differenza si cambia di segno il secondo numerale e si svolge una somma.  
+stesso segno cambia il segno, altrimenti bisogna ignorare il trabocco ed il risultato è sempre corretto. Per svolgere l'operazione di differenza si cambia di segno il secondo numerale e si svolge una somma.  
 Le moltiplicazioni tra due numerali in questa rappresentazione si svolgono tra i valori assoluti, e se necessario si complementa il risultato. 
 
+\subsubsection{Rappresentazione ad Eccesso}
 Esiste un'altra rappresentazione chiamata ad eccesso. Dati $n$ bit, si definisce un numero noto chiamato eccesso, generalmente $2^{n-1}$. Può rappresentare numeri sullo stesso 
 intervallo della rappresentazione a complemento a due. Per rappresentare un numero si somma all'eccesso, ottenendo un numero sicuramente positivo per cui si può rappresentare 
 utilizzando semplicemente il sistema posizionale. In pratica i numerali si ottengono da quelli della rappresentazione a complemento a due, complementando il bit più significativo. 
-In questa rappresentazione i numerali sono disposti sequenzialmente dal più piccolo al più grande, semplicemente sommando uno. 
-
-%% img. rappresentazioni a confronto / ex. varie rappresentazioni 
+In questa rappresentazione i numerali sono disposti sequenzialmente dal più piccolo al più grande, a distanza di uno tra di loro.  
 
 
-%% notazione a virgola mobile: appunti cartaceo 
+Si considerano le rappresentazioni trattate precedentemente a confronto tra di loro, con 3 bit: 
+\begin{center}
+    \begin{tabular}{|c||c|c|c|c|}
+        \hline
+        Decimale & Modulo e Segno & Complemento a 1 & Complemento a 2 & Eccesso a 4\\
+        \hline\hline
+        +3 & 011 & 011 & 011 & 111 \\
+        \hline
+        +2 & 010 & 010 & 010 & 110 \\
+        \hline
+        +1 & 001 & 001 & 001 & 101 \\
+        \hline
+        +0 & 000 & 000 & 000 & 100 \\
+        \hline
+        -0 & 100 & 111 & & \\
+        \hline
+        -1 & 101 & 110 & 111 & 011 \\
+        \hline 
+        -2 & 110 & 101 & 110 & 010 \\
+        \hline
+        -3 & 111 & 100 & 101 & 001 \\
+        \hline
+        -4 & & & 100 & 000 \\
+        \hline
+    \end{tabular}
+\end{center}
+I bit più significativi si trovano sempre verso destra, e rappresentano l'ordine di grandezza del numero. In tutti questi sistemi, 
+il primo bit, il più significativo, identifica sempre il segno del numerale e dipende dalla rappresentazione usata. 
+
+
+Un numerale identifica solamente una sequenza di cifre, il numero corrispondente dipende dalla rappresentazione, e questa deve essere necessariamente fornita, insieme al numerale, per poter associato ad un numero. 
+
 \subsection{Rappresentazione a Virgola Mobile}
 
+La rappresentazione di numeri tramite virgola fissa non è un sistema efficiente, poiché si usa lo stesso numero di bit, per tutti i numeri di ordini di grandezza diversi, quindi spesso le cifre più significative 
+non forniscono informazioni aggiuntive per poter identificare il numero, e sono quindi superflue. Per poter ovviare a questo problema si considera una rappresentazione detta a virgola mobile, o ``floating point'', 
+dove l'ordine di grandezza è codificato anch'esso nella sequenza binaria, in questo modo è quindi possibile codificare numeri molto più grandi e molto più piccoli, a parità di bit, rispetto ad una codifica a virgola 
+fissa. L'intervallo di rappresentazione risulta quindi notevolmente esteso. 
+Ogni numero reale viene rappresentato mediante una coppia di due numeri: $(m, e)$. Dove $m$ viene chiamata mantissa, e $e$ esponente. Deve inoltre essere fornita la base del sistema di numerazione usato $b$, per poter 
+decodificare il numero originario $n$: 
+\begin{gather*}
+    n=m\cdot b^e
+\end{gather*}
+La mantissa inoltre deve essere normalizzata tra due potenze successive della base $b$, per fornire un'unica rappresentazione per ogni numero:
+\begin{gather*}
+    b^{b-i}\leq|m|<b^i
+\end{gather*}
+
+Entrambi questi numeri vengono rappresentati mediante un numero finito di cifre, soltanto alcuni dei numeri nell'intervallo sono rappresentabili, per il numero limitato delle cifre significative disponibili, questo 
+provoca quindi errori di arrotondamento. Inoltre si possono verificare errori di underflow o overflow in negativo od in positivo, poiché si possono rappresentare numeri nell'ordine di grandezza massimo o minimo 
+in base al valore massimo contenuto nell'esponente $e$. 
+
+Nel 1985 l'``Institute of Electrical and Electronics Engineers'' definì lo standard 754 per i numeri a virgola mobile. Formato non proprietario, quindi non dipendente dalla specifica architettura. 
+Vennero definite due rappresentazioni a virgola mobile. Una semplice precisione, tramite 32 bit, ed una a doppia precisione, da 64 bit, utilizzando notazioni con una mantissa normalizzata e denormalizzata, lasciando 
+alcune configurazioni riservate. 
+In entrambe le rappresentazioni un bit, il più significativo, viene riservato per il segno del numero, nella notazione a singola precisione 8 bit sono riservati per l'esponente, ed i restanti 23 per la mantissa; 
+nella rappresentazione a doppia precisione, oltre al segno, 11 bit vengono utilizzati per l'esponente, e 52 per la mantissa. 
+
+L'esponente viene codificato tramite la rappresentazione ad eccesso. Nella singola precisione, ad eccesso 127, per fornire più spazio agli elementi positivi, avendo un intervallo di rappresentazione di $[-127, +128]$, 
+ma le configurazioni con tutti zero ed uno sono riservate, quindi effettivamente l'esponente è compreso nell'intervallo $[-126, +127]$. 
+La mantissa, normalizzata, rappresenta solo la parte decimale con la notazione posizionale ed è compresa tra uno e due $1\leq m<2$, si omette quindi nella rappresentazione binaria l'uno che precede la parte decimale, 
+ma bisogna considerarlo quando si effettuano operazioni tra numeri a virgola fissa. 
+Per cui l'intervallo di rappresentazione dei numeri normalizzati, senza il segno, è $[2^{-126}, \sim2^{128}]$. Sono presenti alcune configurazioni riservate, se la mantissa e l'esponente sono entrambe sequenze di zero, 
+si rappresenta lo zero, se la mantissa è zero e l'esponente sono tutti uno, rappresenta un overflow, se la mantissa è non nulla, e l'esponente sono tutti uni, identifica un ``Not A Number'' o NAN, invece 
+con una mantissa non nulla, ed un esponente di tutti zero, si identifica un numero denormalizzato. 
+Il numero più grande normalizzato è quindi formato da un'esponente con tutti uno, tranne il bit meno significativo pari a zero, che rappresenta un 127, mentre la mantissa pari a tutti uno, approssimata a due, 
+per cui si ha $2^{127}\cdot\sim2\approx2^{128}$. Mentre il numero più piccolo è composto da un'esponente avente un unico uno nella posizione meno significativa, corrispondente ad un -126, mentre la mantissa nulla, 
+corrispondente ad uno: $2^{-126}$. 
+
+Nella rappresentazione denormalizzata, l'esponente è composto da tutti zero e vale convenzionalmente $2^{-126}$, mentre la mantissa è un numero compreso tra zero ed uno, poiché viene rappresentato nella notazione 
+posizionale, ed avendo 23 bit, il numero più piccolo rappresentabile dalla mantissa è $2^{-23}$, per cui il numero più piccolo rappresentabile è $2^{-149}$, mentre il numero più grande corrisponde a $\sim2^{-126}$, 
+poiché la mantissa composta da tutti uno viene approssimata ad uno. 
 
 
+Per effettuare operazioni di somma tra due numeri $n_1$ ed $n_2$ in virgola fissa, si confrontano i loro esponenti, ed in caso sia necessario, si scala la mantissa corrispondente all'esponente minore, per raggiungere 
+l'altro esponente. Traslando la mantissa bisogna considerare l'uno omesso dalla rappresentazione decimale, ma sempre presente, detto anche ``uno dell'ingegnere'', perdendo i bit meno significativi. In questo modo 
+si eguagliano gli esponenti dei due numeri, traslando la mantissa del numero $\min\{n_1,n_2\}$ di $|e_1-e_2|$ posizioni. La somma presenta quindi un errore di approssimazione. 
 
+Per la moltiplicazione si moltiplicano tra di loro le mantisse e si sommano gli esponenti, ed in caso si scala per normalizzare la mantissa, producendo anche in questo caso un'errore di approssimazione. 
+In tutte le operazioni è possibile quantificare l'errore di approssimazione effettuato, si definisce quindi l'errore assoluto $e_A$ commesso, la differenza tra il numero rappresentato dal numerale $n'$ ed il numero effettivo 
+$n$: 
+\begin{gather*}
+    e_A=n'-n
+\end{gather*}
+Più grande è il numero, maggiore è la probabilità di commettere errori di approssimazione. Mentre si definisce l'errore relativo, il rapporto tra l'errore assoluto ed il numero effettivo rappresentato:
+\begin{gather*}
+    e_R=\displaystyle\frac{e_A}{n}=\frac{n'-n}{n}
+\end{gather*}
+L'errore relativo quindi decresce all'aumentare del numero rappresentato, ed assume valore massimo costante su tutto l'intervallo di rappresentazione pari al numero di cifre a disposizione sulla mantissa, utilizzando 
+una mantissa normalizzata. Invece utilizzando una rappresentazione denormalizzata l'errore relativo massimo non è costante. 
 
+\subsection{Rappresentazione Esadecimale}
 
+Per rappresentare numeri esadecimali sono necessarie sedici cifre, oltre alle dieci cifre arabe, si considerano caratteri alfabetici dalla ``A'' alla ``F''. Si ha così un alfabeto da sedici simboli, si può usare 
+per rappresentare in maniera compatta delle stringhe binarie, partendo da destra associando ad ogni 4 bit il numero esadecimale corrispondente:
+\begin{align*}
+    &0000\to 0& 1000\to8&\\
+    &0001 \to 1&1001\to9&\\
+    &0010\to2&1010\to\mathrm{A}&\\
+    &0011\to3&1011\to\mathrm{B}&\\
+    &0100\to4&1100\to\mathrm{C}&\\
+    &0101\to5&1101\to\mathrm{D}&\\
+    &0110\to6&1110\to\mathrm{E}&\\
+    &0111\to7&1111\to \mathrm{F}&
+\end{align*}
 
+Per codificare caratteri esistono diverse convenzioni e standard, il codice ASCII, ancora in uso nelle interfacce a linea di comando. Può rappresentare solamente 128 caratteri codificati in 8 bit, espressi in 
+esadecimale da due cifre, dove il primo bit, chiamato bit di parità, viene usato per controllare eventuali errori nella trasmissione. Ogni numerale esadecimale viene associato ad un'istruzione di testo (0-1F), 
+oppure ad un carattere (20-7F). 
 
+Successivamente venne introdotto il codice Unicode, codificato mediante 16 bit, in grado di codificare 65536 elementi. Codifica 336 simboli di alfabeti latini, 112 accenti e simboli diacritici, alfabeti che non 
+utilizzano caratteri latini, 21000 ideogrammi cinesi. I restanti caratteri vengono assegnati da un consorzio. 
 
-%% ASCII 0-1F, 20-7F
-Nella codifica ASCII si utilizza un bit in più, chiamato bit di parità, per controllare eventuali errori nella trasmissione. Ogni numerale esadecimale viene associato ad un 
-carattere $(0-1F)$, oppure un'istruzione di testo $(20-7F)$. In totale sono presenti $128$ caratteri in questa codifica. 
-Venne introdotto il codice Unicode, codificato mediante $16$ bit, in grado di codificare $65536$ elementi. Ma questo numero non basta per codificare diversi alfabeti che si basano s
-su ideogrammi, per cui si utilizza la codifica UTF-8, a lunghezza variabile basato su Unicode. 
+Ulteriori sistemi di codifica di caratteri basati su Unicode sono UTF-8 e UTF-16, che utilizzano una lunghezza variabili di bit, permettono di rappresentare molti più caratteri, non necessariamente alfabetici, come 
+emoji e simboli matematici. Tutte le codifiche che cominciano con uno zero rappresentano il codice ASCII, mentre per altri prefissi rappresentano codifiche più lunghe. 
+Il linguaggio Java utilizza UTF-16, ma nella serializzazione su file utilizza una variazione non standard dell'UTF-8. 
 
+\clearpage
 
 \section{Organizzazione Generale di un Calcolatore}
 
