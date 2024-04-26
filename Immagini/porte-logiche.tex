@@ -1,0 +1,24 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}
+    \node[buffer port]at(0,0){};
+    \node at(0,1.25){NOT};
+    \node[not port]at(0,2){};
+    \node at(0,-0.75){Buffer};
+    \node[and port]at(2.5,0){};
+    \node at(2.5,-0.75){AND};
+    \node[or port]at(5,0){};
+    \node at(5,-0.75){OR};
+    \node[nand port]at(2.5,2){};
+    \node at(2.5,1.25){NAND};
+    \node[nor port]at(5,2){};
+    \node at(5,1.25){NOR};
+    \node[xor port]at(7.5,0){};
+    \node at(7.5,-0.75){XOR};
+    \node[xnor port]at(7.5,2){};
+    \node at(7.5,1.25){XNOR};
+\end{circuitikz}
+\end{document}
