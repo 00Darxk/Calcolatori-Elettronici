@@ -606,7 +606,7 @@ Per cui dal livello più stretto di accoppiamento si ha la tecnica del threading
 le architetture multiprocessore, ad accesso ad una memoria condivisa e più lasca con accesso ad una memoria privata per ogni processore. Infine si ha l'architettura multicomputer, o di cluster, dove le comunicazioni 
 tra gli elementi avvengono tramite l'internet. Questi computer possono essere collocati nello stesso data center in caso di un cluster di server, oppure possono essere dislocati e connessi solamente tramite l'internet. 
 
-\subsection{Memoria Centrale}
+\subsection{Memoria}
 
 La memoria centrale di un calcolatore è l'elemento che contiene sia i programmai che i dati, tramite una memorizzazione binaria. La memoria viene divisa in celle, o locazioni, di memoria, e rappresentano le singole 
 unità indirizzabili, la minima dimensione è quella di un byte, il minimo indirizzabile. In genere è divisa in word, o parole, composte da un certo numero di byte, in base all'architettura, ognuna delle quali 
@@ -615,6 +615,19 @@ memoria. Dato un indirizzo composto da $n$ bit, allora sarà possibile specifica
 moderni sono a 32 o 64 bit, quindi sono in grado di indirizzare al massimo $2^{64}$ zone di memoria. 
 La memoria quindi dipende oltre dalla dimensione della parola, anche dal numero di bit dell'indirizzo, per definire lo spazio indirizzabile. Una memoria di una stessa dimensione può essere indirizzata 
 differentemente in base alla suddivisione delle celle e alla lunghezza di parola, per cui negli anni si sono trovate diverse soluzioni per indirizzare la stessa quantità di memoria. 
+
+Oltre alla memoria centrale esistono memorie secondarie, di costo per bit minore, ma con una velocità di lettura e scrittura peggiore. Si può quindi realizzare una gerarchia di memoria, 
+ponendo in cima le memorie a più stretto accoppiamento con il processore fino alle più lente memorie secondarie. Scendendo nella gerarchia la velocità di accesso diminuisce, ma la dimensione della memoria 
+aumenta:
+\begin{itemize}
+    \item Registri: le zone di memoria utilizzate dal processore per contenere i dati usati durante l'esecuzione delle istruzioni, comprese nel data path. Hanno una capacità massima di $2^4$ byte, ed un tempo di accesso minore di un nanosecondo: $t_A\leq10^{-9}\,\mathrm{s}$;
+    \item Cache: le zone di memoria interne al processore dove vengono salvati memorizzati di memoria dalla memoria centrale. Hanno una capacità massima nell'ordine dei MB, con un tempo di accesso di qualche nanosecondo $t_A\approx2\cdot10^{-9}\,\mathrm{s}$;
+    \item Memoria Centrale: la zona di memoria dove sono contenuti i programmi ed i dati, ha una dimensione dell'ordine dei GB, con un tempo di accesso di una decina di nanosecondi $t_A\approx10\cdot10^{-9}\,\mathrm{s}$; 
+    \item Dischi Magnetici, HDD, o a Stato Solido, SSD: le unità di memoria secondaria, non volatili, di dimensione nell'ordine dei TB, con un tempo di accesso dai millisecondi (HDD) ai microsecondi (SSD) $t_A\approx10^{-6}/10^{-3}\,\mathrm{s}$;
+    \item Nastro o Dischi Ottici: unità di memoria ormai obsolete, con una dimensione nell'ordine dei TB o maggiore, ed un tempo di accesso che di centinaia di millisecondi $t_A\approx100\cdot10^{-3}\,\mathrm{s}$.  
+\end{itemize}
+
+Solamente il livello più alto è a diretto contatto con la CPU, i restanti dati devono essere trasferiti tra i vari livelli durante l'esecuzione. 
 
 \subsubsection{Codici di Correzione}
 
@@ -646,6 +659,117 @@ viene rappresentato dalla curva rossa nella figura seguente:
     \includegraphics{overhead.pdf}%
     \caption{Bit da Aggiungere per Correggere un Errore Singolo}
 \end{figure}
+
+\subsubsection{Caching}
+
+Si è discusso precedentemente di come l'accesso alla memoria centrale rallenti le operazioni svolte dal processore. Memorie veloci sono disponibili, ma solo per piccole dimensioni, non rappresentano quindi la 
+soluzione a questo problema. Per cui per risolvere questo problema si inserisce una piccola memoria all'interno della CPU stessa, di dimensione molto minore della memoria centrale, in grado di memorizzare i dati 
+necessari allo svolgimento delle istruzioni, velocizzando di gran lunga le istruzioni, poiché questa memoria interna ha la stessa velocità del processore. 
+Questa zona di memoria interna si chiama cache, e memorizza le ultime zone di memoria acceduta dalla CPU, per evitare accessi ripetuti in memoria centrale. Inoltre memorizza le zone di memoria attorno a queste, 
+le più probabili ad essere richieste dalla CPU. 
+Rispetta due principi di località:
+\begin{itemize}
+    \item Temporale: Poiché una stessa zona di memoria verrà acceduta più di una sola volta dalla CPU, come l'aggiornamento di una singola variabile;
+    \item Spaziale: Se serve una certa locazione di memoria, probabilmente verranno richieste anche le locazioni intorno a questa, come per un array. 
+\end{itemize}     
+Per cui vengono trasferiti interi blocchi di memoria nella cache ad ogni singola lettura in memoria centrale. 
+
+Si definisce il cache hit ratio, la percentuale di volte che una parola letta, viene ritrovata nella cache, su $k$ letture di seguito. Poiché dopo la prima lettura l'intera zona di memoria viene salvata nella cache, 
+si hanno $k-1$ cache hit, quando viene trovato nella cache, ed una singola cache miss, quando non viene trovato nella cache. Si ha quindi un cache hit ratio pari a:
+\begin{equation}
+    H=\displaystyle\frac{k-1}{k}
+\end{equation}
+Data questa metrica può essere quindi calcolato il tempo medio di accesso a memoria, dato il tempo di accesso alla memoria centrale $m$, ed il tempo di accesso alla cache $c$: 
+\begin{equation}
+    A=c+(1-H)\cdot m
+\end{equation}
+Per ogni cache miss, un intero blocco di memoria viene spostato nella cache. 
+
+La cache è trasparente rispetto alla memoria centrale, ovvero il processore non è in grado di determinare se il dato che sta leggendo provenga dalla memoria centrale oppure dalla cache, l'unica differenza è la velocità 
+di accesso. 
+
+\subsubsection{Schede di Memoria}
+
+Esistono diversi tipi di schede di memoria, ognuna con un certo numero di piedini, e di chip di memoria. Alcune presentano bit di parità, realizzati tramite un chip in più. 
+Ogni tipologia di scheda di memoria è standardizzata, per permettere ai costruttori di realizzare schede di memoria in grado di comunicare correttamente con il processore. 
+Le principali tipologie sono:
+\begin{itemize}
+    \item SIMM, ``Single Inline Memory Module'': memorie a 32 bit, utilizzano 72 piedini, e dalle 8 ai 16 chip di memoria di 128 MB ciascuno;
+    \item DIMM, ``Double Inline Memory Module'': memorie a 64 bit, aventi tra i 120 e 240 piedini, con 8 chip di memoria da 256 MB;
+    \item SO-DIMM, ``Small Outline-DIMM'': schede DIMM di dimensione ristretta utilizzate in notebook di piccole dimensioni;
+    \item DDR/DDR2/DDR3/(M)DDR4/DDR5, ``Double Data Rate'': introducono un meccanismo di pipeline nella lettura e scrittura, e possono avere fino a 288 pin. 
+\end{itemize}
+Le memorie SIMM vengono utilizzate a coppie nei processori Pentium, per avere un bus dati a 64 bit. 
+Ogni scheda di memoria DDR presenta una tacca diversa, per impedire che sia montata fisicamente su un supporto non valido. 
+
+\subsubsection{Dischi Magnetici}
+
+I dischi magnetici, o hard disk, termine usato per ogni memoria secondaria, sono memorie non volatili che si basano sulle proprietà elettro-magnetiche di alcuni materiali. 
+Vengono realizzati tramite dei dischi di alluminio sovrapposti, di meno di dieci centimetri di diametro, con una densità di bit pari a 25 Gb/cm. I dati vengono memorizzati su traccie concentriche, divise in 
+settori, ognuna di pochi micron in altezza, ogni settore contiene un migliaio di bit. Sono presenti circa 50000 tracce per centimetro del disco, larghe circa 200 nanometri. I bit vengono registrati verticalmente 
+sulle tracce. Ogni settore presenta un preambolo per allineare la testina che legge i dati, i dati, ed un ECC ``Error-Correcting Code'', per correggere gli errori in lettura, poiché presenta una percentuale di 
+errore relativamente elevata. Per cui la capacità formattata di un disco diminuisce del 15\% rispetto alla sua capacità effettiva. 
+Questi dischi ruotano ad una velocità costante, tra i 5400 ai 10800 giri al minuto, o RPM, con una banda di 150 MB/s, leggendo un settore in pochi microsecondi: $t_A=3.5\,\mu\mathrm{s}$. 
+Un braccio meccanico si sposta radialmente sul disco per leggere o scrivere i bit. Quando deve scrivere viene attraversato da una piccola corrente, generando un campo magnetico orientando in uno di due versi, per 
+indicare uno zero oppure un uno,  le particelle magnetiche disposte sul disco. In lettura il disco non viene attraversato da corrente, ma quando la testina passa sopra ad un bit magnetico, questo genera un piccolo 
+campo elettrico per induzione all'interno del braccio, misurabile come zero o uno in base al suo verso. 
+
+Si utilizzano due misure di velocità del disco, il burst rate, la velocità da quando la testina è sopra il primo bit, ed il sustained rate, che calcola la velocità di trasferimento in un certo intervallo e comprende 
+il tempo necessario per allineare la testina. Le traccie vengono sovrapposte a fino a formare un cilindro ed ogni lato di un disco può essere usato per memorizzare dati diversi. Ogni lato è quindi disposto di un suo 
+braccio meccanico per leggere e scrivere i dati. 
+Il tempo di accesso ad un dato può essere scomposto come il tempo di spostamento delle testine sul cilindro desiderato, ``Seek Time'', che dipende in parte dalla distanza attuale dalla testina, in una decina di millisecondi al massimo 
+$t_S\approx5/10\,\mathrm{ms}$, ed il tempo di spostamento sul settore desiderato, ``Latency'', in un paio di millisecondi $t_L\approx3/6\,\mathrm{ms}$:
+\begin{gather*}
+    t_A=t_S+t_L
+\end{gather*}
+
+Ogni traccia concentrica presenta un numero diverso dei settori, poiché la velocità angolare dipende dalla distanza dal centro del disco, e bisogna mantenere la velocità di lettura di un singolo settore costante, 
+altrimenti bisognerebbe modificare la velocità di rotazione del disco. Per gestire l'organizzazione dei dati sul disco sono necessarie delle capacità elaborative, sono quindi presenti dei processori 
+specializzati nel disco, chiamati controllori di disco. 
+
+Furono definiti degli standard per i dischi magnetici, il primo standard del IDE nato con il PC XT dell'IBM, aveva in totale 500 MB di memoria, ed una banda di pochi MB al secondo. 
+Lo standard EIDE lo stende mediante lo schema LBA ``Logical Block Addressing'', un meccanismo di trasformazione da un indirizzo logico ad uno fisico, tramite una tabella di conversione, con una memoria massima 
+gestibile di 128 GB. I dati vengono trasmessi tramite lo standard ATA ``AT Attachment'' e per le versioni successive ATAPI ``ATA PAcket Interface'', per ottenere una banda fino ai 100 MB/s. Da ATAPI-6 venne 
+aumentata la massima memoria gestibile, fino ad un massimo di 128 PB, mentre da ATAPI-8 e successivi, il trasferimento si basa sullo standard SATA ``Serial ATA'', utilizzando connettori da meno bit, e tensioni 
+più basse con velocità di trasmissione di decine di MB al secondo. Si utilizza una trasmissione seriale dei dati per risolvere un problema fisico di comunicazione sul bus, i bit viaggiano a diverse velocità 
+sul bus, poiché attraversano linee strutturalmente diverse, questo fenomeno viene chiamato bus skew. Questo impone quindi un limite superiore alla velocità di trasmissione di un dato, mentre la trasmissione 
+sequenziale dei bit, ovvero in forma seriale, non presenta limiti, e potenzialmente non presenta limiti alla velocità di trasferimento dei dati. 
+Ulteriori accorgimenti utilizzano controller ed interfacce più intelligenti, SCSI ``Small Computer System Interface'', tramite bus con connessioni daisy chain, nella versione moderna Serial Attached SCSI per avere velocità di trasferimento dei 
+dati fino a 10 Gb al secondo. 
+
+\subsubsection{Dischi RAID}
+
+Utilizzando più di un disco magnetico è possibile aumentare la velocità di trasferimento dei dati. Questa soluzione si chiama RAID ``Redundant Array of Inexpensive Disks'', usa più dischi per implementare un 
+meccanismo di parallelismo in acceso ai dati, e meccanismi di resistenza ai guasti. Questo sistema si contrappone ai SLED ``Single Large Expensive Disk''. 
+Nel RAID il singolo dato viene diviso e memorizzato su più dischi, tramite un processo di ``Data Striping'', in modo che possa essere acceduto in parallelo su più dischi. 
+
+Sono possibili diverse configurazioni, da RAID 0 a 5, cambiando il numero dei dischi e la distribuzione dei blocchi di dati di un file su di essi. Il RAID di livello 0 consiste nel utilizzare $n$ dischi 
+per memorizzare un singolo dato, guadagnano un fattore $n$ sia in lettura che in scrittura. Ma peggiore la frequenza degli errori, MTBF ``Mean Time Between Failures'', e non sono presenti meccanismi di 
+resistenza ai guasti, non c'è ridondanza. 
+Il RAID di livello 1 consiste in un RAID 0 dove tutti i dischi sono duplicati, una tecnica di shadowing, avendo la possibilità di resistere a guasti multipli, inoltre offre la possibilità di bilanciare il carico. 
+Il RAID di livello 2 introduce un sistema di correzione di errori introducendo un bit di parità e dividendo il singolo dato a livello di word o di byte, ed ogni porzione di byte, nibble, o bit vengono salvati sul disco. In questo modo si ha 
+una resistenza a guasti semplici e guadagna un fattore in lettura e scrittura in base al numero di dischi utilizzati. Ma per ottenere ciò i dischi devono essere sincronizzati in rotazione. Questo sistema è più efficiente all'aumentare dei 
+dischi, per diminuire la percentuale di bit ridondanti da inserire. 
+Il RAID di livello 3 rappresenta una versione semplificata del RAID 2, consente una distribuzione a livello di bit, ed un overhead contenuto, permette di recuperare i dati persi in caso di guasto sapendo quale 
+disco è rotto. 
+I RAID di livello 2 e 3 permettono di effettuare una sola operazione su disco per volta, poiché ogni operazione coinvolge tutti i dischi.  
+Nel RAID di livello 4 si effettua uno striping a livello di blocco, ed i drive non sono sincronizzati, la strip dell'ultimo disco contiene i bit di parità dell'insieme di bit omologhi di tutte le altre strip. Riesce 
+quindi a resistere ai guasti come un RAID 3, ma l'ultimo disco rappresenta un collo di bottiglia, poiché è necessario per ogni operazione di lettura. Per cui nel RAID 5 viene distribuita la strip di parità su tutti i 
+dischi per minimizzare l'accesso ad un singolo disco. 
+
+\subsubsection{Dischi a Stato Solido}
+
+I ``Dischi'' a Stato Solido, SSD, chiamati dischi per motivi storici, memorizzano dati in maniera non volatile, sfruttano il fenomeno dell'``Hot-Carrier Injection'' dei transistor. Questa è una proprietà 
+negativa dei transistor, dove gli elettroni che transitano il transistor possono superare lo strato isolante e rimanere in maniera permanente sui suoi componenti. 
+Vengono quindi realizzate celle di memoria flash, a stato solido, quindi senza necessità di un'alimentazione, formate da vari transistor. 
+I transistor vengono coperti da due strati isolanti, uno sopra ``Control Gate'' CG, ed uno sotto ``Floating Gate'' FG, per catturare le cariche. Alimentando il CG, vengono catturate le cariche sul FG, anche in assenza 
+di alimentazione, e si misura la presenza di cariche poiché aumenta la tensione di commutazione. Si effettua quindi un test di commutazione a basso voltaggio per rilevare la presenza di cariche, ed in caso 
+assegnare uno zero o un uno. 
+Poiché sono presenti componenti puramente elettriche, questo sistema è estremamente veloce rispetto a dei dischi magnetici, con velocità di trasferimento nell'ordine dei centinaia di MB al secondo. Ma presenta dei 
+difetti rispetto a HDD, poiché la frequenza di fallimenti è molto più elevata, e sono possibili un massimo di 100000 scritture prima di dover sostituire il dispositivo. 
+Inoltre è molto più costoso di un disco magnetico, con un costo per GB di qualche euro, invece di qualche centesimo. Si addice per la sua compattezza alle applicazioni mobile, ed ai flash drive. La capacità può 
+essere aumentata ulteriormente utilizzando celle multi-livello, e si può diminuire la frequenza di errore tramite una distribuzione uniforme delle letture e scritture sulle celle dell'unità, per evitare che si 
+verifichi un guasto su una cella molto prima di un altra. 
 
 
 
