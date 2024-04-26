@@ -1,8 +1,6 @@
 \documentclass{article}
 
 \usepackage{cancel}
-%\usepackage{tikz}
-%\usepackage{circuitikz}
 \usepackage{amsmath}
 \usepackage[includehead,nomarginpar]{geometry}
 \usepackage{graphicx}
@@ -17,11 +15,12 @@
 %\usepackage{minted}
 %\usepackage{subfig}
 \usepackage[italian]{babel}
-%\usepackage{float}
+\usepackage{float}
 \allowdisplaybreaks
 
 \setlength{\headheight}{12.0pt}
 \addtolength{\topmargin}{-12.0pt}
+\graphicspath{ {./Immagini/} }
 
 \hypersetup{
     colorlinks=true,
@@ -31,6 +30,7 @@
 \makeatother
 
 \numberwithin{equation}{subsection}
+\newcommand{\tageq}{\tag{\stepcounter{equation}\theequation}}
 
 \fancypagestyle{link}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\fancyfoot[C]{Sorgente del file LaTeX disponibile al seguente link: \url{https://github.com/00Darxk/Calcolatori-Elettronici}}}
 
@@ -63,33 +63,18 @@ Università degli Studi ``Roma Tre"}}
 
 
 % prof:
-%% big data
-%% LLM
-%% Tirocini (Azienda/Laboratori) 
-%% Incubare Startup
+% big data
+% LLM
+% Tirocini (Azienda/Laboratori) 
+% Incubare Startup
 
 % scopi del corso
-%% 6 CFU
-%% rec 80-85% programma anni precedenti
-%% cenni di assembly alla fine del corso
-%% simulatori e casi di studio
+% 6 CFU
+% rec 80-85% programma anni precedenti
+% cenni di assembly alla fine del corso
+% simulatori e casi di studio
 
-
-%% programma diviso in due parti: (da aggiungere a README)
-% I parte:
-%% storia e topologia dei calcolatori: calcolatori moderni; x86, ARM, AVL;
-%% sistemi di numerazione binaria: rappresentazione floating point numbers, standard IEEE 754;
-%% ppt...
-% II parte:
-%% bus: ppt...
-%% micro-architettura di una cpu: ppt...
-%% programmazione assembly x86
-
-
-% modalità d'esame (ppt):
-
-
-%\section{Introduzione}
+%% TODO Introduzione
 
 \section{Storia e Tipologia dei Calcolatori}
 
@@ -284,7 +269,7 @@ una memoria programmabile da poche migliaia di byte ``EEPROM'', ed una memoria p
 
 \section{Sistemi di Numerazione Binaria}
 
-%% unità di misura (ppt.)
+%% TODO unità di misura (ppt.) 
 
 Quando si misura la memoria si utilizza l'unità di misura byte, corrispondente a 8 bit, e si tende ad utilizzare potenze di due invece di potenze di dieci, utilizzando 
 i bit quando si considera una velocità. 
@@ -468,7 +453,7 @@ per rappresentare in maniera compatta delle stringhe binarie, partendo da destra
 Per codificare caratteri esistono diverse convenzioni e standard, il codice ASCII, ancora in uso nelle interfacce a linea di comando. Può rappresentare solamente 128 caratteri codificati in 8 bit, espressi in 
 esadecimale da due cifre, dove il primo bit, chiamato bit di parità, viene usato per controllare eventuali errori nella trasmissione. Ogni numerale esadecimale viene associato ad un'istruzione di testo (0-1F), 
 oppure ad un carattere (20-7F). 
-
+%% TODO inserire codifica ASCII
 Successivamente venne introdotto il codice Unicode, codificato mediante 16 bit, in grado di codificare 65536 elementi. Codifica 336 simboli di alfabeti latini, 112 accenti e simboli diacritici, alfabeti che non 
 utilizzano caratteri latini, 21000 ideogrammi cinesi. I restanti caratteri vengono assegnati da un consorzio. 
 
@@ -480,42 +465,52 @@ Il linguaggio Java utilizza UTF-16, ma nella serializzazione su file utilizza un
 
 \section{Organizzazione Generale di un Calcolatore}
 
-I dispositivi elettronici sono in grado di eseguire direttamente solo un numero limitato di istruzioni semplici, il linguaggio macchina che fornisce al calcolatore la sequenza di 
-istruzioni da eseguire è il linguaggio al più basso livello, per cui non è adatto ale persone. Per poter fornire istruzioni ad un calcolatore bisogna utilizzare un linguaggio di 
+I calcolatori elettronici sono composti da dispositivi elettronici in grado di eseguire direttamente solo un numero limitato di istruzioni semplici, il linguaggio macchina che fornisce al calcolatore la sequenza di 
+istruzioni da eseguire è il linguaggio al più basso livello, per cui non è adatto alle persone. Per poter fornire istruzioni ad un calcolatore bisogna utilizzare un linguaggio di 
 programmazione, ed un compilatore che lo traduce in linguaggio macchina, eseguibile dal calcolatore. 
-Un calcolatore è formato da un modulo %...
-dei registri interni al processore, essenziali per il suo funzionamento, zona di memoria diversa dalla RAM, memoria volatile esterna, collegata tramite un Bus. Altri dispositivi 
-di ingresso o uscita vengono collegati al Bus, il principale è la memoria secondaria, non volatile, sullo stesso canale di comunicazione. 
-La memoria secondaria, convenzionalmente realizzato tramite dischi rigidi, è un dispositivo di ingresso-uscita, poiché è possibile leggere e scrivere dati sul disco.
+Un calcolatore è formato da vari elementi: un processore, contenete un'unità di controllo, un'unità aritmetico logica e diversi 
+registri interni, essenziali per il suo funzionamento; una zona di memoria principale, tipicamente una Random Access Memory o RAM; una zona di memoria diversa dalla RAM, memoria volatile esterna, collegata tramite 
+un bus. Il processore scambia dati con la memoria centrale tramite il bus, e ne memorizza il contenuto all'interno dei suoi registri. Alcuni registri particolari sono il ``Program Counter'' PC che indirizza l'istruzione 
+successiva, e l'``Instruction Register'' IR che contiene l'istruzione corrente. Inoltre è possibile siano presenti altri dispositivi di ingresso o uscita, collegati al bus, il principale è la memoria secondaria, non 
+volatile, sullo stesso canale di comunicazione, convenzionalmente realizzata tramite dischi rigidi; è un dispositivo di ingresso-uscita poiché è possibile leggere e scrivere dati sul disco.
 
-\subsection{Ciclo di Fetch-Decode-Execute}
-%% data path
+\subsection{Processore}
+
+\subsubsection{Ciclo di Fetch-Decode-Execute}
+
 All'interno della CPU sono presenti un numero di registri limitati, l'ALU ``Arithmetic Logic Unit'', ed un registro di uscita. Ogni istruzione esegue lo stesso percorso all'interno 
-della CPU. I dati vengono salvati sul registro interno, vengono trasferiti tramite dei Bus interni sui registri di entrata ed in seguito inviati alla ALU e il risultato viene 
-salvato su un registro di uscita. Questo ciclo macchina si ripete allo stesso modo per ogni singola istruzione eseguita dalla CPU. 
-%% ciclo F-D-E
-La CPU ripete continuamente una stessa serie di istruzioni; carica le istruzioni dalla memoria al registro delle istruzioni IR, ``Instruction Register'' in seguito il 
-Program Counter, o PC, viene incrementato, poiché contiene l'indirizzo di memoria dove è presente la seguente istruzione. In generale le istruzioni vengono salvate 
-sequenzialmente sulla memoria, per cui è sufficiente incrementare il PC per poter passare all'istruzione immediatamente successiva. Non sempre si viene eseguita l'istruzione 
-immediatamente successiva, poiché sono possibili istruzioni condizionali che possono generare dei salti, inviando un'indirizzo di memoria diverso dal successivo al PC. Dopo 
-aver aggiornato il PC, viene decodificata l'istruzione letta all'indirizzo contenuto nel PC. Queste istruzioni possono non richiedere espressamente dei dati, ma in caso lo 
-richieda nella fase successiva si cerca l'indirizzo di memoria dov'è contenuto il dato su cui bisogna applicare l'istruzione. L'operando viene calcolato su un registro. Dopo 
-aver salvato i dati, questi attraversano l'ALU, eseguendo l'istruzione, e si ripete questo ciclo cercando l'esecuzione successiva in memoria. 
+della CPU. I dati vengono salvati sul registro interno, vengono trasferiti tramite dei bus interni sui registri di entrata ed in seguito inviati alla ALU e il risultato viene 
+salvato su un registro di uscita. Questo ciclo macchina si ripete allo stesso modo per ogni singola istruzione eseguita dalla CPU, e rappresenta il data path, attraversato da ogni singolo dato 
+gestito dal processore. 
+%% TODO img. struttura CPU
 
+La CPU ripete continuamente una stessa serie di istruzioni; carica le istruzioni dalla memoria al registro delle istruzioni IR, in seguito il 
+PC, viene incrementato, poiché contiene l'indirizzo di memoria dove è presente la seguente istruzione. In generale le istruzioni vengono salvate 
+sequenzialmente sulla memoria, per cui è sufficiente incrementare il PC per poter passare all'istruzione immediatamente successiva. Non sempre viene eseguita l'istruzione 
+immediatamente successiva, poiché sono possibili istruzioni condizionali che possono generare dei salti, inviando un'indirizzo di memoria diverso dal seguente al PC. Dopo 
+aver aggiornato il PC, viene decodificata l'istruzione letta a questo indirizzo. Queste istruzioni possono non richiedere espressamente dei dati, ma in caso lo 
+richieda nella fase successiva si cerca l'indirizzo di memoria dov'è contenuto il dato su cui bisogna applicare l'istruzione, ed in seguito viene caricato su un registro. Dopo 
+aver salvato i dati sul registro, questi attraversano l'ALU, eseguendo l'istruzione, e vengono salvati sul registro d'uscita. Il ciclo si ripete questo cercando l'esecuzione successiva in memoria. 
 
-Per eseguire un'istruzione la CPU può effettuare un'esecuzione diretta, dove l'hardware stesso è costruito per eseguire una singola istruzione macchina. Invece è possibile 
-un'interpretazione dove ogni istruzione macchina viene scomposta in istruzione più semplici eseguibili dal processore. Per distinguere l'istruzione macchina dalle istruzione 
-eseguibili dal processore, più semplici ed elementari, vengono chiamate microistruzioni. Queste microistruzioni non sono note e sono incorporate all'interno del processore, 
+\subsubsection{Architetture CISC e RISC}
+
+Per eseguire un'istruzione la CPU può effettuare un'esecuzione diretta, dove l'hardware stesso è costruito per eseguire una singola istruzione macchina. Altrimenti è possibile effettuare 
+un'interpretazione dove ogni istruzione macchina viene scomposta in istruzioni più semplici eseguibili dal processore. Per distinguere l'istruzione macchina dalle istruzioni 
+eseguibili dal processore, più semplici ed elementari, queste vengono chiamate microistruzioni. Queste microistruzioni non sono note e sono incorporate all'interno del processore, 
 mentre le istruzioni macchina sono note, e vengono convertite all'interno del processore in una sequenza di microistruzioni. 
 Il vantaggio dell'esecuzione diretta è la capacità di eseguire direttamente l'istruzione sull'hardware, ma necessita di un hardware abbastanza complesso da poterle eseguire, 
-ma ha un'esecuzione molto più efficiente, a scapito della semplicità dell'hardware. Nel caso dell'interpretazione, avendo disaccoppiato le istruzioni macchina dalle istruzioni 
+permette inoltre un'esecuzione molto più efficiente, a scapito della semplicità dell'hardware. Nel caso dell'interpretazione, avendo disaccoppiato le istruzioni macchina dalle istruzioni 
 eseguibili dal processore è possibile avere un repertorio di istruzioni molto più esteso, quindi l'hardware è relativamente semplice e più compatto, è quindi possibile una maggiore 
 flessibilità nel progetto. 
+Questo approccio della microprogrammazione considera un'architettura dove sono eseguibili microistruzioni singole come il trasferimento di dati tra registri, trasferimento verso la memoria centrale, e lettura di 
+dati in memoria, operazioni della ALU e sui registri. Spetta all'unità di controllo della CPU di interpretare le istruzioni macchina, eseguendo un microprogramma. Questo programma è contenuto in una memoria ROM, ``Read 
+Only Memory'', sul chip del processore. Utilizzando questo approccio è possibile avere un disegno strutturato, ed una semplice correzioni degli errori, inoltre è possibile aggiungere facilmente nuove istruzioni, 
+inserendo nel microprogramma la loro interpretazione. 
 
 
 Poiché l'efficienza è il parametro fondamentale su cui si basa la creazione di progetti informatici, il primo approccio è preferibile, poiché è molto più efficiente rispetto 
 al secondo. Per cui anche se un processore utilizza interpretazione, se non è più efficiente rispetto ad un processore ad esecuzione diretta, allora è preferibile 
-quest'ultimo, nonostante la sua complessità. Questi due architetture vengono chiamate RISC, ``Reduced Instruction Set Computer'', la prima, mentre CISC, ``Complex Instruction Set Computer'', 
+quest'ultimo, nonostante la sua complessità. Questi due architetture vengono chiamate RISC, ``Reduced Instruction Set Computer'', la prima, e CISC, ``Complex Instruction Set Computer'', 
 la seconda. Il numero di istruzioni eseguibili è una conseguenza dell'uso di uno dei due approcci, per cui questa classificazione non dipende dal numero di istruzioni eseguibili 
 da un processore, ma dal modo in cui vengono eseguite. 
 Nelle architetture RISC di esecuzione diretta sono possibile un numero ristretto di istruzioni, eseguite sui registri, dove sono presenti istruzioni apposite per poter 
@@ -525,10 +520,10 @@ in memoria, inoltre ogni istruzione essendo composta da molte microistruzione co
 Le prime architetture furono del tipo RISC, in seguito i progettisti utilizzarono l'architettura CISC, considerata migliore, ma considerando la migliore efficienza delle 
 architetture RISC i progettisti di sistemi veloci riconsiderarono l'approccio dell'esecuzione diretta verso gli anni '80. 
 
-Per la retrocompatibilità dei processori Intel, alcune istruzioni dei loro processori sono istruzioni CISC. Le ultime architetture commercializzate dalla Intel quindi contengono 
+Per la retrocompatibilità dei processori Intel, alcune istruzioni dei loro processori sono istruzioni CISC, le loro ultime architetture commercializzate contengono quindi 
 molte istruzioni e sono di tipo ibrido per mantenere questa retrocompatibilità. 
+Le architetture ARM invece seguono vengono realizzate secondo l'approccio dell'esecuzione diretta. 
 
-%% principi progettuali dei computer moderni
 I calcolatori moderni vengono progettati utilizzando l'approccio RISC, e sono utilizzate varie tecniche per massimizzare la banda, la velocità con la quale le istruzioni 
 vengono eseguite in un'unità di tempo, misurate tramite FLOPS, nell'ordine dei TFLOPS (Tera-FLOPS) per calcolatori moderni avanzati. Per aumentare questa banda si introducono 
 meccanismi di parallelismo fisico, o architetture super-scalari oppure basata su pipeline. Per semplificare la decodifica delle istruzioni vengono realizzate tramite formati 
@@ -539,26 +534,119 @@ Questi principi anche se proprio della filosofia RISC, vengono rispettati in par
 
 \subsection{Parallelismo}
 
-Per aumentare le prestazioni di un calcolatore è necessario introdurre forme di parallelismo, poiché non è più possibile aumentare la sua frequenza. A livello fisico è 
-possibile aumentare le componenti fisiche, utilizzando più di un core, a tutti gli effetti processori indipendenti sullo stesso chip che lavorano in parallelo. Alternativamente 
-è possibile introdurre forme di parallelismo senza duplicare le componenti fisiche dell'hardware, che opera a livello delle istruzioni. 
-Questo meccanismo viene chiamato Pipelining, rappresenta l'idea della catena di montaggio, in questo modo ogni istruzione eseguita dal processore viene divisa in fasi, ed 
-ognuna di questa fasi viene eseguita da una componente diverse del processore. Ognuna di queste esecuzioni vengono chiamati stadi, a livello hardware, che effettuano queste 
-operazioni. In questo modo più istruzioni possono essere eseguite contemporaneamente, avendo un'istruzione diversa ad ogni stadio, essendo componenti indipendenti. Viene 
-quindi completata un'istruzione ad ogni ciclo, ad ogni segnale ci clock, e si guadagna un fattore pari al numero di stadi nella pipeline, capaci di lavorare in parallelo. 
-Si chiama pipeline, storicamente, poiché rappresenta un tubo dove gli elementi inseriti escono ion ordine sequenziale ed osservando l'interno di un tubo ad un dato istante 
-sono presenti più di un elemento al suo interno, a diversa distanza dall'uscita. 
-L'efficienza della pipeline si misura tramite due parametri, la latenza e la sua ampiezza di banda. Questo metodo trova un compromesso tra queste due. La latenza è il tempo 
-impiegato per eseguire ogni istruzione, poiché ognuno degli $n$ stadi viene eseguito in un tempo di clock $T$, la latenza è del tipo $n\cdot T$. Mentre la banda viene 
-notevolmente aumentata utilizzando la pipeline, poiché a regime ogni periodo del segnale di clock viene completata un'istruzione: $T^{-1}$. Avendo tempi di clock nell'ordine 
-dei nano secondi si ottiene una banda di $1000\cdot T^{-1}$ MIPS, Milioni di Istruzioni Per Secondo. Poiché anche se sono presenti molti stadi, a regime, viene sempre completata 
-un'istruzione ogni periodo di clock. QUesto rappresenta una situazione ideale che non corrisponde alla realtà. Poiché sono presenti delle dipendenze tra un'istruzione ed un'altra, 
-per cui per eseguire un'istruzione bisogna aspettare il termine dell'esecuzione di un'altra, creando dei ``buchi'' nella pipeline, diminuendo la banda attuale. 
+Per aumentare le prestazioni di un calcolatore è necessario introdurre forme di parallelismo, poiché aumentare ulteriormente la frequenza di funzionamento dei suoi componenti non corrisponde ad un aumento delle sue 
+prestazioni, per la necessità di sistemi di raffreddamento avanzati. A livello fisico è possibile aumentare il numero delle componenti, utilizzando più di un core, a tutti gli effetti processori indipendenti sullo 
+stesso chip che lavorano in parallelo. Alternativamente è possibile introdurre forme di parallelismo senza duplicare le componenti fisiche dell'hardware, che operano a livello delle istruzioni. 
+
+\subsubsection{Pipeline}
+
+Uno di questi meccanismi viene chiamato Pipelining, rappresenta l'idea della catena di montaggio, dividendo ogni istruzione eseguita dal processore in fasi, ed ognuna di questa fasi viene eseguita da una componente 
+diverse del processore. Ogni componente rappresenta uno stadio diverso della pipeline, a livello di hardware, ed effettuano queste fasi diverse simultaneamente. In questo modo più istruzioni possono essere eseguite 
+contemporaneamente, avendo un'istruzione diversa ad ogni stadio, essendo componenti indipendenti. Viene quindi completata un'istruzione ad ogni ciclo, ad ogni segnale di clock, e si guadagna un fattore pari al numero 
+di stadi nella pipeline capaci di lavorare in parallelo. Si chiama pipeline, storicamente, poiché si riferisce un tubo dove gli elementi inseriti escono in un ordine sequenziale ed osservando l'interno di un tubo ad 
+ogni dato istante sono presenti più di un elemento al suo interno, a diversa distanza dall'uscita. 
+L'efficienza della istruzioni si misura tramite due parametri, la latenza e la sua ampiezza di banda. Questo metodo trova un compromesso tra queste due. La latenza è il tempo 
+impiegato per eseguire ogni istruzione, poiché ognuno degli $n$ stadi viene eseguito in un tempo di clock $T$, la latenza è lineare rispetto al numero di stadi: $n\cdot T$. Mentre la banda rappresenta il numero 
+di istruzioni effettuate in un'unità di tempo, e viene 
+notevolmente aumentata utilizzando la pipeline, poiché a regime ad ogni ciclo di clock viene completata un'istruzione. La latenza è quindi inversamente proporzionale alla velocità di clock: $T^{-1}$. Avendo tempi di 
+clock nell'ordine dei nano secondi si ottiene una banda di $1000\cdot T^{-1}$ MIPS, Milioni di Istruzioni Per Secondo. Poiché anche se sono presenti molti stadi, a regime, viene sempre completata 
+un'istruzione ogni periodo di clock. Questo rappresenta una situazione ideale. poiché sono presenti delle dipendenze tra un'istruzione ed un'altra, 
+per cui è possibile che l'esecuzione di un'istruzione debba aspettare il termine dell'esecuzione di un'altra, creando dei ``buchi'' nella pipeline, diminuendo la banda attuale. 
 
 
 Dentro uno stesso processore è possibile introdurre un parallelismo ulteriore su un'unico core tramite architetture superscalari, che raddoppiano il numero di pipeline 
 interne al singolo core, utilizzando una componente hardware dedicata che avvia più di un'istruzione insieme. 
-Inoltre è possibile introdurre un parallelismo a livello degli stadi più complessi, per cui solo lo stadio più lento viene parallelizzato per aumentare la sua velocità. 
+Inoltre è possibile introdurre un parallelismo a livello degli stadi più complessi, per cui solo lo stadio più lento viene parallelizzato per aumentare la sua velocità. Per permettere ciò è necessario che le 
+istruzioni eseguite in queste due pipeline, siano indipendenti l'una dall'altra, affinché non utilizzino una i risultati dell'altra o viceversa, per non diminuire la banda. 
+
+Questo tipo di architettura viene implementata nei processori Intel, parallelizzando lo stadio più lento, inserendo diverse unità funzionali indipendenti. 
+Questi metodi di parallelismo permettono di aumentare le prestazioni di un singolo processore al massimo di dieci volte. 
+
+\subsubsection{SIMD e MIMD}
+
+Per aumentare ulteriormente le prestazioni non è sufficiente un parallelismo a livello delle istruzioni, per cui i calcolatori moderni, oltre ad implementare questo tipo di parallelismo nei loro processori, 
+utilizzano più componenti che operano in parallelo. 
+
+Esistono quindi due diverse tecniche per aumentare il numero delle componenti fisiche:
+\begin{itemize}
+    \item SIMD: ``Simple Instruction Multiple Data'', molti processori in grado di eseguire operazioni elementari lavorano in parallelo;
+    \item MIMD: ``Multiple Instruction Multiple Data'', più processori indipendenti in grado di effettuare operazioni complesse lavorano in parallelo. 
+\end{itemize}
+
+La tecnica SIMD viene utilizzata nelle GPU, o nei vecchi processori matriciali e vettoriali, per effettuare operazioni su matrici e vettori molto efficientemente, per la gestione dello dello schermo nel caso delle GPU. 
+Per la loro capacità di effettuare operazioni matriciali molto velocemente le GPU hanno trovato successo nell'ambito del Machine Learning e Deep Learning, per l'uso moderno di reti neurali stratificate, implementate 
+utilizzando matrici sovrapposte a vari livelli. Per questo motivo la casa produttrice Nvidia, leader nella produzione di GPU, ha ottenuto enorme successo anche in questo settore. 
+Le operazioni tipiche di una GPU, su pixel, vertici, archi e figure sono operazioni semplici, effettuate dai core CUDA, nel caso di GPU della Nvidia, contenenti decine di processori, ognuno dei quali contiene 
+decine di core, in questo modo si rende possibile l'esecuzione di centinaia o migliaia di operazioni ad ogni ciclo di clock. 
+
+La GPU Fermi, prodotta nel 2009 dalla Nvidia possiede 16 processori, ognuno contenente 32 core, contenente ognuno due pipeline a tre stadi, permettendo alla GPU di effettuare fino a 512 operazioni per ogni ciclo di 
+clock. 
+
+
+Le architetture che implementano la MIMD contengono diversi processori indipendenti che comunicano su uno stesso bus, per accedere ad una memoria condivisa centrale, tramite la quale si scambiano dati. Questo può 
+provocare un rallentamento delle prestazioni se il bus non è in grado di trasferire dati ad una sufficiente velocità, per cui rappresenta il collo di bottiglia del sistema. Per ovviare in parte a questo problema 
+si introduce la tecnica di caching, ovvero inserendo all'interno di ogni processore una piccola memoria locale, su cui salvano i dati, per evitare di dover accedere costantemente alla memoria condivisa, rallentando 
+le operazioni. 
+Questa implementazione si chiama multiprocessore, e non è l'unico metodo di parallelismo fisico adottato, ormai di norma per i processori odierni è l'architettura multicore che introduce all'interno di uno stesso 
+processore più core, indipendenti, montati sullo stesso chip. Ognuno di questi core può avere una cache autonoma di livello L1, ed una cache condivisa tra tutti i core, di livello L2. 
+Questi tipi di architetture possono essere omogenee, avendo core identici, oppure eterogenee utilizzando due tipi diversi di core, i p-core, più performanti, utilizzati per svolgere operazioni più laboriose, e 
+gli e-core, più efficienti in termini di consumo energetico. Le architetture eterogenee sono quindi in grado di delegare le istruzioni a questi core in base alla loro complessità per minimizzare il costo energetico. 
+Ogni core può implementare architetture multiscalari per aumentare ancora di più il livello di parallelismo. Questi core avere un accoppiamento stresso, con una cache condivisa, oppure lasco, con una cache privata 
+per ogni core. 
+Questo tipo di architetture si diffuse a partire dal 2003, creati dalla IBM, Intel e AMD. I processori odierni della Intel utilizzano un'architettura eterogenea. 
+
+Un'ulteriore livello di parallelismo viene introdotto creando dei cluster di computer, dove ogni elemento è un calcolatore indipendente, questo tipo di sistema viene usato quando si devono trattare dati massivi. 
+I singoli componenti di questo cluster sono dei server montati su un supporto rettangolare, chiamato anche ``blade server'', per il modo in cui viene montato. In queste architetture di cluster la comunicazione avviene 
+tramite scambio di messaggi, senza una memoria condivisa centrale, il paradigma del ``shared nothing''. 
+In un singolo data center è possibile siano presenti decine di migliaia di server singoli. Questa architettura favorisce la scalabilità orizzontale del sistema, dove per aumentare le prestazioni è sufficiente 
+aggiungere nuovi server al cluster, invece di migliorare i server già esistenti. Inoltre in questo modo è possibile implementare un metodo di resistenza ai guasti replicando ogni dato all'interno di nodi diversi 
+del cluster. 
+
+Per cui dal livello più stretto di accoppiamento si ha la tecnica del threading all'interno di un processore; le architetture co-processore, con un processore più piccolo e dipendente, a supporto di una CPU centrale; 
+le architetture multiprocessore, ad accesso ad una memoria condivisa e più lasca con accesso ad una memoria privata per ogni processore. Infine si ha l'architettura multicomputer, o di cluster, dove le comunicazioni 
+tra gli elementi avvengono tramite l'internet. Questi computer possono essere collocati nello stesso data center in caso di un cluster di server, oppure possono essere dislocati e connessi solamente tramite l'internet. 
+
+\subsection{Memoria Centrale}
+
+La memoria centrale di un calcolatore è l'elemento che contiene sia i programmai che i dati, tramite una memorizzazione binaria. La memoria viene divisa in celle, o locazioni, di memoria, e rappresentano le singole 
+unità indirizzabili, la minima dimensione è quella di un byte, il minimo indirizzabile. In genere è divisa in word, o parole, composte da un certo numero di byte, in base all'architettura, ognuna delle quali 
+possiede un univoco indirizzo. Solo tramite questi indirizzi il processore è in grado di accedere al dato nella cella di memoria, la memoria massima è quindi limitata dalla dimensione massima dell'indirizzo di 
+memoria. Dato un indirizzo composto da $n$ bit, allora sarà possibile specificare solamente $2^n$ indirizzi di memoria diversi, e quindi zone di memoria diverse. Il numero di bit dipende dall'architettura, i processori 
+moderni sono a 32 o 64 bit, quindi sono in grado di indirizzare al massimo $2^{64}$ zone di memoria. 
+La memoria quindi dipende oltre dalla dimensione della parola, anche dal numero di bit dell'indirizzo, per definire lo spazio indirizzabile. Una memoria di una stessa dimensione può essere indirizzata 
+differentemente in base alla suddivisione delle celle e alla lunghezza di parola, per cui negli anni si sono trovate diverse soluzioni per indirizzare la stessa quantità di memoria. 
+
+\subsubsection{Codici di Correzione}
+
+Poiché l'accesso a memoria è molto costoso, è conveniente implementare dei codici di correzione per non leggere dati errati, o dover accedere nuovamente in memoria per dover rileggere il dato. Queste tecniche 
+vengono usare per garantire quindi l'affidabilità della memoria, nella lettura e scrittura di informazioni binarie. Questi codici di correzione inseriscono un certo numero $r$ di bit ridondanti, su $n$ bit totali, 
+di cui $m=n-r$ bit di interesse. Per cui si utilizza un sottoinsieme di $2^m$ di tutte le possibili configurazioni $2^n$. 
+Si definisce la distanza di Hamming tra due codifiche il numero di bit diversi tra le due, invece la distanza di Hamming $h$ di un codice corrisponde alla minima distanza di Hamming tra due codifiche valide. 
+Utilizzando questo parametro è possibile calcolare quanti errori è possibile rilevare e correggere in una data codifica. 
+Per poter rilevare errori su $k$ bit occorre avere una distanza di Hamming della codifica $h=k+1$, ovvero avere un numero di bit pari a $k\leq h-1$. Invece per correggere errori su $k$ bit è necessaria una distanza di 
+Hamming di $h=k+2$, quindi sono necessari $k\leq (h-1)/2$ bit. 
+
+
+Per rilevare un errore singolo su una sequenza binaria è sufficiente aggiungere un unico bit, chiamato bit di parità. Questa tecnica di controllo di parità sceglie questo bit in modo che il numero complessivo di 
+uno nella codifica sia sempre pari, o dispari in base all'implementazione. Questo codice ha quindi una distanza di Hamming pari a due, ed è possibile rilevare l'errore utilizzando circuiti molto semplici. 
+Le memorie sono quindi in grado di segnalare un parity error nel momento in cui un errore, singolo, si manifesta. Poiché sono componenti altamente affidabili, avere una rilevazione di errore singolo è 
+sufficiente per rilevare tutti gli errori che si possono verificare in fase di trasmissione. 
+
+
+Invece per correggere un errore singolo data una codifica da $n$ bit totali, $m$ di dati e $r$ di ridondanti, sono necessarie $n$ codifiche errate a distanza di Hamming pari ad uno da ciascuna codifica valida, 
+per ognuna di essere. In totale ogni codifica valida richiede $n+1$ totali, si ha che il numero di bit totali utilizzati per la codifica deve rispettare la seguente relazione:
+\begin{gather*}
+    (n+1)\cdot2^m\leq2^n\Rightarrow(m+r+1)\cdot\cancel{2^m}\leq\cancel{2^m}\cdot2^r\\
+    m+r+1\leq2^r\tageq
+\end{gather*}  
+All'aumentare del numero di bit $m$, l'overhead, decresce. L'overhead rappresenta la percentuale del numero degli $m$ bit dei dati da aggiungere per correggere gli errori, il suo andamento 
+viene rappresentato dalla curva rossa nella figura seguente:
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{overhead.pdf}%
+    \caption{Bit da Aggiungere per Correggere un Errore Singolo}
+\end{figure}
+
 
 
 \end{document}
