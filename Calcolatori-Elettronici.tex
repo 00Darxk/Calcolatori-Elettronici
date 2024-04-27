@@ -804,6 +804,7 @@ linguaggio assembly, che vengono tradotti dal sistema operativo in linguaggio ma
 successivo L5, dove sono presenti linguaggi di programmazione tradotti dal compiler in linguaggio macchina. Il livello 2 è il livello più basso a cui un utente può programmare, ma normalmente si programma 
 al livello 5. 
 
+
 \subsection{Algebra Circuitale}
 
 Un circuito digitale è un circuito elettronico molto semplice, in cui gli ingressi e le uscite assumono solo due livelli, sono binari. Dato un set di input $i_1\cdots i_n$ un circuito digitale produce un set di 
@@ -876,7 +877,7 @@ funzione booleana. Per cui data una funzione booleana ad $n$ variabili si defini
 \begin{equation}
     f:=\sum_{j=1}^m\prod_{i=1}^nx_{ij}^*
 \end{equation}
-Dove $x_{ij}^*$ vale $x_i$ oppure $\bar{x}_i$. 
+Dove $x_{ij}^*$ vale $x_i$ oppure $\bar{x}_i$ e viene chiamato mintermine. 
 
 \subsection{Porte Logiche}
 
@@ -891,8 +892,9 @@ Le porte logiche vengono rappresentate tramite i seguenti simboli circuitali:
 \end{figure}
 Il NOT si rappresenta sinteticamente come un pallino, quando si vuole negare l'entrata di una porta, o l'uscita per rappresenta le corrispettive porte negate. 
 Le porte internamente sono realizzate da due transistor, tutte le porte a due input, e da un transistor, la porta NOT, tranne la porta Buffer poiché non modificando l'input non necessita di alcun componente circuitale 
-aggiuntivo. I transistor permettono un tempo di commutazione ad altissima velocità
+aggiuntivo. I transistor permettono un tempo di commutazione ad altissima velocità. I valori di zero ed uno vengono rappresentati come valori alti o bassi di tensione, differenziati da pochi volt. 
 %% TODO img. interne porte logiche (transistor), copia da E&E 
+
 
 Di seguito si elencano le proprietà dell'algebra booleana:
 \begin{center}
@@ -920,7 +922,87 @@ Di seguito si elencano le proprietà dell'algebra booleana:
         \hline
     \end{tabular}
 \end{center}
+Si possono utilizzare queste proprietà per ottimizzare la realizzazione di circuiti logici, per diminuire il numero di transistor necessari. Permettono di semplificare la funzione booleana, oppure per utilizzare 
+solo alcune porte per la scarsità di un certo tipo di porte sul mercato, come le porte AND. 
 
+Si mostra ora la completezza delle porte NAND e NOR:
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.8]{completezza-nand-nor.pdf}%
+    \caption{Completezza Porte NAND e NOR}%
+\end{figure}
+
+%% TODO porta xor tramite nand oppure and e or
+
+Le porte logiche vengono vendute in circuiti integrati contenenti più di una porta, e connessi da piedini numerati all'esterno. Insieme al singolo chip vengono forniti le loro specifiche sulla posizione degli ingressi 
+e le uscite delle varie porte contenute nel circuito. Devono essere sempre presenti gli ingressi di alimentazione VCC e di massa GND. Per orientare il circuito è presente una tacca o notch da una parte del chip, 
+confrontandola con la scheda tecnica fornita. 
+Questi chip vengono divisi in base al livello di integrazione:
+\begin{itemize}
+    \item SSI, ``Small Scale'': con al massimo una decina di porte;
+    \item MSI, ``Medium Scale'': fino ad un centinaio di porte;
+    \item LSI, ``Large Scale'': fino a $10^5$ porte;
+    \item VLSI, ``Very Large Scale'': più di $10^5$ porte. 
+\end{itemize}
+Per questi chip i tempi di commutazione variano da $0.1$ a $10$ nanosecondi. 
+Un processore è un VLSI, con molte porte e molti piedini, per fare spazio al numero di piedini necessari esistono diverse configurazioni la ``Dual Inline Packages'' DIPs, per circuiti di piccole dimensione 
+presentano i piedini al lato, i ``Pin Grid Arrays'' PGAs, che presenta piedini su un'intera faccia del chip, ed i ``Land Grid Arrays'' LGAs, utilizzati per i processori moderni, come i PGAs presentano una matrice 
+più fitta di piedini. 
+
+I circuiti digitali possono essere divisi in due classi di circuiti, i combinatori ed i sequenziali. I primi combinano più input, e l'output dipende solamente dagli input, mentre nei secondi l'output dipende 
+anche dallo stato del circuito. I circuiti combinatori vengono usati per realizzare i componenti di un processore, mentre i circuiti sequenziali per realizzare le componenti delle schede di memoria. 
+
+\subsection{Circuiti Combinatori}
+
+I circuiti combinatori sono circuiti digitali dove l'uscita dipende solamente dagli ingressi. 
+
+\subsubsection{Multiplexer}
+
+Un multiplexer è un circuito combinatorio avente $n$ ingressi di controllo, $2^n$ ingressi controllati, ed unica linea di output. Gli $n$ ingressi di controllo sono necessari ad identificare quale degli $2^n$ 
+ingressi controllati da mandare in uscita. Internamente viene formato da $2^n$ porte AND per ogni ingresso controllato, ognuna collegata ad un ingresso di controllo ed ad un univoca combinazione degli 
+ingressi di controllo. Tutte queste porte AND vengono poi collegate ad una singola porta OR, per permettere a qualsiasi ingresso sia stato abilitato di uscire. 
+
+%% TODO img. multiplexer 2x4
+
+Queste porte AND vengono chiamate porte di abilitazione, poiché effettivamente abilitano una uscita di un segnale. Vengono usati nella conversione parallelo-seriale di un bus, avente tante linee, ad un bus, avente 
+una linea singola. Vengono abilitate tutte le linea, iterando su ogni linea, una alla volta, per convertire il segnale in seriale. Un multiplexer è in grado inoltre di implementare una qualsiasi funzione 
+booleana di $n$ variabili. Le entrate di controllo rappresentano i mintermini, inoltre le entrate controllate vengono cablate a zero o ad uno a seconda che il mintermine compaia o meno nella forma canonica. 
+
+\subsubsection{Decodificatore}
+
+Un decodificatore è un circuito combinatorio a $n$ ingressi e $2^n$ uscite, dove una sola delle uscite assume valore uno, in base alla combinazione di valori di ingresso. Vengono usati per indirizzare una 
+locazione di memoria, trasformando una sequenza di bit, nella corrispondente linea che identifica l'indirizzo. Effettua l'operazione inverse del multiplexer, trasformando una serie di dati seriali in parallelo. 
+
+%% TODO img. decodificatore 2x4
+
+\subsubsection{Comparatore}
+
+Un comparatore è un circuito combinatorio che controlla se due stringhe in entrata sono identiche, comparando i bit omologhi delle due per valore, tramite tante porte XOR quanti sono i bit delle stringhe. Se tutti 
+i bit sono uguali, allora ogni porta XOR restituisce 0, e quindi la porta NOR finale restituisce 1, altrimenti se restituisce 0, le due stringhe differiscono per almeno un bit. 
+
+%% TODO img. comparatore 4x4
+
+\subsubsection{Shifter}
+
+Lo shifter è un circuito combinatorio in grado di traslare una data sequenza di bit in ingresso di un bit verso destra o sinistra, in base al valore del segnale di controllo C. 
+
+%% TODO img. shifter 8
+
+\subsubsection{Semi-Addizionatore}
+
+Un semi-addizionatore o ``Half-Adder'' è un circuito combinatorio a due uscite e due ingressi, è in grado di sommare due bit tra di loro, restituisce il valore della loro somma, ed un eventuale riporto, o carry. Questo deve 
+essere propagato se vengono sommate due stringhe di bit. Per effettuare questo tipo di somma si considera un ``Full-Adder''
+
+%% TODO img. half-adder
+
+\subsubsection{Addizionatore}
+
+L'addizionatore è un circuito combinatorio a tre ingressi e due uscite, viene usato per effettuare la soma di numerali a più bit, poiché possiede un ingresso in più per inserire il riporto dell'addizione 
+precedente. Per realizzare queste somme vengono collegati più Full-Adder uno dopo l'altro per effettuare la somma tra tutti i bit dei due numerali. In caso i numerali siano formati da molti bit, il tempo 
+necessario alla propagazione del riporto è lineare con il numero di Full-Adder presenti nella catena, per cui nei processori vengono inseriti dei componenti in grado di calcolare solamente il riporto a priori, per 
+poter effettuare la somma di tutti i bit in parallelo ed ottenere una complessità costante, invece che una complessità lineare per l'operazione. 
+
+%% TODO img. full-adder
 
 
 
