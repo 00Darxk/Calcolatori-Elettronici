@@ -1,0 +1,31 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}   
+    \draw
+    (0,1)node[and port](a){}
+    (0,-1)node[and port](b){}
+    (2.25,0)node[or port](c){}
+    (a.out)to[short](c.in 1)
+    (b.out)to[short](c.in 2)
+    (a.in 1)node[left]{$\overline{\mathrm{A}}$}
+    (a.in 2)node[left]{B}
+    (b.in 1)node[left]{A}
+    (b.in 2)node[left]{$\overline{\mathrm{B}}$}
+    (c.out)node[right]{A$\oplus$B}
+    
+    (6,1)node[nand port](a){}
+    (6,-1)node[nand port](b){}
+    (8.25,0)node[nand port](c){}
+    (a.out)to[short](c.in 1)
+    (b.out)to[short](c.in 2)
+    (a.in 1)node[left]{$\overline{\mathrm{A}}$}
+    (a.in 2)node[left]{B}
+    (b.in 1)node[left]{A}
+    (b.in 2)node[left]{$\overline{\mathrm{B}}$}
+    (c.out)node[right]{A$\oplus$B}
+    
+    ;
+\end{circuitikz}
+\end{document}

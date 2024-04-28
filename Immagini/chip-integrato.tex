@@ -1,0 +1,12 @@
+\documentclass{standalone}
+\usepackage{circuitikz} 
+\begin{document}
+\begin{circuitikz}
+    \draw (0,0)node[dipchip,
+    num pins=12,
+    external pins width=0.5,
+    external pad fraction=4](c){}
+    node[right, font=\tiny]at(c.bpin 12){VCC}
+    node[left, font=\tiny]at(c.bpin 6){GND};
+\end{circuitikz}
+\end{document}

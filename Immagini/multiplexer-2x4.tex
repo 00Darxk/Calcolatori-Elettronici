@@ -1,0 +1,65 @@
+\documentclass{standalone}
+\usepackage{circuitikz} 
+\tikzset{mux 4by2/.style={muxdemux,
+muxdemux def={Lh=4, NL=4, Rh=3,
+NB=2, w=2, square pins=1}}}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}   
+    \draw
+    node[and port, number inputs=3](a)at(0,4.5){}
+    node[and port, number inputs=3](b)at(0,3){}
+    node[and port, number inputs=3](c)at(0,1.5){}
+    node[and port, number inputs=3](d)at(0,0){}
+    (a.in 1)to[short,-o]++(-3,0)node[left]{$\mathrm{D}_0$}
+    (b.in 1)to[short,-o]++(-3,0)node[left]{$\mathrm{D}_1$}
+    (c.in 1)to[short,-o]++(-3,0)node[left]{$\mathrm{D}_2$}
+    (d.in 1)to[short,-o]++(-3,0)node[left]{$\mathrm{D}_3$}
+
+    (a.in 3)to[short,-*]++(0,-3)
+    to[short]++(0,-2)coordinate(i1)
+    to[short]++(0,-0.5)
+    to[short,-*]++(-0.5,0)
+    to[short,-o]++(0,-1)node[below]{$\mathrm{C}_1$}
+
+    (b.in 3)to[short]++(-0.5,0)
+    to[short,-*]++(0,-3)
+    to[short]++(0,-1)
+    (d.in 3)to[short]++(-0.5,0)
+    node[not port, scale=0.5,rotate=90, fill=white, number inputs=0](e)at(i1){}
+
+    (a.in 2)to[short]++(-1,0)
+    to[short,-*]++(0,-1.5)
+    to[short]++(0,-4)coordinate(i2)
+    to[short]++(0,-0.5)
+    to[short,-*]++(-0.5,0)
+    to[short,-o]++(0,-0.87)node[below]{$\mathrm{C}_0$}
+    (b.in 2)to[short]++(-1,0)
+
+    (c.in 2)to[short]++(-1.5,0)
+    to[short,-*]++(0,-1.5)
+    to[short]++(0,-1.5)    
+    (d.in 2)to[short]++(-1.5,0)
+    node[not port, scale=0.5,rotate=90, fill=white, number inputs=0](f)at(i2){}
+
+
+    node[or port, number inputs=4](g)at(2.5,2.25){}
+    (a.out)to[short](g.in 1)
+    (b.out)to[short](g.in 2)
+    (c.out)to[short](g.in 3)
+    (d.out)to[short](g.in 4)
+    (g.out)to[short,-o]++(0.1,0)node[right]{$\mathrm{O}_0$}
+
+    node[mux 4by2](h)at(6.5,2.25){MUX}
+    node[left]at(h.lpin 1){$\mathrm{D}_0$}
+    node[left]at(h.lpin 2){$\mathrm{D}_1$}
+    node[left]at(h.lpin 3){$\mathrm{D}_2$}
+    node[left]at(h.lpin 4){$\mathrm{D}_3$}
+    node[below]at(h.bpin 1){$\mathrm{C}_0$}
+    node[below]at(h.bpin 2){$\mathrm{C}_1$}
+    node[right]at(h.rpin 1){$\mathrm{O}_0$}
+    ;
+
+    \draw[thick](-3,-2)--(-3,6.5)--(3.3,6)--(3.3,-1.5)--(-3,-2);
+\end{circuitikz}
+\end{document}

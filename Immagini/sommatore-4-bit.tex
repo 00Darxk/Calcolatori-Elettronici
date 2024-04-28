@@ -1,0 +1,40 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{adder/.style={muxdemux,
+    muxdemux def={Lh=3.5, Rh=3.5, w=3.5,
+    NR=1, NL=1, NB=1, NT=2}}}
+\begin{document}
+\begin{circuitikz}
+    \draw
+    (0,0)node[adder](a){}
+    (a.rpin 1)node[adder, anchor=lpin 1](b){}
+    (b.rpin 1)node[adder, anchor=lpin 1](c){}
+    (c.rpin 1)node[adder, anchor=lpin 1](d){}
+
+    (a.lpin 1)node[left]{C$_\mathrm{out}$}
+    (b.blpin 1)node[right]{C$_\mathrm{out}$}
+    (c.blpin 1)node[right]{C$_\mathrm{out}$}
+    (d.blpin 1)node[right]{C$_\mathrm{out}$}
+
+    (a.brpin 1)node[left]{C$_\mathrm{in}$}
+    (b.brpin 1)node[left]{C$_\mathrm{in}$}
+    (c.brpin 1)node[left]{C$_\mathrm{in}$}
+    (d.rpin 1)node[right]{C$_\mathrm{in}$}
+
+    (a.bpin 1)node[below]{A$_3$+B$_3$}
+    (b.bpin 1)node[below]{A$_2$+B$_2$}
+    (c.bpin 1)node[below]{A$_1$+B$_1$}
+    (d.bpin 1)node[below]{A$_0$+B$_0$}
+    (a.tpin 1)node[above]{A$_3$}
+    (a.tpin 2)node[above]{B$_3$}
+    (b.tpin 1)node[above]{A$_2$}
+    (b.tpin 2)node[above]{B$_2$}
+    (c.tpin 1)node[above]{A$_1$}
+    (c.tpin 2)node[above]{B$_1$}
+    (d.tpin 1)node[above]{A$_0$}
+    (d.tpin 2)node[above]{B$_0$}
+    
+    
+    ;
+\end{circuitikz}
+\end{document}

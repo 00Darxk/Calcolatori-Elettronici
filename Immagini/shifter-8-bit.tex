@@ -1,0 +1,93 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}
+    \draw
+    (0,0)node[and port, rotate=270](a){}
+    (2,0)node[and port, rotate=270](b){}
+    (3.5,0)node[and port, rotate=270](c){}
+    (5.5,0)node[and port, rotate=270](d){}
+    (7,0)node[and port, rotate=270](e){}
+    (9,0)node[and port, rotate=270](f){}
+    (10.5,0)node[and port, rotate=270](g){}
+    (12.5,0)node[and port, rotate=270](h){}
+    (14,0)node[and port, rotate=270](i){}
+    (16,0)node[and port, rotate=270](j){}
+    (17.5,0)node[and port, rotate=270](k){}
+    (19.5,0)node[and port, rotate=270](l){}
+    (21,0)node[and port, rotate=270](m){}
+    (23,0)node[and port, rotate=270](n){}
+
+    (2.75,-3)node[or port,rotate=270](o){}
+    (6.25,-3)node[or port,rotate=270](p){}
+    (9.75,-3)node[or port,rotate=270](q){}
+    (13.25,-3)node[or port,rotate=270](r){}
+    (16.75,-3)node[or port,rotate=270](s){}
+    (20.25,-3)node[or port,rotate=270](t){}
+
+    (-3,2)node[left, font=\LARGE]{C}to[short,-*](-2.5,2)
+    to[short,o-](21.3,2)
+    to[short](m.in 1)
+    (k.in 1)to[short,-*]++(0,0.92)
+    (i.in 1)to[short,-*]++(0,0.92)
+    (g.in 1)to[short,-*]++(0,0.92)
+    (e.in 1)to[short,-*]++(0,0.92)
+    (c.in 1)to[short,-*]++(0,0.92)
+    (a.in 1)to[short,-*]++(0,0.92)
+
+    (-2.5,2)to[short]++(0,-0.5)node[not port, scale=0.5, anchor=in](u){}
+    (u.out)to[short](22.72,1.5)
+    to[short](n.in 2)
+    (b.in 2)to[short,-*]++(0,0.42)
+    (d.in 2)to[short,-*]++(0,0.42)
+    (f.in 2)to[short,-*]++(0,0.42)
+    (h.in 2)to[short,-*]++(0,0.42)
+    (j.in 2)to[short,-*]++(0,0.42)
+    (l.in 2)to[short,-*]++(0,0.42)
+
+    (b.in 1)to[short,-*]++(0.5,0)coordinate(i1)
+    to[short](c.in 2)
+    (d.in 1)to[short,-*]++(0.5,0)coordinate(i2)
+    to[short](e.in 2)
+    (f.in 1)to[short,-*]++(0.5,0)coordinate(i3)
+    to[short](g.in 2)
+    (h.in 1)to[short,-*]++(0.5,0)coordinate(i4)
+    to[short](i.in 2)
+    (j.in 1)to[short,-*]++(0.5,0)coordinate(i5)
+    to[short](k.in 2)
+    (l.in 1)to[short,-*]++(0.5,0)coordinate(i6)
+    to[short](m.in 2)
+    (a.in 2)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_0$}
+    (i1)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_1$}
+    (i2)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_2$}
+    (i3)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_3$}
+    (i4)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_4$}
+    (i5)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_5$}
+    (i6)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_6$}
+    (n.in 1)to[short,-o]++(0,2)node[above, font=\LARGE]{D$_7$}
+
+    (a.out)to[short](o.in 2)
+    (c.out)to[short](p.in 2)
+    (e.out)to[short](q.in 2)
+    (g.out)to[short](r.in 2)
+    (i.out)to[short](s.in 2)
+    (k.out)to[short](t.in 2)
+    (m.out)to[short](23,-1.9)to[short,-o]++(0,-2.5)node[below, font=\LARGE]{S$_7$}
+    (b.out)to[short](0,-1.9)to[short,-o]++(0,-2.5)node[below, font=\LARGE]{S$_0$}
+    (d.out)to[short](o.in 1)
+    (f.out)to[short](p.in 1)
+    (h.out)to[short](q.in 1)
+    (j.out)to[short](r.in 1)
+    (l.out)to[short](s.in 1)
+    (n.out)to[short](t.in 1)
+    (o.out)to[short,-o]++(0,-0.32)node[below, font=\LARGE]{S$_1$}
+    (p.out)to[short,-o]++(0,-0.32)node[below, font=\LARGE]{S$_2$}
+    (q.out)to[short,-o]++(0,-0.32)node[below, font=\LARGE]{S$_3$}
+    (r.out)to[short,-o]++(0,-0.32)node[below, font=\LARGE]{S$_4$}
+    (s.out)to[short,-o]++(0,-0.32)node[below, font=\LARGE]{S$_5$}
+    (t.out)to[short,-o]++(0,-0.32)node[below, font=\LARGE]{S$_6$}
+
+    ;
+\end{circuitikz}
+\end{document}

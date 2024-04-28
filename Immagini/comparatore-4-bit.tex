@@ -1,0 +1,30 @@
+\documentclass{standalone}
+\usepackage{circuitikz} 
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}   
+    \draw
+    node[xor port](a)at(0,4.5){}
+    node[xor port](b)at(0,3){}
+    node[xor port](c)at(0,1.5){}
+    node[xor port](d)at(0,0){}
+
+    node[nor port, number inputs=4](g)at(2.5,2.25){}
+    (a.out)to[short](g.in 1)
+    (b.out)to[short](g.in 2)
+    (c.out)to[short](g.in 3)
+    (d.out)to[short](g.in 4)
+
+    (a.in 1)to[short,-o]++(-0.5,0)node[left]{$\mathrm{A}_0$}
+    (a.in 2)to[short,-o]++(-0.5,0)node[left]{$\mathrm{B}_0$}
+    (b.in 1)to[short,-o]++(-0.5,0)node[left]{$\mathrm{A}_1$}
+    (b.in 2)to[short,-o]++(-0.5,0)node[left]{$\mathrm{B}_1$}
+    (c.in 1)to[short,-o]++(-0.5,0)node[left]{$\mathrm{A}_2$}
+    (c.in 2)to[short,-o]++(-0.5,0)node[left]{$\mathrm{B}_2$}
+    (d.in 1)to[short,-o]++(-0.5,0)node[left]{$\mathrm{A}_3$}
+    (d.in 2)to[short,-o]++(-0.5,0)node[left]{$\mathrm{B}_3$}
+
+    (g.out)to[short,-o]++(0.5,0)node[above]{A$\equiv$B}
+    ;
+\end{circuitikz}
+\end{document}

@@ -1,0 +1,37 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{adder/.style={muxdemux,
+    muxdemux def={Lh=3.5, Rh=3.5, w=3.5,
+    NR=1, NL=2, NB=1, NT=1}}}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}
+    \draw
+    (0,0)node[xor port](a){}
+    (a.out)to[short,-o]++(.2,0)node[right]{A+B}
+    (a.in 2)to[short]++(-1,0)coordinate(i2)
+    (-1.5,-2)node[and port, rotate=270](b){}
+    (b.in 2)to[short,-*]++(0,.64)
+    (b.in 1)to[short,-*]++(0,1.2)coordinate(i1)
+    to[short,-o]++(0,1)node[above]{C$_\mathrm{in}$}
+    (i1)to[short](a.in 1)
+    (i2)node[xor port, anchor=out](c){}
+    (-5,-2)node[and port, rotate=270](d){}
+    (-3.25,-4.17)node[or port, rotate=270](e){}
+    (b.out)to[short](e.in 1)
+    (d.out)to[short](e.in 2)
+    (e.out)to[short,-o]++(0,-0.2)node[below]{C$_\mathrm{out}$}
+    (c.in 1)to[short,-o]++(-2,0)node[left]{A}
+    (c.in 2)to[short,-o]++(-2,0)node[left]{B}
+    (d.in 1)to[short,-*]++(0,0.36)
+    (d.in 2)to[short,-*]++(0,.92)
+
+    (5,-1.75)node[adder](f){Full Adder}
+    (f.lpin 1)node[left]{A}
+    (f.lpin 2)node[left]{B}
+    (f.tpin 1)node[above]{C$_\mathrm{in}$}
+    (f.bpin 1)node[below]{C$_\mathrm{out}$}
+    (f.rpin 1)node[right]{A+B}
+    ;
+\end{circuitikz}
+\end{document}

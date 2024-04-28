@@ -1,0 +1,57 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{demux 4by2/.style={muxdemux,
+    muxdemux def={Lh=3, NL=2, Rh=4,
+    NB=0, NR=4, w=2, square pins=1}}}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}
+    \draw
+    node[and port](a)at(3,4.5){}
+    node[and port](b)at(3,3){}
+    node[and port](c)at(3,1.5){}
+    node[and port](d)at(3,0){}
+    (a.out)to[short,-o]++(0.25,0)node[right]{$\mathrm{D}_0$}
+    (b.out)to[short,-o]++(0.25,0)node[right]{$\mathrm{D}_1$}
+    (c.out)to[short,-o]++(0.25,0)node[right]{$\mathrm{D}_2$}
+    (d.out)to[short,-o]++(0.25,0)node[right]{$\mathrm{D}_3$}
+
+    (-1,3)node[left]{$\mathrm{C}_0$}
+    to[short,o-*]++(0.5,0)coordinate(i1)
+    to[short]++(1.5,0)
+    to[short,-*]++(0,-1.22)coordinate(i4)
+    to[short]++(0,-1.5)
+    to[short](d.in 1)
+    (i4)to[short](c.in 1)
+    (i1)to[short]++(0,-0.5)node[not port, anchor=in 1,scale=0.5](e){}
+    (e.out)to[short]++(1,0)
+    to[short,-*]++(0,0.78)coordinate(i3)
+    to[short]++(0,1.5)
+    to[short](a.in 1)
+    (i3)to[short](b.in 1)
+
+    (-1,1.5)node[left]{$\mathrm{C}_1$}
+    to[short,o-*]++(0.5,0)coordinate(i2)
+    to[short,-*]++(1,0)coordinate(i6)
+    to[short]++(0,1.22)
+    to[short](b.in 2)
+    (i6)to[short]++(0,-1.78)
+    to[short](d.in 2)
+    (i2)to[short]++(0,-0.5)node[not port, anchor=in 1,scale=0.5](f){}
+    (f.out)to[short]++(1.5,0)
+    to[short,-*]++(0,0.22)coordinate(i5)
+    to[short]++(0,3)
+    to[short](a.in 2)
+
+
+    (7,2.25)node[demux 4by2](g){DEC}
+    (g.lpin 1)node[left]{$\mathrm{C}_0$}
+    (g.lpin 2)node[left]{$\mathrm{C}_1$}
+    (g.rpin 1)node[right]{$\mathrm{D}_0$}
+    (g.rpin 2)node[right]{$\mathrm{D}_1$}
+    (g.rpin 3)node[right]{$\mathrm{D}_2$}
+    (g.rpin 4)node[right]{$\mathrm{D}_3$}
+    ;
+    \draw[thick](-0.75,-0.5)--(-0.75,5)--(4,5.5)--(4,-1)--(-0.75,-0.5);
+\end{circuitikz}
+\end{document}
