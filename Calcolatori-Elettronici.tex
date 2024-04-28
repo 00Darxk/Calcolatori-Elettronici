@@ -805,7 +805,7 @@ successivo L5, dove sono presenti linguaggi di programmazione tradotti dal compi
 al livello 5. 
 
 
-\subsection{Algebra Circuitale}
+\subsection{Algebra Booleana}
 
 Un circuito digitale è un circuito elettronico molto semplice, in cui gli ingressi e le uscite assumono solo due livelli, sono binari. Dato un set di input $i_1\cdots i_n$ un circuito digitale produce un set di 
 output $o_1\cdots o_m$:
@@ -879,22 +879,6 @@ funzione booleana. Per cui data una funzione booleana ad $n$ variabili si defini
 \end{equation}
 Dove $x_{ij}^*$ vale $x_i$ oppure $\bar{x}_i$ e viene chiamato mintermine. 
 
-\subsection{Porte Logiche}
-
-Le porte logiche sono circuiti elementari che realizzano gli operatori dell'algebra booleana. Qualsiasi funzione booleana può essere realizzata dalle sole porte AND, OR e NOT. Inoltre può essere dimostrato come queste 
-due porte possono essere rappresentate solamente usando le porte NAND o NOR, per cui queste due porte sono, singolarmente, complete e possono essere realizzate per realizzare qualsiasi circuito. 
-
-Le porte logiche vengono rappresentate tramite i seguenti simboli circuitali:
-\begin{figure}[H]%
-    \centering
-    \includegraphics{porte-logiche.pdf}%
-    \caption{Porte Logiche}%
-\end{figure}
-Il NOT si rappresenta sinteticamente come un pallino, quando si vuole negare l'entrata di una porta, o l'uscita per rappresenta le corrispettive porte negate. 
-Le porte internamente sono realizzate da due transistor, tutte le porte a due input, e da un transistor, la porta NOT, tranne la porta Buffer poiché non modificando l'input non necessita di alcun componente circuitale 
-aggiuntivo. I transistor permettono un tempo di commutazione ad altissima velocità. I valori di zero ed uno vengono rappresentati come valori alti o bassi di tensione, differenziati da pochi volt. 
-%% TODO img. interne porte logiche (transistor), copia da E&E 
-
 
 Di seguito si elencano le proprietà dell'algebra booleana:
 \begin{center}
@@ -922,8 +906,33 @@ Di seguito si elencano le proprietà dell'algebra booleana:
         \hline
     \end{tabular}
 \end{center}
-Si possono utilizzare queste proprietà per ottimizzare la realizzazione di circuiti logici, per diminuire il numero di transistor necessari. Permettono di semplificare la funzione booleana, oppure per utilizzare 
-solo alcune porte per la scarsità di un certo tipo di porte sul mercato, come le porte AND. 
+
+\subsection{Porte Logiche}
+
+Le porte logiche sono circuiti elementari che realizzano gli operatori dell'algebra booleana. Qualsiasi funzione booleana può essere realizzata dalle sole porte AND, OR e NOT. Inoltre può essere dimostrato come queste 
+due porte possono essere rappresentate solamente usando le porte NAND o NOR, per cui queste due porte sono, singolarmente, complete e possono essere realizzate per realizzare qualsiasi circuito. 
+
+Le porte logiche vengono rappresentate tramite i seguenti simboli circuitali:
+\begin{figure}[H]%
+    \centering
+    \includegraphics{porte-logiche.pdf}%
+    \caption{Porte Logiche}%
+\end{figure}
+Il NOT si rappresenta sinteticamente come un pallino, quando si vuole negare l'entrata di una porta, o l'uscita per rappresenta le corrispettive porte negate. 
+Le porte internamente sono realizzate da due transistor, tutte le porte a due input, e da un transistor, la porta NOT, tranne la porta Buffer poiché non modificando l'input non necessita di alcun componente circuitale 
+aggiuntivo. I transistor permettono un tempo di commutazione ad altissima velocità:  
+
+%% TODO img. interne porte logiche (transistor), copia da E&E 
+
+I valori di zero ed uno vengono rappresentati come valori alti o bassi di tensione, differenziati da pochi volt. In base alle scelte di progetto un segnale provoca l'azione corrispondente se è alto o basso, per 
+identificare questo si definisce il segnale asserito, quando assume il valore che provoca l'azione, mentre si parla di segnale negato altrimenti. 
+Per indicare che il segnale è alto non si applicano alterazioni al segnale S, altrimenti si segna con una barra sopra al segnale $\overline{\mathrm{S}}$. La Intel utilizza una notazione differente, adatta al 
+set di carattere i ASCII, ed in seguito Unicode, per il segnale negato, tramite il cancelletto: S\#.  
+
+
+
+Si possono utilizzare le proprietà dell'algebra booleana per ottimizzare la realizzazione di circuiti logici, per diminuire il numero di transistor necessari. Permettono di semplificare la funzione booleana, oppure 
+per utilizzare solo alcune porte per la scarsità di un certo tipo di porte sul mercato, come le porte AND. 
 
 Si mostra ora la completezza delle porte NAND e NOR:
 \begin{figure}[H]%
@@ -1007,8 +1016,8 @@ i bit sono uguali, allora ogni porta XOR restituisce 0, e quindi la porta NOR fi
 
 \subsubsection{Shifter}
 
-Lo shifter è un circuito combinatorio in grado di traslare una data sequenza di bit in ingresso di un bit verso destra o sinistra, in base al valore del segnale di controllo C. 
-
+Lo shifter è un circuito combinatorio in grado di traslare una data sequenza di bit in ingresso di un bit verso destra il segnale di controllo C vale uno, verso sinistra altrimenti, perdendo il bit più o meno 
+significativo in base al tipo di spostamento effettuato. 
 \begin{figure}[H]%
     \centering%
     \includegraphics[scale=0.55]{shifter-8-bit.pdf}%
@@ -1193,7 +1202,40 @@ locazioni di memoria univoche all'interno dell'unico chip.
 
 \subsubsection{Matrice di Selezione}
 
-\subsubsection{FPGA}
+Il numero dei piedini nel chip non è l'unico problema nell'indirizzamento di una specifica locazione di memoria. Un decoder a $n$ bit richiede $2^n$ porte AND per poter trasformare un 
+input in un indirizzo. Per risparmiare nella complessità di questa operazione può essere utilizzato un sistema noto come matrice di selezione. 
+
+Si fornisce un esempio in un caso dove ogni locazione sia composta da un bit, e siano presenti da un massimo di $2^n$ parole, disposte su una matrice quadrata. Ogni bit viene quindi identificato da una coppia di 
+coordinate, è possibile quindi dividere l'indirizzo in due metà RAS, ``Raw Address Strobe'' e CAS ``Column Address Strobe''. Questa coppia di linee di controllo in uscita dalla matrice di selezione individua 
+un'univoca locazione di memoria, dimezzando il numero di piedini necessari, poiché è possibile inviare le due metà dell'indirizzo in modo seriale. 
+
+%% TODO img. matrice di selezione 
+
+Inviando le due metà dell'indirizzo separatamente sugli stessi piedini, è meno efficiente, ma viene preferito in caso il chip abbia bisogno di un elevato numero di linee di trasmissione. Questa tecnica inoltre 
+riduce notevolmente il numero di porte AND richieste per indirizzare una locazione di memoria. Utilizzando un singolo decoder a $n$ bit si richiedono $2^n$ porte AND, mentre utilizzando due decoder da $n/2$ bit 
+sono necessarie $2^{(n/2)+1}$ porte AND, diminuendo di diversi ordini di grandezza il loro numero. Questo diminuisce di gran lunga la complessità della logica di decodifica del chip. 
+
+\subsubsection{Tipi di Memoria}
+
+Utilizzando questi chip possono essere realizzate diversi tipi di memorie, programmabili e non. Il tipo di memoria utilizzato come memoria centrale è la RAM, ``Random Access Memory'', che permette operazioni di 
+lettura e scrittura, ed è volatile, al contrario della ROM, ``Read Only Memory'', che non può essere modificata, ma è permanente.  
+La SRAM, ``Static RAM'', è un tipo di memoria realizzata tramite Flip-Flop, per cui è molto veloce, con un tempo di commutazione di pochi nanosecondi: $t_A\approx5\,$ns, utilizzate 
+per creare cache; la DRAM, ``Dynamic RAM'' invece utilizza delle capacità 
+parassite dei condensatori, ed è quindi molto più lente $t_A\approx70\,$ns, ma a basso costo, e richiede refresh ed alta densità. La DRAM può utilizzare una matrice di selezione, FPM, oppure una pipeline in 
+lettura e scrittura per aumentare la banda nel caso di EDO, ``Extended Data Output''. 
+La SDRAM, ``Synchronous DRAM'', offre delle prestazioni migliori sincronizzando gli elementi di memoria contenuti, ha sostituito la DRAM, come tipo di memoria centrale in un calcolatore. 
+Le memorie DDR, offrono un meccanismo di pipeline in scrittura ed in lettura, ed una frequenza di aggiornamento fino ai $3.6$ GHz, per permettere trasferimenti di dati fino a $25.6$ Gb al secondo. 
+
+Le memorie ROM per essere utilizzate devono essere scritte, per cui esistono vari modi di scrittura su una ROM, in base al suo tipo. Una PROM, ``Programmable ROM'', è una memoria in grado di essere scritta, utilizzata 
+per elettro domestici e piccoli apparecchi elettrici, e non è possibile eliminarne i dati. Altri tipi di PROM permettono la cancellazione dei dati salvati, per realizzare prototipo, tramite raggi UV le EPROM, ``Erasable 
+PROM'', ed elettricamente le EEPROM, ``Electrical EPROM''. 
+
+Le memorie flash sono tipi di EEPROM, utilizzate nelle SSD, con un ciclo di $50\,$ns, ed un numero di scritture massime limitato. 
+
+
+Utilizzando un chip di memoria PROM è possibile realizzare circuiti logici arbitrari, tramite le FPGA, ``Field Programmable Gate Array''. Questi dispositivi contengono due componenti duplicati, una tavola 
+di verità, memorizzata in una piccola zona di memoria, chiamata LUT, ``LookUp Tables'', che permettono di realizzare una qualsiasi funzione booleana. Ed un sistema di connessioni programmabili per gestire gli 
+input e gli output di questa funzione. 
 
 \clearpage
 
