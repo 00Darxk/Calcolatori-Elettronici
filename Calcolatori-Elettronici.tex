@@ -1239,4 +1239,104 @@ input e gli output di questa funzione.
 
 \clearpage
 
+\section{Bus}
+
+%% TODO add 3/5, 7/5: bus
+
+\subsection{Bus Sincrono ed Asincrono}
+
+\subsection{Arbitraggio}
+
+\subsection{PCI e PCIe}
+
+\subsection{USB}
+
+\clearpage
+
+\section{Microarchitettura di una CPU}
+
+%% TODO add 9/5: microarchitetture di una cpu
+%% TODO img schema data-path 
+%% TODO img schema di una microarchitettura cisc (sezione di controllo ppt. pg 20)
+
+Il comando JMPC, Jump (to) PC, indica che la prossima istruzione da essere eseguita non è una microistruzione, ma la prossima istruzione contenuta nel PC, inoltre 
+può realizzare istruzioni condizionali. 
+Per implementarle a livello di hardware si utilizzano le due uscite della ALU N, ``Negative'', e Z, ``Zero'', salvati in registri, ed in base al contenuto 
+del JMPC, è possibile alterare il contenuto del MPC per saltare da un'istruzione ad un'altra. 
+
+
+Per un'architettura RISC, all'arrivo di un'istruzione viene generata la sequenza di bit, tramite un semplice decodificatore di istruzioni, che implementa un'istruzione macchina, 
+molto meno complesso del microprogramma presente nelle architetture CISC, e appena viene eseguita, ne viene caricata un'altra sul PC, salvando quindi sulla complessità interna 
+del processore. 
+
+
+
+In questo processore si assume che ogni $\mu$-istruzione viene eseguita in un singolo ciclo di clock, per realizzare un unico ciclo macchina, implementando l'intero data 
+path, dal registro di partenza al registro di destinazione, dopo aver eseguito le operazioni necessarie. Per cui per realizzare un'istruzione macchina, viene caricata nel 
+PC l'istruzione in un ciclo di clock, e tutti gli altri cicli successivi realizzano le microistruzioni nel registro MPC, fino alla fine della sequenza di queste 
+microistruzioni, oppure se si vuole realizzare un'istruzione condizionale. 
+
+Il dato JAM rappresenta tre bit JAMPC o JMPC, JAMN ``Jump if Negative'' e JAMZ, ``Jump if Zero''. Se ogni bit di JAM vale zero non vengono eseguiti salti, se invece JMPC vale 
+uno, allora gli 8 bit bassi di Addr vengono passati ad un OR con il contenuto del MBR. 
+
+
+Per migliorare le prestazioni bisogna massimizzare il rapporto velocità/prezzo. Per migliorare le prestazioni si considerano tre approcci, l'approccio di aumentare la frequenza 
+di clock è stata abbandonata recentemente, per le risorse necessarie da affidare al raffreddamento del processore. Invece è possibile introdurre forme di parallelismo oppure 
+aggiungere componenti dedicate per effettuare le operazioni più lente. 
+
+
+Il PC deve solo essere incrementato, e l'unico modo consiste nell'utilizzare un ciclo macchina per incrementare il suo valore e memorizzarlo sul suo registro, per risparmiare 
+questo ciclo macchina ogni volta che viene eseguita un'istruzione, si introduce una componente dedicata al caricamento di un'istruzione, la IFU ``Instruction Fetch Unit''. 
+Utilizza due registri di istruzioni, con due possibili formati da 8 bit, ed uno da 16 bit. Dentro quest'unità sono presenti dei contatori in grado di memorizzare quest istruzioni, 
+ed effettua operazioni di ``pre-fetching'', per caricare più istruzioni insieme, realizzando una coda di istruzioni salvate nei due registri interni, in modo che è sempre 
+presenta un'istruzione successiva ad eseguire appena viene terminata l'esecuzione della precedente. 
+
+%% TODO img schema IFU
+
+Il resto del data path rimane invariato, ma per evitare il collo di bottiglia sul registro accumulatore sono presenti due linee di bus, parallele collegate all'ALU, per 
+aumentare le prestazioni. Per cui sono necessarie due linee di controllo su ogni registro per scegliere tra i due registri. L'architettura è quindi più complessa nella sezione 
+di controllo per la gestione di questi nuovi bit di controllo da fornire per gestire più di un bus. 
+
+%% TODO img schema data-path migliorato
+
+In questo modo si riduce il numero di cicli macchina, ovvero attraversamento del data path, a costo di una maggiore complessità del sistema. 
+
+Per introdurre un meccanismo di pipeline in questo sistema bisogna considerare la gestione del lavoro in stati autonomi rispetto agli altri. L'IFU è uno di questi stati 
+completamenti autonomi, per cui rappresenta il primo stadio di una possibile pipeline. Per realizzare a livello di hardware degli stadi del data path si introducono inserendo 
+delle frontiere, dei semplici registri, in entrata ed in uscita dall'ALU, per dividere il data path in diversi stadi autonomi. L'ultimo stadio è quindi il passaggio ai registri 
+di partenza del data path. In questo modo si sono definiti esplicitamente quattro stadi che il processore deve eseguire per realizzare un data path. 
+
+%% TODO img schema data-path in pipeline (hardware ?)
+
+
+\subsection{Memorie Cache}
+
+Le cache di primo livello sono realizzate con due cache per le istruzioni ed i dati. Le cache di secondo e terzo livello sono unificate, poiché non distinguono tra dati ed 
+istruzioni, e sono condivise tra tutti i core, quella di secondo livello, e tra tutti i processori sulla stessa scheda, quella di terzo livello sulla strada tra la CPU e la 
+memoria centrale. 
+
+Le dimensione della cache cresce all'aumentare del livello, quelle di livello uno sono principalmente nell'ordine dei KB, poiché sono interne al processore, le cache di 
+livello sono nell'ordine dei MB, mentre le cache di terzo livello, poiché non sono ristrette dalla dimensione della CPU arrivano a vari GB di memoria. 
+Si parla di cache inclusive, poiché ciascuna contiene quella del livello superiore. 
+
+Le cache sono completamente invisibili al programmatore, poiché non si ha visibilità della memoria cache, solo della memoria principale come indirizzi di memoria. Non si 
+può mai fare riferimento ad un'indirizzo di cache, poiché gestito solamente a livello di hardware automaticamente. 
+
+A livello di prestazioni invece è possibile determinare quando gli accessi a memoria vengono eseguiti tramite memoria cache o centrale, semplicemente in base al tempo di 
+esecuzione del programma. 
+
+%% TODO organizzazione della memoria, blocchi di byte
+
+Un singolo blocco di memoria è realizzato da un serie di parole, composte anch'esse da un certo numero di byte. Questi rappresentano diversi livelli di granularità della memoria. 
+Gli indirizzi devono anch'essi rappresentare questi livelli di granularità, per cui i primi bit di un indirizzo rappresentano in quale blocco si trova il dato a cui si vuole 
+accedere, generalmente è composto dal numero maggiore di bit, poiché una memoria presenta numerosi blocchi di memoria distinti, contenti ciascuno poche decine di byte, fino 
+a raggiungere diversi GB di dimensione complessiva. I successivi bit identificano la parola ed il singolo byte della parola dove si trova il dato cercato. 
+
+Per realizzare una memoria cache, essendo molto più piccola, ad ogni riga di memoria possono essere contenute righe diverse della memoria centrale. Per cui per indirizzare una 
+sola di queste porzioni di memoria vengono realizzati da una chiave, fornita insieme all'indirizzo. Questo tipo di memorie vengono chiamate memorie associative. 
+
+Si considera una memoria cache avente uno spazio di memoria di $2^n$ byte, diviso in blocchi da $2^r$ byte. 
+
+
+
 \end{document}
