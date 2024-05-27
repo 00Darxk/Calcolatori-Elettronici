@@ -1,0 +1,14 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}[scale=2]
+    \draw[thick](0,0)--(0,1)--(2,1)--(2,0)--(0,0);
+    \node at(1,0.5){Chip n$\times$m};
+    \draw[->](-0.2,0.2)node[left]{WE}--(0,0.2);
+    \draw[->](-0.2,0.5)node[left]{OE}--(0,0.5);
+    \draw[->](-0.2,0.8)node[left]{CS}--(0,0.8);
+    \draw[->](1,-0.3)to[multiwire=m](1,0);
+    \draw[->](1,-0.3)--(1,-0.32);
+    \draw[->](2.4,0.5)to[multiwire=$\log_2$n](2,0.5);
+\end{circuitikz}
+\end{document}

@@ -1,0 +1,19 @@
+\documentclass{standalone}
+\usepackage{circuitikz} 
+\tikzset{alu/.style={muxdemux,
+    muxdemux def={Lh=3, NL=3, Rh=3,
+    NB=1, NR=1, NT=2, w=3, square pins=1}}}
+\begin{document}
+\begin{circuitikz}
+    \draw
+    (0,0)node[alu](a){1-bit ALU}
+    (a.lpin 1)node[left]{F$_0$}
+    (a.lpin 2)node[left]{F$_1$}
+    (a.lpin 3)node[left]{C$_\mathrm{out}$}
+    (a.tpin 1)node[above]{A}
+    (a.tpin 2)node[above]{B}
+    (a.rpin 1)node[right]{C$_\mathrm{in}$}
+    (a.bpin 1)node[below]{O}
+    ;
+\end{circuitikz}
+\end{document}

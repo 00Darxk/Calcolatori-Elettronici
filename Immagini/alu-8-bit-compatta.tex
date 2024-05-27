@@ -1,0 +1,22 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{
+    alu 8/.style={muxdemux, 
+    muxdemux def={Lh=3, Rh=3, w=8, 
+    NB=1, NT=2, NL=3, NR=1
+    }}}
+\begin{document}
+\begin{circuitikz}
+    \draw
+
+    (-9, -3.5)node[alu 8](a){8-bit ALU}
+    (a.tpin 1)to[multiwire=8]++(0,0.1)node[above]{A}
+    (a.tpin 2)to[multiwire=8]++(0,0.1)node[above]{B}
+    (a.bpin 1)to[multiwire=8]++(0,-0.1)node[below]{O}
+    (a.rpin 1)node[right]{C$_\mathrm{in}$}
+    (a.lpin 3)node[left]{C$_\mathrm{out}$}
+    (a.lpin 2)node[left]{F$_1$}
+    (a.lpin 1)node[left]{F$_0$}
+    ;
+\end{circuitikz}
+\end{document}
