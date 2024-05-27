@@ -1,0 +1,29 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{
+    alu/.style={muxdemux, 
+    muxdemux def={Lh=3, Rh=3, w=6, 
+    NB=1, NT=2, NL=3, NR=1
+    }}}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}
+    \draw
+    (0,0)node[alu](a){$n/2$-bit ALU}
+
+
+    (-5,0)node[alu](b){$n/2$-bit ALU}
+    (-5,-2.5)node[alu](c){$n/2$-bit ALU}
+    (b.bpin 1)to[short]++(2.5,0)
+    to[short]++(0,-2.5)node[and port, rotate=270, anchor=in 2](d){}
+    (c.bpin 1)node[and port, rotate=270, anchor=in 2](e){}
+    (e.in 1)to[short](d.in 1)to[short,*-](a.lpin 3)
+    (e.out)to[short]++(1,0)node[or port, rotate=270,anchor=in 2](f){}
+    (f.in 1)to[short](d.out)
+    
+    (b.rpin 1)node[right]{1}
+    (c.rpin 1)node[right]{0}
+
+    ;
+\end{circuitikz}
+\end{document}

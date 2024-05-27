@@ -1,0 +1,48 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{alu/.style={muxdemux,
+muxdemux def={Lh=3, NL=3, Rh=3,
+NB=1, NR=1, NT=2, w=3, square pins=1}},}
+\begin{document}
+\begin{circuitikz}
+    \draw
+    (-0.1,0)node[alu,align=left,font=\Large](a){1-bit\\ALU}
+    (a.rpin 1)node[right,font=\Large]{C$_\mathrm{in}$}
+    (a.tpin 1)node[above,font=\Large]{A$_0$}
+    (a.tpin 2)node[above,font=\Large]{B$_0$}
+    (a.bpin 1)node[below,font=\Large]{O$_0$}
+    (a.lpin 3)to[short](-1.5,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_1$}
+    (a.tpin 2)node[above,font=\Large]{B$_1$}
+    (a.bpin 1)node[below,font=\Large]{O$_1$}
+    (a.lpin 3)to[short](-4,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_2$}
+    (a.tpin 2)node[above,font=\Large]{B$_2$}
+    (a.bpin 1)node[below,font=\Large]{O$_2$}
+    (a.lpin 3)to[short](-6.5,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_3$}
+    (a.tpin 2)node[above,font=\Large]{B$_3$}
+    (a.bpin 1)node[below,font=\Large]{O$_3$}
+    (a.lpin 3)to[short](-9,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_4$}
+    (a.tpin 2)node[above,font=\Large]{B$_4$}
+    (a.bpin 1)node[below,font=\Large]{O$_4$}
+    (a.lpin 3)to[short](-11.5,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_5$}
+    (a.tpin 2)node[above,font=\Large]{B$_5$}
+    (a.bpin 1)node[below,font=\Large]{O$_5$}
+    (a.lpin 3)to[short](-14,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_6$}
+    (a.tpin 2)node[above,font=\Large]{B$_6$}
+    (a.bpin 1)node[below,font=\Large]{O$_6$}
+    (a.lpin 3)to[short](-16.5,0)node[alu,align=left,font=\Large, anchor=rpin 1](a){1-bit\\ALU}
+    (a.tpin 1)node[above,font=\Large]{A$_7$}
+    (a.tpin 2)node[above,font=\Large]{B$_7$}
+    (a.bpin 1)node[below,font=\Large]{O$_7$}
+    (a.lpin 3)node[left,font=\Large]{C$_\mathrm{out}$}
+    (a.lpin 2)node[left,font=\Large]{F$_1$}
+    (a.lpin 1)node[left,font=\Large]{F$_0$}
+
+    ;
+\end{circuitikz}
+\end{document}

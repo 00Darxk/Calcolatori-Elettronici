@@ -1,0 +1,77 @@
+\documentclass{standalone}
+\usepackage{circuitikz} 
+\tikzset{demux 4by2/.style={muxdemux,
+    muxdemux def={Lh=3, NL=2, Rh=4,
+    NB=0, NR=4, w=2, square pins=1}},
+    adder/.style={muxdemux,
+    muxdemux def={Lh=3.5, Rh=3.5, w=3.5,
+    NR=1, NL=3, NB=1, NT=1}}}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}   
+    \draw
+
+    (7,0)node[adder](b){Full Adder}
+    (b.lpin 3)to[short]++(-8,0)node[demux 4by2, anchor=rpin 4](a){DEC}
+    (a.lpin 1)to[short,-o]++(-0.5,0)node[left]{F$_0$}
+    (a.lpin 2)to[short,-o]++(-0.5,0)node[left]{F$_1$}
+
+    (b.rpin 1)to[short]++(0.2,0)
+    to[short]++(0,3)
+    to[short]++(0.2,0)node[or port, number inputs=4, anchor=in 4](c){}
+    (c.out)to[short,-o]++(0.5,0)node[right]{O}
+    (b.tpin 1)to[short,-o]++(0,8)node[above]{C$_\mathrm{in}$}
+    (b.bpin 1)to[short,-o]++(0,-1)node[below]{C$_\mathrm{out}$}
+
+    (-3,4.5)node[and port](d){}
+    (-3,6)node[and port](e){}
+    (e.in 1)to[short,-o]++(-0.5,0)node[left]{A}
+    (e.in 2)to[short,-o]++(-0.5,0)node[left]{ENA}
+    (d.in 1)to[short,-o]++(-0.5,0)node[left]{B}
+    (d.in 2)to[short,-o]++(-0.5,0)node[left]{ENB}
+    (e.out)node[xor port, anchor=in 2](f){}
+    (f.in 1)to[short]++(-0.2,0)
+    to[short]++(0,0.5)
+    to[short,-o]++(-2.5,0)node[left]{INVA}
+    (f.out)to[short,-*]++(0.1,0)coordinate(i1)
+    to[short]++(0.3,0)node[or port, anchor=in 1](g){}
+    (i1)to[short]++(0,1.5)
+    to[short]++(0.3,0)node[and port, anchor=in 1](h){}
+    (i1)to[short]++(0,-6.3)
+    to[short](b.lpin 2)
+    (d.out)to[short,-*]++(2.56,0)coordinate(i2)
+    to[short,-*](g.in 2)
+    to[short](h.in 2)
+    (i2)to[short]++(0.2,0)node[not port, anchor=in](i){}
+    (i2)to[short]++(0,-3.85)
+    to[short](b.lpin 1)
+
+
+    (i.out)to[short]++(1.5,0)node[and port, anchor=in 1](j){}
+    (g.out)to[short]++(1,0)node[and port, anchor=in 1](k){}
+    (h.out)to[short]++(0.5,0)node[and port, anchor=in 1](l){}
+    (j.out)to[short]++(0,-0.95)
+    to[short](c.in 3)
+    (k.out)to[short]++(0.5,0)
+    to[short]++(0,-2.16)
+    to[short](c.in 2)
+    (l.out)to[short]++(1.25,0)
+    to[short]++(0,-3.37)
+    to[short](c.in 1)
+
+    (a.rpin 1)to[short]++(0,2)
+    to[short]++(5.55,0)
+    to[short](l.in 2)
+    (a.rpin 2)to[short]++(0.5,0)
+    to[short]++(0,2)
+    to[short]++(5.55,0)
+    to[short](k.in 2)
+    (a.rpin 3)to[short]++(1,0)
+    to[short]++(0,2)
+    to[short]++(5.35,0)
+    to[short](j.in 2)
+    (b.blpin 3)node[right, font=\small]{EN}
+    ;
+    \draw[thick](-4,-1.5)--(-4,9)--(10.75,9)--(10.75,-1.5)--(-4,-1.5);
+\end{circuitikz}
+\end{document}

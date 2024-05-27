@@ -773,7 +773,7 @@ Inoltre è molto più costoso di un disco magnetico, con un costo per GB di qual
 essere aumentata ulteriormente utilizzando celle multi-livello, e si può diminuire la frequenza di errore tramite una distribuzione uniforme delle letture e scritture sulle celle dell'unità, per evitare che si 
 verifichi un guasto su una cella molto prima di un altra. 
 
-\subsection{Dispositivi I/O}
+\subsection{Dispositivi I/O e Scheda Madre}
 
 I dispositivi di input e output forniscono all'utente la capacità di comunicare con il controllore, e sono collegati, come tutte le altre componenti, ad un bus e sono controllati da specifici processori, che 
 trasferiscono autonomamente i dati in memoria, secondo la convenzione DMA ``Direct Memory Access'', senza dover passare per il processore. Questi dispositivi possono comunicare alla CPU tramite le interruzioni, e 
@@ -1030,7 +1030,7 @@ Un semi-addizionatore o ``Half-Adder'' è un circuito combinatorio a due uscite 
 
 \begin{figure}[H]%
     \centering%
-    \includegraphics{half-adder.pdf}%
+    \includegraphics[scale=0.9]{half-adder.pdf}%
     \caption{Half Adder}
 \end{figure}
 \begin{center}
@@ -1093,7 +1093,7 @@ poter effettuare la somma di tutti i bit in parallelo ed ottenere una complessit
 
 \subsubsection{ALU}
 
-L'ALU è la componente logico algebrica, effettua tutte all'interno di un calcolatore. Per realizzare ALU a più bit, si possono montare in sequenza più ALU ad un singolo bit, in grado di 
+L'ALU è la componente logico algebrica, effettua tutte le operazioni all'interno di un calcolatore. Per realizzare ALU a più bit, si possono montare in sequenza più ALU ad un singolo bit, in grado di 
 effettuare quattro operazioni elementari, dati due bit in input A e B:
 \begin{itemize}
     \item A AND B: 00
@@ -1105,11 +1105,26 @@ Le prime tre sono operazioni logiche implementate tramite singole porte logiche,
 input vengono forniti altri due input di controllo per scegliere quale operazione F$_0$ e F$_1$ tramite un decoder di controllo. Sono presenti inoltre due porte di abilitazione per gli ingressi A e B, ed i loro due 
 ingressi di controllo ENA e ENB. Inoltre poiché applica l'operazione di negazione sull'input B, si può disabilitare l'input A tramite il segnale INVA. Poiché viene montato in serie ad altre 
 ALU ha bisogno di input ed output per il riporto della somma:
-
-%% TODO img. ALU 1 bit
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{alu-1-bit-compatta.pdf}%
+\end{figure}
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.84]{alu-1-bit.pdf}%
+    \caption{ALU ad 1 Bit}%
+\end{figure}
 
 Più ALU vengono montate una dopo l'altra per ottenere un'ALU ad $n$ bit. Ogni ALU ad un bit viene chiamata un bit slice, una ``fetta'' dell'ALU completa:
-%% TODO img. ALU n bit
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{alu-8-bit-compatta.pdf}%
+\end{figure}
+\begin{figure}[H]%
+    \centering
+    \includegraphics[scale=0.69]{alu-8-bit.pdf}%
+    \caption{ALU ad 8 Bit}%
+\end{figure}
 
 ALU ad $n$ bit così create 
 soffrono del problema della propagazione del riporto, poiché ogni stadio deve aspettare il riporto del precedente, di complessità lineare rispetto ad $n$. Per risolvere questo problema 
@@ -1117,16 +1132,20 @@ possono essere impiegate forme di parallelismo, dividendo l'ALU in due ALU da $n
 inserendo uno zero ed un uno alle due ALU da $n/2$ in parallelo, in modo che al termine della somma tra i primi $n/2$ bit si possa scegliere, in base al riposto, l'altra metà della 
 somma corrispondente, già calcolata. Si dimezza così il tempo necessario per effettuare una somma su $n$ bit:
 
-%% TODO img. ALU n bit parallela
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{alu-n-bit.pdf}%
+    \caption{ALU Parallelizzata}%
+\end{figure}
 
 \subsubsection{Clock}
 
 In un circuito digitale tutti i cambiamenti di stato vengono sincronizzati da un segnale di clock, realizzato da un componente digitale approssimabile ad un'onda quadra. Da un clock primario, generalmente vengono 
-ricavati per sottrazione, sfasatura ed altre operazioni, diversi segnali, di frequenza maggiore o minore dell'originale. Tutte le transizioni di stato possono avvenire in corrispondenza dei fronti o dei livelli 
-delle onde. 
+ricavati per sottrazione, sfasatura ed altre operazioni, diversi segnali, di frequenza maggiore o minore dell'originale. Si può sfasare il segnale originale semplicemente utilizzando una 
+porta buffer, per ritardare il segnale. Tutte le transizioni di stato possono avvenire in corrispondenza dei fronti o dei livelli delle onde. 
 
-%% TODO img. clock, con grafico onda quadra
-
+Poiché il tempo di transito di un segnale attraverso un circuito non è istantaneo, è possibile che i segnali corretti arrivino ritardati, ma alla stessa frequenza. Per cui può essere necessario inserire ritardi 
+all'interno di un circuito digitale per ottenere l'effetto desiderato, per ``aspettare'' i segnali di interesse. 
 
 \subsection{Circuiti Sequenziali}
 
@@ -1143,21 +1162,39 @@ Il circuito commuta sui livelli quando S o R valgono uno, e non devono mai andar
 commutare nel circuito. 
 Con S=1, si assegna Q ad uno, con R=1, si resetta lo stato, quindi si imposta Q a zero. 
 
-%% TODO img. Latch due livelli stabili
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.9]{latch.pdf}%
+    \caption{Latch, Stati Stabili}%
+\end{figure}
 
 Poiché il segnale in uscita è di interessa solamente quando il clock è ad uno, si inseriscono delle porte di abilitazione a monte degli ingressi S ed R, in modo che questi segnali vengano trasferiti solamente 
-quando il clock è ad uno. Vengono poi ignorati quando il clock vale 0. 
+quando il segnale di clock CK è ad uno. Vengono poi ignorati quando il clock vale 0. 
 
-%% TODO img. Latch con clock 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{latch-ck.pdf}%
+    \caption{Latch con Clock}%
+\end{figure}
 
 Il Latch D, ``Delay'', trasferisce il valore dell'ingresso D, solamente quando il clock cambia valore e va ad uno, cambia quindi ad ogni fronte di clock, e non ad ogni livello come il Latch precedente. 
 Il segnale di input D viene negato da una porta NOT, il valore non negato è il segnale S, mentre il segnale complementato è il segnale R. 
 
-%% TODO img. Latch D
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{latch-d.pdf}%
+    \caption{Latch Delay}%
+\end{figure}
 
 I Latch possono commutare su livelli alti, o bassi, tramite una porta NOT a monte dell'ingresso del segnale di clock nel circuito:
 
-%% TODO img. compatta latch D, livello alto e basso
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{latch-compatti.pdf}%
+    \caption{Simbolo Latch D}%
+\end{figure}
+
+%% TODO latch d livello basso
 
 \subsubsection{Flip-Flop}
 
@@ -1167,26 +1204,45 @@ un intervallo di tempo molto ristretto, creando un impulso.
 Un flip flop viene quindi realizzato da un Latch D, inserendo un generatore di impulsi prima dell'ingresso del segnale di clock. Più la commutazione è veloce, per cui più è breve il segnale di impulso, più è sicuro 
 il circuito. 
 
-%% TODO img. flip flop D
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{flip-flop-d.pdf}%
+    \caption{Flip Flop D}%
+\end{figure}
 
 I Flip-Flop D possono commutare ad ogni fronte di salita o di discesa, semplicemente inserendo una porta NOT prima del segnale di clock. Rappresentata da un pallino nella sua rappresentazione circuitale compatta: 
 
-%% TODO img. flip flop D, fronte di salita e discesa
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{flip-flop-d-compatti.pdf}%
+    \caption{Simbolo Flip Flop D}%
+\end{figure}
+
+%% TODO flip flop d fronte di discesa
 
 \subsubsection{Chip di Memoria}
 
 I Flip-Flop sono gli elementi basi di memorizzazione del calcolatore. Ognuno viene realizzato utilizzando tra i 6 ed i 10 transistor. Ogni Flip-Flop è in grado di memorizzare un singolo bit, per cui una 
-serie di quattro Flip-Flop può memorizzare un byte. Una zona di memoria è quindi formata da vari Flip-Flop su un'unica riga per ogni word, tutti connessi ad un unico segnale di clock. Molti Flip-Flop possono 
-essere montati su un unico chip. 
+serie di otto Flip-Flop può memorizzare un byte. Una zona di memoria è quindi formata da vari Flip-Flop su un'unica riga per ogni word, tutti connessi ad un unico segnale di clock. Molti Flip-Flop possono 
+essere montati su un unico chip per costruire un chip di memoria contenente varie locazioni. 
 
-%% TODO img. registri
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{chip-4-bit.pdf}%
+    \caption{Registro a 4 Bit}%
+\end{figure}
 
 Ogni registro presenta varie righe di Flip-Flop per ogni word in grado di memorizzare. Dato un registro da $n$ word, presenta $log_2n$ linee di indirizzo per abilitare la specifica locazione di memoria. Questo 
 viene effettuato tramite un decodificatore ed una serie di porte di abilitazione a monte dei Flip-Flop. Ogni chip di memoria inoltre presenta un segnale per specificare l'operazione da effettuare, un segnale 
 per abilitare la lettura OE, ``Output Enable''; un segnale per abilitare la scrittura WE, ``Write Enable''; ed un segnale per abilitare la chip CS, ``Chip Select'', un interruttore generale per l'intera chip. 
 Può essere presente un segnale di RD, ``Read'', per abilitare il segnale di clock e quindi la lettura e scrittura sul chip:
 
-%% TODO img. chip di memoria compatto ed esteso
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.8]{chip-memoria.pdf}%
+    \caption{Chip Contenente 4 Parole da m Bit}%
+\end{figure}
+%% TODO fix porte di abilitazione uscita 
 
 La dimensione di memoria disponibile in un chip cresce molto più velocemente del numero di piedini disponibili per poterla trasferire ed indirizzare, poiché il numero dei piedini su un singolo contenitore è 
 limitato. 
@@ -1195,10 +1251,20 @@ circuito chiuso o aperto, in base ad un segnale di controllo C inserito. Se ques
 comporta come circuito aperto, permettendo ai segnali di input di entrare senza alterare il resto del circuito. Permette di usare gli stessi piedini del chip per ogni lettura e scrittura, in generale viene usato su 
 qualsiasi connessione ai bus o a linee bidirezionali. 
 
-%% TODO img. circuito a tre stadi
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.9]{dispositivo-3-stadi.pdf}%
+    \caption{Dispositivo a Tre Stadi}%    
+\end{figure}
 
 Quindi per ogni chip di memoria, oltre ai tre segnali di abilitazione, sono necessari $m$ linee di dati, in base al numero di bit di una parola salvata, e $\log_2n$ linee di indirizzo, dove $n$ sono il numero di 
 locazioni di memoria univoche all'interno dell'unico chip. 
+
+\begin{figure}[H]%
+    \centering
+    \includegraphics{chip-memoria-compatto.pdf}%
+    \caption{Chip di Memoria con n Parole da m Bit}%
+\end{figure}
 
 \subsubsection{Matrice di Selezione}
 

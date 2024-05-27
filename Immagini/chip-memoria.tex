@@ -1,0 +1,65 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{demux 4by2/.style={muxdemux,
+    muxdemux def={Lh=6, NL=2, Rh=8,
+    NB=0, NR=4, w=2, square pins=1}},
+    registro/.style={flipflop,
+    flipflop def={t1 = I, t6=O, c3=1}
+    }}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}   
+    \draw
+    (0,0)node[demux 4by2](a){}
+    (a.lpin 1)to[short,-d]++(-0.1,0)node[left]{A$_1$}
+    (a.lpin 2)to[short,-d]++(-0.1,0)node[left]{A$_0$}
+    (a.rpin 1)node[and port, anchor=in 1](a1){}
+    (a.rpin 2)to[short]++(1.5,0)node[and port, anchor=in 1](a2){}
+    (a.rpin 3)to[short]++(3,0)node[and port, anchor=in 1](a3){}
+    (a.rpin 4)to[short]++(4.5,0)node[and port, anchor=in 1](a4){}
+    (a2.in 2)to[short,-*]++(-1.5,0)
+    (a3.in 2)to[short,-*]++(-3,0)
+    (a4.in 2)to[short,-*]++(-4.5,0)
+    (a1.in 2)to[short]++(0,-3.5)node[and port, anchor=out, rotate=90](b){}
+
+    (a1.out)coordinate(b1)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r1){m Bit}
+    (a2.out)to[short]++(0.75,0)coordinate(b2)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r2){m Bit}
+    (a3.out)to[short]++(1.5,0)coordinate(b3)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r3){m Bit}
+    (a4.out)to[short]++(2.25,0)coordinate(b4)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r4){m Bit}
+
+    (r4.pin 1)to[short]++(0,4.5)
+    to[short]++(-8,0)to[multiwire=m,-d]++(-3,0)node[left]{I}
+    (r3.pin 1)to[short,-*]++(0,3.38)
+    (r2.pin 1)to[short,-*]++(0,2.26)
+    (r1.pin 1)to[short,-*]++(0,1.14)
+    
+    (r1.pin 6)node[and port, anchor=in 2](a1){}
+    (r2.pin 6)node[and port, anchor=in 2](a2){}
+    (r3.pin 6)node[and port, anchor=in 2](a3){}
+    (r4.pin 6)node[and port, anchor=in 2](a4){}
+
+    (b1)to[short]++(0,2.24)to[short](a1.in 1)
+    (b2)to[short]++(0,2.24)to[short](a2.in 1)
+    (b3)to[short]++(0,2.24)to[short](a3.in 1)
+    (b4)to[short]++(0,2.24)to[short](a4.in 1)
+
+    (a4.out)to[short]++(0,-0.5)node[or port, number inputs=4, rotate=270, anchor=in 4](o){}
+    (a3.out)to[short]++(2.53,0)to[short](o.in 3)
+    (a2.out)to[short]++(5.07,0)to[short](o.in 2)
+    (a1.out)to[short]++(7.6,0)to[short](o.in 1)
+
+    (o.out)to[multiwire=m]++(0,-1)to[short]++(0.25,0)node[buffer,scale=0.5,anchor=in](o1){}
+    (o1.out)to[short,-d]++(0.1,0)node[right]{O}
+    (o1.south)to[short]++(0,0.15)
+    (o1.south)to[short]++(0,-1)
+    to[short]++(-10,0)node[and port, number inputs=3, anchor=out](f){}
+    (f.in 3)to[short,-d]++(-4,0)node[left]{OE}
+    (f.in 2)to[short,-d]++(-4,0)node[left]{RD}
+    (f.in 1)to[short,-d]++(-4,0)node[left]{CS}
+    node[notcirc, below]at(b.bin 2){}
+    (b.in 1)to[short,-*]++(0,-0.1)
+    (b.in 2)to[short,-*]++(0,-0.46)
+    
+    ;
+\end{circuitikz}
+\end{document}

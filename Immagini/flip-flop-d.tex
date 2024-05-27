@@ -1,0 +1,39 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}
+    \ctikzset{logic ports=ieee}
+    \draw
+    (0,0)node[nor port](a){}
+    (0,-3)node[nor port](b){}
+
+    (a.out)to[short,-*]++(0.5,0)coordinate(i1)
+    to[short,-o]++(0.5,0)node[right]{$\overline{\mathrm{Q}}$}
+    (b.out)to[short,-*]++(0.5,0)coordinate(i2)
+    to[short,-o]++(0.5,0)node[right]{Q}
+
+    (a.in 1)to[short]++(-0.75,0)node[and port, anchor=out](d){}
+    (d.in 1)to[short,-o]++(-4.8,0)node[left]{D}
+    (b.in 2)to[short]++(-0.75,0)node[and port, anchor=out](e){}
+    (e.in 2)node[not port, scale=0.5, anchor=out](f){}
+    (f.in)to[short,-*]++(0,4.12)
+    (d.in 2)to[short,-*]++(0,-1.5)coordinate(ck)
+    to[short](e.in 1)
+    (ck)to[short]++(-1,0)node[and port, anchor=out](ck){}
+    (ck.in 1)node[not port, scale=0.5, anchor=out](g){}
+    (g.in)to[short,-o]++(-0.75,0)node[left]{CK}
+    (ck.in 2)to[short]++(-1,0)
+    to[short,-*]++(0,0.56)
+
+    (i1)to[short]++(0,-0.7)coordinate(i1)
+    (i2)to[short]++(0,0.7)coordinate(i2)
+
+    (a.in 2)to[short]++(-0.5,0)
+    to[short]++(0,-0.5)
+    to[short](i2)
+    (b.in 1)to[short]++(-0.5,0)
+    to[short]++(0,0.5)
+    to[short](i1)
+    ;
+\end{circuitikz}
+\end{document}

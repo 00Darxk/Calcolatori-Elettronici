@@ -1,0 +1,38 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\tikzset{registro/.style={flipflop,
+flipflop def={t1 = D, t6=Q, c3=1}
+}}
+\begin{document}
+\begin{circuitikz}
+    \draw
+    (0,0)node[above]{CK}to[short,d-]++(0,-2)
+    to[short,-*]++(1,0)coordinate(ff1)
+    to[short,-*]++(3,0)coordinate(ff2)
+    to[short,-*]++(3,0)coordinate(ff3)
+    to[short]++(3,0)coordinate(ff4)
+    (ff1)to[short]++(0,1)node[registro, anchor=pin 3](a){}
+    (a.pin 1)to[short]++(0,0.25)node[above]{I$_0$}
+    (a.pin 6)to[short]++(0,0.25)node[above]{O$_0$}
+    (a.south)to[short]++(0,-1)
+    to[short,-*]++(3,0)coordinate(t)
+    (t)to[short]++(0,1)
+    (t)to[short,-*]++(3,0)coordinate(t)
+    (t)to[short]++(0,1)
+    (t)to[short,-*]++(3,0)coordinate(t)
+    (t)to[short]++(0,1)
+    (t)to[short]++(2,0)
+    to[short,-d]++(0,2)node[above]{CLR}
+    (ff2)to[short]++(0,1)node[registro, anchor=pin 3](a){}
+    (a.pin 1)to[short]++(0,0.25)node[above]{I$_1$}
+    (a.pin 6)to[short]++(0,0.25)node[above]{O$_1$}
+    (ff3)to[short]++(0,1)node[registro, anchor=pin 3](a){}
+    (a.pin 1)to[short]++(0,0.25)node[above]{I$_2$}
+    (a.pin 6)to[short]++(0,0.25)node[above]{O$_2$}
+    (ff4)to[short]++(0,1)node[registro, anchor=pin 3](a){}
+    (a.pin 1)to[short]++(0,0.25)node[above]{I$_3$}
+    (a.pin 6)to[short]++(0,0.25)node[above]{O$_3$}
+
+    ;
+\end{circuitikz}
+\end{document}
