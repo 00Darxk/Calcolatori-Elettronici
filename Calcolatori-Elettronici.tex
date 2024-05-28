@@ -85,12 +85,12 @@ Università degli Studi ``Roma Tre"}}
 
 \section{Storia e Tipologia dei Calcolatori}
 
-%% analisi degli aspetti hardware 
+%% TODO analisi degli aspetti hardware 
 % funzionamento di un microprocessore, facendo riferimento a processori moderni e reali. 
 
 \subsection{Evoluzione delle Architetture}
 
-%% ppt
+%% TODO  ppt
 
 
 Un calcolatore è un oggetto che fornisce un risultato, dato un insieme dei dati inseriti. 
@@ -103,7 +103,7 @@ Si chiama generazione zero, l'insieme di calcolatori analogici, progettati per r
 Il primo calcolatore programmabile venne ideato da Charles Babbage. Costruì prima una macchina differenziale in grado di calcolare funzioni polinomiali, mentre progettò la 
 prima macchina programmabile, completamente analogica, in grado di leggere un input scritto su piastre di rame, e fornire un output, sempre su piastre di rame, utilizzando 
 i dati e le operazioni inserite in input. Per poter operare su questi dati di input per fornire istruzioni alla macchina è necessario un linguaggio di programmazione, e la 
-prima persona che ha tentato di implementare il linguaggio di Babbage fu Ada. %cognome 
+prima persona che ha tentato di implementare il linguaggio di Babbage fu Ada. %% TODO cognome 
 
 
 Il passaggio seguente in questa evoluzione venne trainato principalmente dai fondi bellici per realizzare macchine elettromeccaniche. La prima generazione si indica il 
@@ -137,7 +137,7 @@ I primi ``Personal Computer'' vennero introdotti negli anni '80, dall'IBM, che f
 l'utilizzo di PC, trainato dall'aumento delle capacità della CPU, e dalla diminuzione dei costi delle memorie principali e secondarie. 
 
 
-%% ppt... 
+%% TODO  ppt... 
 
 % V Computer Invisibili
 La maggior parte dei dispositivi moderni contengono microcontrollori, piccoli processori, distribuiti in un contesto completamente pervasivo, su ogni dispositivo collegato 
@@ -231,7 +231,7 @@ parte dei dati ``In Premise''.
 
 Verranno trattati tre diversi tipi di processori, appartenenti alla famiglia Intel e ARM, ed un processore appartenente alla famiglia dei microcontrollori della famiglia AVR.
 \subsubsection{Architettura Intel}
-%% ppt
+%% TODO ppt
 
 Il primo processore commercializzato dalla Intel è il 4004, con una frequenze tra le frazioni di un MHz, ed in grado di gestire poche centinaia di bit di memoria. Una variante 
 di questo processore, specializzato per microcontrollori il 8008, fornì la base per la creazione del primo processore ``general purpose'' su un circuito integrato, il 8080.  
@@ -255,7 +255,7 @@ correttamente sul processore, e si vendono quindi come dei processori aventi pre
 Il processore Intel Core i7 presenta sei core abilitati su otto core disponibili, la sua versione completamente abilitata corrisponde al processore Xeon. Presenta poco più di 
 un miliardo di transistor ed un livello di integrazione nell'ordine dei 22 nanometri. 
 
-%% ppt. 
+%% TODO ppt. 
 
 \subsubsection{Architetture ARM}
 
@@ -1330,11 +1330,9 @@ dei dati per non essere limitati da questo fenomeno.
 
 \subsection{Bus Sincrono ed Asincrono}
 
-%% TODO diagramma di gant ciclo di lettura sincrono e tabella legenda
-
 Quando la trasmissione è regolata rispettando un clock, si parla di bus sincrono, dove le varie operazioni di una trasmissione dipendono dall'intervallo di tempo 
 passato. Per cui viene di un bus vengono forniti i tempi o cicli di clock in cui i comandi vengono asseriti ad ogni passaggio della comunicazione. 
-Sono sempre presenti delle linee di indirizzo ADDRESS, e dei dati DATA. Inoltre sono presenti linee di controllo per aspettare che i dati siano stabili sulle linee dei dati 
+Sono sempre presenti delle linee di indirizzo ADDR, e dei dati DATA. Inoltre sono presenti linee di controllo per aspettare che i dati siano stabili sulle linee dei dati 
 quando il segnale di WAIT viene mandato a zero, asserito per un numero intero di cicli di clock prima di poter leggere i dati, considerando il tempo necessario allo slave 
 per fornire i dati richiesti. Altre due linee RD e MREQ indicano l'operazione di lettura che si sta effettuando, quando sono asseriti, e durano fino a quando non viene terminata 
 l'operazione. Le specifiche del bus indicano quanto tempo trascorre dalla negazione del segnale WAIT alla lettura dei dati alla terminazione dell'operazione di lettura e la 
@@ -1343,6 +1341,11 @@ In generale questi segnali di controllo vengono inviati negati, per cui si tratt
 Questo protocollo temporizzato deve rispettare le caratteristiche dei dispositivi utilizzati nella trasmissione, in generale il segnale di WAIT viene mantenuto 
 asserito per interi di cicli di bus, e determina la durata complessiva della trasmissione, mentre i segnali di RD e MREQ vengono asseriti al fronte di discesa del clock. 
 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{bus-sincrono.pdf}%
+    \caption{Bus Sincrono}%
+\end{figure}
 
 Si parla invece di bus asincroni, quando non sono regolati da un clock interno, per permettere la comunicazione di dispositivi che utilizzano frequenze diverse. Per permettere 
 la comunicazione quindi i due dispositivi devono inviarsi segnali di sincronizzazione. Si ha un sistema ad eventi, dove ogni evento avviene in risposta ad altri eventi, 
@@ -1350,6 +1353,8 @@ tramite asserzioni di segnali di controllo e o sincronizzazione. Oltre ai segnal
 dal master per avvertire lo slave che ha effettuato un'operazione. In seguito dopo che il dispositivo slave ha caricato i dati richiesti sul bus, asserisce il segnale 
 SSYN per indicare che i segnali sono pronti sul bus. Non è quindi necessario un esplicito segnale di WAIT, poiché l'attesa per la stabilità dei dati viene indicata 
 direttamente dal dispositivo slave. Anche questi due segnali vengono trasmessi negati \textoverline{MSYN} e \textoverline{SSYN}. 
+
+%% TODO gantt bus asincrono
 
 \subsection{Arbitraggio}
 
@@ -1359,14 +1364,15 @@ L'arbitraggio di un bus spesso viene gestito da un chip dedicato nel microproces
 l'utilizzo del bus. Inoltre è presenta una linea di bus grant per fornire ad uno dei dispositivi il permesso di utilizzare il bus. Questa linea viene propagata a partire 
 dall'arbitro formando una catena che connette tutti i dispositivi connessi al bus. In questo modo il primo dispositivo che ha richiesto il bus intercetta questo segnale di 
 grant e lo nega per il resto della catena. 
-In questo modo i conflitti vengono risolti dando precedenza al primo dispositivo connesso, ma questo non è un metodo efficiente, poiché non viene specificato l'ordine delle porte 
+I conflitti vengono risolti favorendo i primi dispositivi connessi, ma questo non è un metodo efficiente, poiché non viene specificato l'ordine delle porte 
 di un calcolatore. 
 
 Per cui si realizza un arbitraggio a più livelli di priorità, dove sono presenti più linee di richiesta e di grant, per ogni livello di priorità. Entrambe connesse 
 come l'arbitraggio normale, ed i conflitti vengono risolti favorendo le linee ad alta priorità, ma all'interno della stessa catena di priorità vale la posizione. 
 
 In generale viene data priorità ai dispositivi più lenti, anche se lo stesso bus è connesso alla CPU o alla memoria centrale. In caso un dispositivo non viene permesso di 
-accedere al bus per un certo periodo di tempo il sistema operativo gli permette di comunicare assegnando un livello di priorità più alto a questo dispositivo. 
+accedere al bus per un certo periodo di tempo il sistema operativo gli permette di comunicare assegnando un livello di priorità più alto a questo dispositivo, per evitare ai dispositivi 
+di dover aspettare tempi infiniti. 
 
 In casi semplici di applicazioni embedded, il processore stesso è l'arbitrio. Utilizzando un numero di linee di priorità pari al numero dei dispositivi connessi al bus si può 
 realizzare un disaccoppiamento completo tra i dispositivi. 
@@ -1378,7 +1384,69 @@ asserisce la linea busy, diventa master e nega la linea di arbitraggio. In caso 
 
 \subsection{PCI e PCIe}
 
+Mentre la banda di un bus si misura in bit per secondo, la sua velocità di trasmissione si quantifica in byte per secondo. In generale l'operazione che richiede una banda costante ed 
+elevata è la visualizzazione a schermo del video. Considerando un video HD con una risoluzione di 1080p con 3B per ogni pixel, ogni frame pesa $\sim$5.2MB, quindi 60 frame al secondo 
+necessitano di una velocità di trasmissione di 310 MB/s, mentre per visualizzare a schermo il video con queste specifiche, prima bisogna spostarlo nella memoria principale, ed in seguito 
+nella memoria video VRAM, quindi è necessaria una velocità di trasmissione doppia 620 MB/s. 
+
+I primi standard di bus furono l'ISA ed il successivo EISA, entrambi con una frequenza di 8.33 MHz, il primo riesce a trasferire 2 byte per ciclo, con una velocità quindi di 16.7 MB/s, mentre 
+il secondo standard ha una velocità doppia di 33.3 MB/s, insufficiente per poter visualizzare un video in HD. 
+Negli anni '90 la Intel creò lo standard dei bus PCI, ``Peripheral Component Interconnect'', con una velocità fino a 528 MB/s, incorporando un meccanismo di pipeline nella trasmissione 
+dei dati e delle istruzioni. 
+Alla fine degli anni '90 l'Intel introdusse lo standard AGP, ``Advanced Graphics Port'' per aumentare le prestazioni delle schede grafiche, ottenendo prestazioni quattro volte migliori di un 
+bus PCI, con velocità fino a 2.1 GB/s. 
+Per bus moderni si preferisce utilizzare la nomenclatura ``Initiator'' e ``Target'', invece di slave e master. 
+
+Il bus PCI è un bus sincrono con una frequenza di aggiornamento di 33 o 66 MHz, con una transizione di scrittura più compatta, avendo un ciclo di idle tra due transizioni, utilizzando la 
+linea AD sia per gli indirizzi sia per i dati, e la linea di controllo sia per specificare il comando e abilitare l'operazione. 
+
+Il bus PCI incorpora forme di parallelismo delle linee, ma questo rappresenta un limite per la banda totale del bus, a causa del fenomeno del bus skew. Per cui nel 2004 venne introdotto 
+il PCIe, ``PCI express'', una forma di PCI più veloce, che utilizza una comunicazione seriale, dove il limite massimo per la banda dipende solamente dalla frequenza del bus, raggiungendo 
+i 20 GB/s ed oltre. Poiché comunica con uno slot più piccolo, la comunicazione tra dispositivi avviene tramite uno switch, collegando i singoli dispositivi attraverso una coppia di 
+connessioni seriali punto a punto. 
+Un singolo slot può accogliere più di una singola connessione PCIe, quindi una stessa scheda può contenere diversi dispositivi connessi indipendentemente tra di loro. 
+
+I dati vengono trasmessi come in una rete di computer, divisi in pacchetti con un header, il dato salvato nella payload ed un codice di correzione CRC per aumentare l'affidabilità. 
+Quindi i cavi possono essere prodotti di lunghezza maggiore. Nella versione 6.0 con uno slot dotato di 16 connessioni seriali è possibile raggiungere una banda massima di 120 GB/s. Ma 
+utilizzando più bus PCIe in parallelo si verifica il fenomeno del bus skew, per cui la banda è minore di questo valore ideale. 
+
+Inoltre in base alla dimensione dei buffer per i pacchetti è presente un controllo del flusso. In generale sono possibili quattro spazi di indirizzamento, per la memoria, per dispositivi di IO, 
+per la configurazione e per eventuali messaggi. 
+La trasmissione avviene su un protocollo multistrato formato da quattro livelli lungo coppie di corsie, dividendo ogni pacchetto in una decina di bit. Il primo livello del software permette 
+la retrocompatibilità e gestisce i pacchetti; nel livello di transizione viene inserito l'header ed i dati del pacchetto; nel livello di connessione viene inserito un numero di sequenza per 
+poter ricostruire il pacchetto in testa al pacchetto, ed un codice di correzione in fondo al pacchetto; nel livello fisico infine il pacchetto viene incapsulato dal frame tramite cui viene 
+inviato sulle linee fisiche del bus, e poi viene letto in ordine inverso, livello per livello per ottenere il dato. 
+
 \subsection{USB}
+
+Lo standard USB, ``Universal Serial Bus'', venne concordato da varie aziende per la gestione di dispositivi di IO a bassa velocità negli anni '90. Ma le versioni moderne dei bus USB permettono 
+una banda sui 10 GB/s ed oltre. Gli obiettivi principali di questo standard, che furono tutti raggiunti, comprendevano l'assenza di uno switch centrale, un'installazione del bus di tipo 
+esterno, con un cavo di connessione unificato che fornisce l'alimentazione stessa, con un connettore standardizzato. Inoltre è possibile collegare fino a 127 dispositivi simultaneamente, ed 
+è in grado di supportare dispositivi real-time, che necessitano di tempi di aggiornamento stretti. L'aspetto più importante consiste nella possibilità di connettere un nuovo dispositivo a PC 
+accesso, senza effettuare un reboot per riconoscere il dispositivo o realizzare una connessione al bus. 
+Infine si è rispettata l'esigenza di realizzare i bus ed i dispositivi utilizzanti a prezzi economici. 
+Sono disponibili tre possibili connettori A, B e C, ormai l'USB di tipo C sta diventando il tipo di connessione favorita a livello globale per applicazioni mobile, e sta soppiantando 
+i connettori di tipo A per la comunicazione. La particolarità del tipo C è la simmetria del connettore per rendere irrilevante il verso in cui viene inserito. La banda massima è andata 
+sempre ad aumentare con il passare degli anni, ora con USB4 2.0 si riescono a raggiungere bande di 120 Gb/s. 
+
+Per comunicare sul bus si considera sempre un root hub, potenzialmente ogni dispositivo può essere eletto a root hub, oppure hub di livello inferiore se ad esso vengono collegati 
+altri dispositivi tramite bus USB. In questo modo si crea un'albero avente come radice il root hub, ed ogni dispositivo che vuole comunicare invia i suoi dati attraverso questo bus al 
+suo hub fino a raggiungere la radice. Il cavo del bus è composto nella versione più semplice da una tensione a +5V, una connessione a massa e due linee di segnale. 
+Quando viene connesso un dispositivo interviene il sistema operativo tramite interrupt, per non riavviare il sistema, ed il dispositivo richiede una certa banda, e gli viene assegnato un 
+indirizzo dal SO per mantenere un inserimento a caldo dei dispositivi. 
+
+Ogni connessione tra root hub e dispositivo è dedicata, mediata da vari hub intermedi. Oltre all'USB venne introdotto uno standard competitivo, ormai caduto in disuso, il FireWire IEEE 1394, 
+anch'esso seriale. 
+
+Come per i bus PCIe i bus vengono incapsulati all'interno di un frame, emesso sempre ogni millisecondo con un errore del 5\% massimo. Questa frequenza di trasmissione è fissa per ogni dispositivo 
+USB. Se non avviene una trasmissione si ha un idle frame contenente solamente il dato SOF, ``Start Of Frame'', per segnalare l'inizio del frame. Quando invece è presente una comunicazione, 
+oltre a questo pacchetto vengono inseriti altri pacchetti, dalla radice il pacchetto IN o OUT per richiedere la lettura o scrittura, ed il pacchetto ACK o NACK finale per eventuali errori 
+o per il riconoscimento. Il dispositivo connesso invece crea il pacchetto di dati, contenente il numero del pacchetto SYN, per ricostruirlo, il numero del processo assegnato PID, il dato 
+salvato nella PAYLOAD, ed un codice di correzione di errore CRC. 
+
+Invece delle interruzioni per le trasmissioni viene utilizzato il polling, ovvero periodicamente vengono analizzate tutte le periferiche per individuare se qualcuna ha inviato dei frame, 
+ed eventualmente effettuare l'operazione di lettura o scrittura. Poiché questo controllo viene effettuato dal calcolatore può rallentare il calcolo, ma permette di gestire i dispositivi 
+connessi sia come hardware che come software, non permesso dall'uso esclusivo degli interrupt. 
 
 \clearpage
 

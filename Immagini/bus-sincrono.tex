@@ -1,0 +1,19 @@
+\documentclass{standalone}
+\usepackage{pgfgantt}
+\makeatletter
+\newcommand*{\textoverline}[1]{$\overline{\hbox{#1}}\m@th$}
+\makeatother
+\begin{document}
+\begin{ganttchart}[
+    x unit=1 cm,
+    vgrid={draw=none,dashed}
+]{1}{8}
+    \gantttitle{Bus Sincrono}{8}\\
+    \gantttitlelist{1,...,4}{2}\\
+    \ganttbar{ADDR}{1}{7}\\
+    \ganttbar{DATA}{6}{8}\\
+    \ganttbar[bar/.append style={fill=green}]{\textoverline{MREQ}}{1}{1}\ganttbar[bar/.append style={fill=red}]{}{2}{8}\ganttbar[bar/.append style={fill=green}]{}{8}{8}\\
+    \ganttbar[bar/.append style={fill=green}]{\textoverline{RD}}{1}{1}\ganttbar[bar/.append style={fill=red}]{}{2}{8}\ganttbar[bar/.append style={fill=green}]{}{8}{8}\\
+    \ganttbar[bar/.append style={fill=green}]{\textoverline{WAIT}}{1}{2}\ganttbar[bar/.append style={fill=red}]{}{3}{7}\ganttbar[bar/.append style={fill=green}]{}{7}{8}
+\end{ganttchart}
+\end{document}
