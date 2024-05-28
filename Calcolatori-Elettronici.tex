@@ -1530,6 +1530,120 @@ Nel suo insieme è realizzato da un unico canale di comunicazione ad altissima v
 
 %% TODO CPU ATmega168
 
+\clearpage
+
+
+a
+
+\section{Linguaggio Assemblativo 8088}
+
+Un linguaggio assemblativo è un linguaggio simbolico, programmabile dall'utente, in corrispondenza biunivoca con il linguaggio macchina. Per ogni istruzione binaria eseguibile 
+dal processore, esiste una versione simbolica, rappresentata da un comando molto semplice, dove gli operatori sono i registri del processore, nascondendo i dettagli bassissimi 
+del codice binario. 
+
+Il livello più basso in cui si programma oggi non è più il linguaggio assemblativo, in generale i sistemi operativi non si spingono oltre il livello di C o C++. Non è quindi un 
+linguaggio pensato da essere usato direttamente dall'utente. I compilatori trasformando il codice in linguaggio assemblativo creando un codice oggetto, e molto spesso produce 
+un codice migliore. Però è possibile scrivere piccole routine locali in linguaggio assemblativo, dedicate
+La conoscenza del linguaggio assemblativo permette di comprende meglio il comportamento ed il funzionamento del processore nell'esecuzione delle istruzioni. 
+
+Molti linguaggi consentono di incorporare pezzi di codice che utilizzano linguaggio assemblativo, in C si introduce il linguaggio all'interno del corpo di \verb|asm{}|. 
+
+Oltre all'assemblatore che dato questo linguaggio produce un linguaggio binario, effettuando un lavoro molto semplice, esiste un tracer, o interprete che permette di eseguire un 
+codice assemblativo un'istruzione alla volta, per simulare la sua esecuzione come un debugger. 
+
+Ciascuna delle istruzioni di un linguaggio di programmazione viene trasformata in una serie di istruzioni in forma binaria, corrispondenti a istruzioni in linguaggio 
+assemblativo. 
+
+Un tracer è uno strumento molto primitivo per la sua interfaccia ed utilizzo. Il file assemblativo viene scritto su un qualsiasi file di testo, che può essere inviato 
+al tracer per eseguire le istruzioni mostrando una mappatura dei registri del processore ad ogni istruzione, indicando l'istruzione attuale. Inoltre mostra una mappa della 
+memoria indicando il loro contenuto. 
+
+Gli esempi tratteranno del linguaggio appartenente alla famiglia Intel x86. Rappresenta un linguaggio di una vasta famiglia di ISA della famiglia Intel, a partire dal 
+processore 8086, retrocompatibile da ogni processore Intel fino come un processore i7 moderno. 
+Nelle versioni moderne viene associato al numero di bit dell'architettura come x86-32 o x86-64. 
+Poiché queste versioni sono molto complesse si considera solamente il linguaggio di una delle prime versioni del processore ad 8 bit il x86 per il processore 8088 ed operazioni 
+solamente su numeri interi. 
+Ma può essere eseguito anche su processori moderni, senza modifiche. 
+Questa architettura è un'architettura a 16 bit, e può avere indirizzi a 20 bit ed un mega di memoria centrale. Presenta un bus di dati di un byte, l'unità indirizzabile è quindi 
+un byte. 
+
+\subsection{Registri}
+
+Presenta un quattordici registri divisi in quattro gruppi funzionali: registri di uso generale AX, BX, CX, DX, divisi in due sezioni da 8 bit xH e xL per indirizzare una sezione 
+del registro; registro del sistema operativo per contenere i segmenti del 
+codice CS, dei dati DS, dello stack di esecuzione SS e la memoria aggiuntiva in caso sia necessaria ES; una serie di registri utilizzati divisi in coppie, uno per la 
+gestione degli array SI e DI, e l'altra coppia per la gestione della zona di memoria come pila SP e BP; 
+
+%% TODO tabella registri generali 8088
+
+I registri generali sono divisi per mantenere la retrocompatibilità con processori a 8 bit. 
+Negli anni quindi si è aggiunto a questi registri, mantenendo la retrocompatibilità contenendo queste sezioni di registri, permettendo di indirizzare queste sezioni di 
+registro, simulando l'esistenza di registri semplificati come porzioni del registro più grande. 
+La disposizione dei registri rimane invariata anche nelle architetture a 64 bit, con quattro registri di uso generale, sei per gestire il sistema operativo, altri quattro per 
+gestire lo stack e gli array. Inoltre si ha un registro che contiene le ``flag'', per contenere lo stato del processore, ogni bit del registro rappresenta il risultato 
+di operazioni e del suo stato. 
+
+Il linguaggio indirizza direttamente questi registri. Le istruzioni presentano un formato semplice, sono composte da un codice operativo simbolico seguito da argomenti, 
+specifica un registro o un indirizzo di memoria principale. Per indicare un indirizzo di memoria principale bisogna specificare il numero tra parentesi. 
+Il registro AX viene usato come accumulatore per memorizzare il risultato di un'elaborazione di molte istruzioni, anche implicitamente, sovrascrivendo il valore contenuto. 
+Il registro BX viene usato come accumulatore oppure come puntatore alla memoria. Il registro CX viene usato come contatore di cicli. Il registro DX come registro di dati e come AX 
+usato per contenere le istruzioni lunghe due parole: DX:AX. 
+
+Tutti i registri vengono rappresentati come coppie di registri da 8 bit, accessibili autonomamente. Per cui è possibile salvare un dato in AX, e successivamente modificarne 
+il valore tramite riferimenti a AH e AL, modificando il valore contenuto nel registro a 16 bit AX. 
+
+I registri puntatore ed indice hanno uno scopo più specifico, SP è un puntatore alla cima della pila, e BP punta alla base della pila, e vengono aggiornati automaticamente 
+dal sistema operativo. Il record di attivazione viene quindi gestito autonomamente. 
+I registri SI, indice sorgente, e DI, indice destinazione, sono sono indici usati per indirizzare un array e gestire un array, usato in combinazione con BP. 
+Il registro di stato rappresenta un insieme di registri da 1 bit, creati automaticamente dal sistema: il registro Z vale uno quando viene generato uno zero, S se il risultato è 
+negativo, O se il risultato ha causato un overflow, C se il risultato ha creato un riporto, A, riporto ausiliario su 3 bit; P parità del risultato %% TODO finire registro di stato 
+
+I registri di segmento, gestiti dal sistema operativo puntano a quattro segmenti correntemente attivi, una porzione punta al segmento contenente le istruzioni da eseguire 
+contenuto nella memoria centrale. Questi segmenti sono di dimensione fissa, per cui se non è più sufficiente lo spaio si può usare il registro EX, segmento extra. 
+Il SO inserisce il primo elemento del segmento in questi registri a tempo di esecuzione, poiché vengono salvati sequenzialmente. 
+
+La memoria è segmentata divisa in segmenti di dimensione fissa di 64 bit. A livello del programma vede una memoria che comincia dall'indirizzo 0, ma è un indirizzo relativo 
+alla porzione di memoria indirizzata dal segmento dei dati. Per ottenere il registro effettivo viene sommato l'indirizzo relativo CS e si aggiungono 4 zeri a destra per ottenere 
+indirizzi a 20 bit e si somma all'indirizzo a 20 bit per ottenere l'indirizzo effettivo. 
+
+La gestione della pila utilizza un meccanismo simile, utilizzando due puntatori alla cima ed alla coda della pila, ed ad ogni operazione di push o di pop modificando il valore 
+contenuto in SP. Il segmento di stack è costituito da parole di 2 byte. Lo stack cresce andando dagli indirizzi alti, relativi ad un indirizzo di memoria effettivo, a quelli più 
+bassi. SS punta all'indirizzo di partenza dello stack e SP punta alla locazione in cima allo stack, indirizzo più basso di SS. 
+
+
+Gli argomenti di un'operazione possono essere direttamente registri del processore, contenenti un certo valore, indirizzando il registro. Oppure indirizzamento immediato, 
+dove il secondo argomento è una costante di 8 o 16 bit, poiché il primo deve necessariamente essere un indirizzo valido poiché deve ricevere il valore. Invece per ottenere 
+un indirizzo di memoria principale si inserisce l'indirizzo tra parentesi, con indirizzamento diretto, dove l'operando è contenuto nell'indirizzo passato come parametro. 
+Se invece viene usato un registro tra parentesi, BX, SI o DI, si considera il suo contenuto interpretato come indirizzo di memoria principale dove è contenuto il dato. 
+Utilizzare un registro come puntatore alla memoria è molto utile quando vengono usati molti dati.  
+Inoltre con l'indirizzamento indiretto a registro con spiazzamento considerando come secondo argomento una costante affiancata dal registro tra parentesi, che somma la 
+costante con il registro. Invece della costante è possibile utilizzare il contenuto di un altro registro. 
+In questo modo è possibile gestire array diversi. Il registro BX in generale rappresenta la base del registro, mentre SI viene usato come indice per scorrere gli elementi 
+dell'array. Combinandoli è possibile ottenere l'indirizzamento a registro indice con spiazzamento, sommando a una costante al valore contenuto in due registri allo stesso 
+modo dell'indirizzamento precedente. 
+
+%% TODO modalità di indirizzamento tabella
+
+\subsection{Esecuzione}
+
+Si utilizzerà un assemblatore as88 molto primitivo, con tre componenti: il programma assemblatore che prende come argomento il nome di un file contente codice assemblare as88, 
+l'emulatore o interprete dell'architettura 8088 s88; ed il programma che lancia il tracer per il debugging t88. 
+
+
+Un programma in assembler è composto da tre sezioni diverse individuate dalla sintassi \verb|.SECT| seguite da una delle tre etichette associate alle sezioni: una che contiene 
+il codice \verb|.TEXT|, quindi le istruzioni; un'altra che contiene i dati \verb|.DATA|, ed un'altra che contiene i dati non inizializzati \verb|.BSS|. 
+A partire dall'indirizzo zero la sezione \verb|.DATA| specifica cos'è presente nella memoria principale. 
+
+%% TODO direttive ed etichette compilatore 
+Si possono definire due tipi di etichette globali e locali, le etichette globali devono essere univoche, possono essere alfanumeriche oppure numeriche, mentre le 
+etichette 
+
+Nel prologo possono essere definite etichette globali, per aumentare la leggibilità. 
+
+
+Durante l'esecuzione del programma è indispensabile invocare delle routine di sistema, tramite un identificatore, o un nome simbolico, tramite la pila. Prima inserendo gli 
+argomenti nella pila ed in seguito si impila l'identificatore della chiamata di routine. Per invocare la funzione di sistema si utilizza \verb|SYS| che cerca l'identificatore 
+della funzione di sistema ed i suoi argomenti nella pila. 
 
 
 \end{document}
