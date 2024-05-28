@@ -1452,13 +1452,133 @@ connessi sia come hardware che come software, non permesso dall'uso esclusivo de
 
 \section{Microarchitettura di una CPU}
 
-%% TODO add 9/5: microarchitetture di una cpu
-%% TODO img schema data-path 
-%% TODO img schema di una microarchitettura cisc (sezione di controllo ppt. pg 20)
+Al livello della microarchitettura si studia come la CPU implementi le istruzioni macchina utilizzando dispositivi digitali, come registri, ALU, etc. analizzati precedentemente, senza 
+considerare le specifiche realizzative. Ora astratti e considerati come scatole nere. Questa descrizione considera il flusso dei dati attraverso questi componenti diversi. 
+
+In generale il data path di una generica microarchitettura di una CPU è formata da una serie di registri che contengono l'operazione gli operandi ed il loro risultato, un'ALU dei registri 
+di output ed input all'ALU e bus interni per collegare questi componenti. Inoltre sono presenti alcune linee di controllo per selezionare l'operazione da effettuare nel'ALU e quali registri 
+abilitare in entrata ed in uscita. 
+La gestione delle istruzioni viene affidata ad una sezione dedicata al controllo nella CPU, diversa in base al tipo di architettura RISC o CISC. 
+Nell'esecuzione diretta, le istruzioni vengono eseguite direttamente dalla microarchitettura e realizzano esecuzione molto efficiente, ma un'architettura complessa. Mentre nell'esecuzione 
+per interpretazione la microarchitettura sa eseguire solo microistruzioni e l'istruzione completa deve essere quindi scomposta, da una componente di controllo più semplice. 
+
+
+Per studiare il comportamento di una microarchitettura si considera un'implementazione della JVM, ``Java Virtual Machine'', con sole istruzione su interi. Storicamente non si è implementata 
+in hardware, poiché erano già presenti architetture molto diffuse. Per implementarla bisogna realizzare il data path, la temporizzazione dell'esecuzione, l'accesso alla memoria ed alla cache, 
+il formato delle microistruzioni e la sezione di controllo. Si considera un'architettura CISC a 32 bit, con 8 bit per le istruzioni. 
+
+\subsection{Data Path}
+
+Il data path è composto da una serie di registri e l'ALU. I primi quattro registri sono responsabili della comunicazione con la memoria centrale. Rappresentano una coppia di registri 
+sempre presenti in ogni processore. La prima coppia MAR, ``Memory Address Register'', e MDR, ``Memory Data Register'', contengono l'indirizzo di memoria del dato, il primo, ed il dato 
+contenuto in quell'indirizzo viene salvato nel secondo registro. La seconda coppia effettua lo stesso processo per memorizzare le istruzioni, il PC indica quale istruzione sta venendo 
+eseguita, ed il MBR, ``Memory Buffer Register'', contiene l'istruzione di 8 bit, in figura rappresenta un quarto di un registro normale. Questi 
+quattro registri sono sempre utilizzati per la lettura e la scrittura verso l'esterno. 
+I successivi registri sono di uso generale e la loro denominazione dipende dalla specifica architettura, vengono utilizzati per memorizzare dati parziali, ognuno con un nome 
+simbolico per la sua specifica funzione. Per semplicità di controllo si utilizza un registro accumulatore H, ``Holding register'', che contiene sempre un operando dell'operazione, mentre il secondo 
+operando viene inviato all'ALU dal bus B. Questo rappresenta anche un vincolo per cui è sempre necessario memorizzare uno dei due operandi in H. 
+A valle dell'ALU si utilizza uno shifter per permettere di traslare l'output di un bit, può essere necessario quando si effettuano operazioni su virgola mobile e bisogna traslare la mantissa. 
+
+Poiché il bus B è condiviso tra tutti i registri sono necessari segnali di abilitazione, in figura in grigio, per permettere ad un singolo dato di essere spostato all'ingresso dell'ALU. 
+Oltre a questi segnali di controllo ad ogni registro viene associato un segnale di controllo, in figura in nero, per abilitare l'input nel registro, per memorizzare il dato in uscita sul 
+bus C. Possono essere abilitati in questo modo più di un registro, per salvare il risultato parziale. Un altra linea di controllo da 6 bit sceglie l'operazione necessaria sull'ALU. 
+Inoltre lo shifter all'inizio del bus C richiede due segnali di controllo per stabilire l'operazione da effettuare, o non effettuare in caso non si voglia traslare il dato. 
+
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{data-path.pdf}%
+    \caption{Data Path}
+\end{figure}
+
+Il PC viene incrementato utilizzando questo stesso data path, salvando un 1 nel registro accumulatore e sommandolo al contenuto attuale del PC, poiché nella maggior parte dei casi le 
+istruzioni sono salvate in locazioni contigue della memoria. 
+
+Per l'ALU si considera un'ALU a 32 bit realizzata da 1 bit slices come l'ALU trattata in precedenza. Questa presenta quindi sei input di controllo per ottenere 16 operazioni diverse: 
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c||c|}
+        \hline
+        F$_0$&F$_1$&ENA&ENB&INVA&INC&Operazione\\
+        \hline\hline
+        0&1&1&0&0&0&A\\
+        \hline
+        0&1&0&1&0&0&B\\
+        \hline
+        0&1&1&0&1&0&\textoverline{A}\\
+        \hline
+        1&0&1&1&0&0&\textoverline{B}\\
+        \hline
+        1&1&1&1&0&0&A+B\\
+        \hline
+        1&1&1&1&0&1&A+B+1\\
+        \hline
+        1&1&1&0&0&1&A+1\\
+        \hline
+        1&1&0&1&0&1&B+1\\
+        \hline
+        1&1&1&1&1&1&B-A\\
+        \hline
+        1&1&0&1&1&0&B-1\\
+        \hline
+        1&1&1&0&1&1&-A\\
+        \hline
+        0&0&1&1&0&0&A AND B\\
+        \hline
+        0&1&1&1&0&0&A OR B\\
+        \hline
+        0&1&0&0&0&0&0\\
+        \hline
+        1&1&0&0&0&0&1\\
+        \hline
+        1&1&0&0&1&0&-1\\
+        \hline        
+    \end{tabular}
+\end{center}
+
+I valori di default dei segnali di controllo sono ENA ed ENB entrambi asseriti ed INVA asserito basso, a 0. 
+
+La temporizzazione del data path dipende dal tipo di architettura RISC o CISC, e dipende se ogni microistruzione impiega un ciclo di clock per essere eseguita. 
+
+In generale in un singolo ciclo di clock, dal fronte di discesa vengono asseriti i segnali di controllo per abilitare il ciclo, e vengono passati i valori sul bus B e dal registro accumulatore all'ALU. 
+Dopo che l'ALU ha elaborato i dati ed inviato il suo contenuto sullo shifter, dopo che i dati sono stabili su questo componente vengono propagati dal bus C a tutti i registri abilitati in 
+input. Nel fronte di salita quindi vengono salvati i dati dal bus C ai registri e dalla memoria centrale ai registri associati. Viene quindi incrementato il PC o il MPC, ``Micro PC'', se 
+si tratta di microistruzioni, per caricare nel fronte di discesa corrispondente al ciclo di clock successivo la nuova istruzione nell'IR o MIR, ``Micro IR''. 
+
+I tempi di assestamento dei segnali di controllo dell'ALU e dello shifter, di propagazione lungo il bus B e C possono essere analizzati come sottocicli, impliciti. 
+Un singolo ciclo ci clock corrisponde sempre ad un passaggio per il data path. 
+
+\subsection{Micro-Istruzioni}
+
+Una microistruzione per un processore di architettura CISC avente questo data path deve avere 36 bit per accomodare tutti i segnali di controllo e le informazioni necessarie per la 
+microistruzione successiva. 
+Sono necessari 9 bit per la selezione dei registri da abilitare i registri sul bus C, e altrettanti per abilitare i registri in uscita sul bus B. Poiché i registri sul bus B possono essere 
+abilitati solo uno alla volta, si possono utilizzare solamente quattro bit connessi ad un decodificatore per abilitare uno solo dei registri. 
+Sono necessari 8 bit per scegliere le funzioni dell'ALU e dello shifter, 2 per la lettura e scrittura dei dati, ed un bit per la lettura delle istruzioni. 
+Inoltre bisogna indirizzare la microistruzione successiva, tramite 9 bit, con un massimo di 512 microistruzioni indirizzabili. Inoltre servono 3 bit per definire la scelta dell'operazione 
+da eseguire, read, write o fetch, per recuperare l'istruzione dalla memoria centrale.  
+
+
+Una microistruzione è composta da sei sezioni:
+\begin{itemize}
+    \item Addr (9 bit): Contiene l'indirizzo della prossima microistruzione;
+    \item JAM (3 bit): Sceglie la prossima microistruzione e permette di effettuare salti date configurazione dei suoi tre bit JMPC, JAMN e JAMZ;
+    \item ALU (8 bit): Imposta i sei comandi per l'ALU già discussi, ed i due bit per configurare i comandi dello shifter SLL8 e SRA1;
+    \item C (9 bit): Abilita i registri per memorizzare il contenuto del bus C;
+    \item M (3 bit): Corrisponde alle istruzioni di controllo per la memoria, WRITE, READ e FETCH;
+    \item B (4 bit): Indica quale indirizzo da inviare su B. 
+\end{itemize}
+
+Il contenuto di B viene inviato ad un decodificatore, ed i registri validi corrispondono ai primi nove valori da 0 a 8, mentre per valori da 9 a 15 non corrisponde un registro valido. 
+
+Per creare questi bit, è presente una memoria dove viene contenuto il microprogramma per creare la microistruzione, composto da 512 locazioni da 36 bit, che conservano tutte le possibili 
+microistruzioni eseguibili dal processore. 
+Si utilizza un MPC per trasformare una singola istruzione contenuta nel MBR in una serie di microistruzioni, corrispondenti all'implementazione dell'istruzione. 
+
+Per eseguire una microistruzione quindi viene incrementato il MPC, mentre il MIR contiene la microistruzione corrente. Il contenuto del MPC diventa stabile sul livello alto del clock, 
+a quel punto è pronto per essere eseguito nel periodo successivo, e viene caricata nel MIR sul fronte di discesa dell'impulso di clock. 
 
 Il comando JMPC, Jump (to) PC, indica che la prossima istruzione da essere eseguita non è una microistruzione, ma la prossima istruzione contenuta nel PC, inoltre 
 può realizzare istruzioni condizionali. 
-Per implementarle a livello di hardware si utilizzano le due uscite della ALU N, ``Negative'', e Z, ``Zero'', salvati in registri, ed in base al contenuto 
+Per implementarle a livello di hardware si utilizzano le due uscite della ALU N, ``Negative'', e Z, ``Zero'', salvati in flip flop, ed in base al contenuto 
 del JMPC, è possibile alterare il contenuto del MPC per saltare da un'istruzione ad un'altra. 
 
 
@@ -1467,15 +1587,29 @@ molto meno complesso del microprogramma presente nelle architetture CISC, e appe
 del processore. 
 
 
-
-In questo processore si assume che ogni $\mu$-istruzione viene eseguita in un singolo ciclo di clock, per realizzare un unico ciclo macchina, implementando l'intero data 
+In questo processore si assume che ogni microistruzione viene eseguita in un singolo ciclo di clock, per realizzare un unico ciclo macchina, implementando l'intero data 
 path, dal registro di partenza al registro di destinazione, dopo aver eseguito le operazioni necessarie. Per cui per realizzare un'istruzione macchina, viene caricata nel 
 PC l'istruzione in un ciclo di clock, e tutti gli altri cicli successivi realizzano le microistruzioni nel registro MPC, fino alla fine della sequenza di queste 
 microistruzioni, oppure se si vuole realizzare un'istruzione condizionale. 
 
 Il dato JAM rappresenta tre bit JAMPC o JMPC, JAMN ``Jump if Negative'' e JAMZ, ``Jump if Zero''. Se ogni bit di JAM vale zero non vengono eseguiti salti, se invece JMPC vale 
-uno, allora gli 8 bit bassi di Addr vengono passati ad un OR con il contenuto del MBR. 
+uno, allora gli 8 bit bassi di Addr vengono passati ad un OR con il contenuto del MBR, in questo modo vengono realizzati salti condizionati in tutto il Control Store. 
+Altrimenti il bit più alto di Addr è dato da: 
+\begin{equation*}
+    \mbox{(JAMZ AND Z) OR (JAMN AND N) OR Addr[8]}
+\end{equation*}
 
+
+\begin{figure}[H]%
+    \centering
+    \includegraphics{processore-cisc-jvm.pdf}%
+    \caption{Microarchitettura CISC}%
+\end{figure}
+
+In caso di un'architettura RISC al posto del control store è presente un decodificatore di istruzioni per realizzare le 
+rispettive microistruzioni. 
+
+\subsection{Forme di Parallelismo}
 
 Per migliorare le prestazioni bisogna massimizzare il rapporto velocità/prezzo. Per migliorare le prestazioni si considerano tre approcci, l'approccio di aumentare la frequenza 
 di clock è stata abbandonata recentemente, per le risorse necessarie da affidare al raffreddamento del processore. Invece è possibile introdurre forme di parallelismo oppure 
@@ -1599,9 +1733,6 @@ Nel suo insieme è realizzato da un unico canale di comunicazione ad altissima v
 %% TODO CPU ATmega168
 
 \clearpage
-
-
-a
 
 \section{Linguaggio Assemblativo 8088}
 
