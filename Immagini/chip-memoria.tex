@@ -13,19 +13,19 @@
     (0,0)node[demux 4by2](a){}
     (a.lpin 1)to[short,-d]++(-0.1,0)node[left]{A$_1$}
     (a.lpin 2)to[short,-d]++(-0.1,0)node[left]{A$_0$}
-    (a.rpin 1)node[and port, anchor=in 1](a1){}
-    (a.rpin 2)to[short]++(1.5,0)node[and port, anchor=in 1](a2){}
-    (a.rpin 3)to[short]++(3,0)node[and port, anchor=in 1](a3){}
-    (a.rpin 4)to[short]++(4.5,0)node[and port, anchor=in 1](a4){}
+    (a.rpin 1)to[short,-*]++(0,0)coordinate(b1)node[and port, anchor=in 1](a1){}
+    (a.rpin 2)to[short,-*]++(1.5,0)coordinate(b2)node[and port, anchor=in 1](a2){}
+    (a.rpin 3)to[short,-*]++(3,0)coordinate(b3)node[and port, anchor=in 1](a3){}
+    (a.rpin 4)to[short,-*]++(4.5,0)coordinate(b4)node[and port, anchor=in 1](a4){}
     (a2.in 2)to[short,-*]++(-1.5,0)
     (a3.in 2)to[short,-*]++(-3,0)
     (a4.in 2)to[short,-*]++(-4.5,0)
     (a1.in 2)to[short]++(0,-3.5)node[and port, anchor=out, rotate=90](b){}
 
-    (a1.out)coordinate(b1)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r1){m Bit}
-    (a2.out)to[short]++(0.75,0)coordinate(b2)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r2){m Bit}
-    (a3.out)to[short]++(1.5,0)coordinate(b3)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r3){m Bit}
-    (a4.out)to[short]++(2.25,0)coordinate(b4)to[short,*-]++(0.1,0)node[registro,anchor=pin 3](r4){m Bit}
+    (a1.out)node[registro,anchor=pin 3](r1){m Bit}
+    (a2.out)to[short]++(0.75,0)node[registro,anchor=pin 3](r2){m Bit}
+    (a3.out)to[short]++(1.5,0)node[registro,anchor=pin 3](r3){m Bit}
+    (a4.out)to[short]++(2.25,0)node[registro,anchor=pin 3](r4){m Bit}
 
     (r4.pin 1)to[short]++(0,4.5)
     to[short]++(-8,0)to[multiwire=m,-d]++(-3,0)node[left]{I}
@@ -38,10 +38,11 @@
     (r3.pin 6)node[and port, anchor=in 2](a3){}
     (r4.pin 6)node[and port, anchor=in 2](a4){}
 
-    (b1)to[short]++(0,2.24)to[short](a1.in 1)
-    (b2)to[short]++(0,2.24)to[short](a2.in 1)
-    (b3)to[short]++(0,2.24)to[short](a3.in 1)
-    (b4)to[short]++(0,2.24)to[short](a4.in 1)
+    (b1)to[short]++(0,0.35)to[short]++(2.3,0)to[short]++(0,1.61)to[short](a1.in 1)
+    (b2)to[short]++(0,0.35)to[short]++(3.07,0)to[short]++(0,1.61)to[short](a2.in 1)
+    (b3)to[short]++(0,0.35)to[short]++(3.82,0)to[short]++(0,1.61)to[short](a3.in 1)
+    (b4)to[short]++(0,0.35)to[short]++(4.57,0)to[short]++(0,1.61)to[short](a4.in 1)
+    
 
     (a4.out)to[short]++(0,-0.5)node[or port, number inputs=4, rotate=270, anchor=in 4](o){}
     (a3.out)to[short]++(2.53,0)to[short](o.in 3)

@@ -27,6 +27,11 @@
     linkcolor=black,
 }
 
+\makeatletter
+\newcommand*{\textoverline}[1]{$\overline{\hbox{#1}}\m@th$}
+\makeatother
+
+
 \makeatother
 
 \numberwithin{equation}{subsection}
@@ -1242,7 +1247,6 @@ Può essere presente un segnale di RD, ``Read'', per abilitare il segnale di clo
     \includegraphics[scale=0.8]{chip-memoria.pdf}%
     \caption{Chip Contenente 4 Parole da m Bit}%
 \end{figure}
-%% TODO fix porte di abilitazione uscita 
 
 La dimensione di memoria disponibile in un chip cresce molto più velocemente del numero di piedini disponibili per poterla trasferire ed indirizzare, poiché il numero dei piedini su un singolo contenitore è 
 limitato. 
@@ -1265,7 +1269,6 @@ locazioni di memoria univoche all'interno dell'unico chip.
     \includegraphics{chip-memoria-compatto.pdf}%
     \caption{Chip di Memoria con n Parole da m Bit}%
 \end{figure}
-
 \subsubsection{Matrice di Selezione}
 
 Il numero dei piedini nel chip non è l'unico problema nell'indirizzamento di una specifica locazione di memoria. Un decoder a $n$ bit richiede $2^n$ porte AND per poter trasformare un 
@@ -1307,11 +1310,71 @@ input e gli output di questa funzione.
 
 \section{Bus}
 
-%% TODO add 3/5, 7/5: bus
+I bus sono canali di comunicazioni tra le varie componenti di un calcolatore, possono essere interni, non standardizzati, o esterni, standardizzati, ai suoi singoli componenti. 
+Vengono realizzati da linee stampate sul silicone della scheda madre del calcolatore, in generale è sempre presente un bus dedicato per la comunicazione tra la CPU e la memoria 
+centrale, ed almeno un bus condiviso per la gestione dell'IO. I bus esterni sono standardizzati per permettere a dispositivi realizzati da costruttori diversi di comunicare 
+senza problemi. 
+
+
+La comunicazione su un bus viene sempre regolata da un protocollo, secondo cui sono presenti solo due dispositivi che assumono uno il ruolo di master, che regola la 
+trasmissione, e di slave. Uno stesso dispositivo può assumere ruoli diversi in base alla connessione. I vari dispositivi sono connessi al bus tramite un bus transceiver, 
+realizzato tramite dispositivo a a tre stati, oppure di tipo open collector, più semplice realizzato da un OR logico sulle linee del bus. 
+Non tutte le comunicazioni sul bus devono passare necessariamente per la CPU, infatti per i dispositivi di IO, è permesso accedere direttamente alla memoria centrale, DMA. 
+
+La larghezza di banda di un bus corrisponde al numero di linee parallele che lo compongono. Possono essere presenti linee separate di indirizzo o di controllo per specificare l
+a locazione di memoria, e linee di dati, dove vengono trasferiti i dati letti dal dispositivo slave. Si indica con banda di trasferimento il numero di linee moltiplicato per la velocità 
+di trasferimento. 
+La scelta corretta per aumentare la banda di trasferimento non è sempre aumentare il numero di linee, poiché all'aumentare della velocità aumenta il bus skew, ovvero le linee 
+più veloci dovranno sempre aspettare le linee più lente, creando un ritardo costante nella trasmissione dei dati, per cui per bus moderni si preferisce una trasmissione seriale 
+dei dati per non essere limitati da questo fenomeno. 
 
 \subsection{Bus Sincrono ed Asincrono}
 
+%% TODO diagramma di gant ciclo di lettura sincrono e tabella legenda
+
+Quando la trasmissione è regolata rispettando un clock, si parla di bus sincrono, dove le varie operazioni di una trasmissione dipendono dall'intervallo di tempo 
+passato. Per cui viene di un bus vengono forniti i tempi o cicli di clock in cui i comandi vengono asseriti ad ogni passaggio della comunicazione. 
+Sono sempre presenti delle linee di indirizzo ADDRESS, e dei dati DATA. Inoltre sono presenti linee di controllo per aspettare che i dati siano stabili sulle linee dei dati 
+quando il segnale di WAIT viene mandato a zero, asserito per un numero intero di cicli di clock prima di poter leggere i dati, considerando il tempo necessario allo slave 
+per fornire i dati richiesti. Altre due linee RD e MREQ indicano l'operazione di lettura che si sta effettuando, quando sono asseriti, e durano fino a quando non viene terminata 
+l'operazione. Le specifiche del bus indicano quanto tempo trascorre dalla negazione del segnale WAIT alla lettura dei dati alla terminazione dell'operazione di lettura e la 
+negazione dei segnali RD e MREQ e della permanenza dei dati sul bus. 
+In generale questi segnali di controllo vengono inviati negati, per cui si tratta di \textoverline{RD}, \textoverline{MREQ}, \textoverline{WAIT}. 
+Questo protocollo temporizzato deve rispettare le caratteristiche dei dispositivi utilizzati nella trasmissione, in generale il segnale di WAIT viene mantenuto 
+asserito per interi di cicli di bus, e determina la durata complessiva della trasmissione, mentre i segnali di RD e MREQ vengono asseriti al fronte di discesa del clock. 
+
+
+Si parla invece di bus asincroni, quando non sono regolati da un clock interno, per permettere la comunicazione di dispositivi che utilizzano frequenze diverse. Per permettere 
+la comunicazione quindi i due dispositivi devono inviarsi segnali di sincronizzazione. Si ha un sistema ad eventi, dove ogni evento avviene in risposta ad altri eventi, 
+tramite asserzioni di segnali di controllo e o sincronizzazione. Oltre ai segnali descritti per i bus sincroni sono presenti altri due segnali di controllo MSYN, asserito 
+dal master per avvertire lo slave che ha effettuato un'operazione. In seguito dopo che il dispositivo slave ha caricato i dati richiesti sul bus, asserisce il segnale 
+SSYN per indicare che i segnali sono pronti sul bus. Non è quindi necessario un esplicito segnale di WAIT, poiché l'attesa per la stabilità dei dati viene indicata 
+direttamente dal dispositivo slave. Anche questi due segnali vengono trasmessi negati \textoverline{MSYN} e \textoverline{SSYN}. 
+
 \subsection{Arbitraggio}
+
+Quando sono presenti solo due dispositivi sullo stesso bus non è necessario un criterio per determinare a quale dispositivo sia permesso comunicare, ma per bus di IO spesso 
+sono connessi più dispositivi e bisogna stabilire quale dispositivo possa utilizzare il bus, risolvendo eventuali conflitti. 
+L'arbitraggio di un bus spesso viene gestito da un chip dedicato nel microprocessore. Ogni dispositivo connesso al bus, è connesso anche a delle linee di richiesta per 
+l'utilizzo del bus. Inoltre è presenta una linea di bus grant per fornire ad uno dei dispositivi il permesso di utilizzare il bus. Questa linea viene propagata a partire 
+dall'arbitro formando una catena che connette tutti i dispositivi connessi al bus. In questo modo il primo dispositivo che ha richiesto il bus intercetta questo segnale di 
+grant e lo nega per il resto della catena. 
+In questo modo i conflitti vengono risolti dando precedenza al primo dispositivo connesso, ma questo non è un metodo efficiente, poiché non viene specificato l'ordine delle porte 
+di un calcolatore. 
+
+Per cui si realizza un arbitraggio a più livelli di priorità, dove sono presenti più linee di richiesta e di grant, per ogni livello di priorità. Entrambe connesse 
+come l'arbitraggio normale, ed i conflitti vengono risolti favorendo le linee ad alta priorità, ma all'interno della stessa catena di priorità vale la posizione. 
+
+In generale viene data priorità ai dispositivi più lenti, anche se lo stesso bus è connesso alla CPU o alla memoria centrale. In caso un dispositivo non viene permesso di 
+accedere al bus per un certo periodo di tempo il sistema operativo gli permette di comunicare assegnando un livello di priorità più alto a questo dispositivo. 
+
+In casi semplici di applicazioni embedded, il processore stesso è l'arbitrio. Utilizzando un numero di linee di priorità pari al numero dei dispositivi connessi al bus si può 
+realizzare un disaccoppiamento completo tra i dispositivi. 
+
+L'arbitraggio completamente opposto consiste nell'escludere l'arbitrio, utilizzando un arbitraggio decentralizzato. In questo tipo di arbitraggio sono presenti oltre alla linea 
+di richiesta, una linea che indica che il bus è occupato ``busy'', ed una linea di arbitraggio alimentata da una tensione costante dall'esterno connessa a catena tra tutti i 
+dispositivi connessi, quindi sempre asserita. Quando un dispositivo ha necessità del bus invia una richiesta di bus, e verifica che sia libero, se è libero e la linea di arbitraggio è asserita 
+asserisce la linea busy, diventa master e nega la linea di arbitraggio. In caso la linea di arbitraggio è negata, non diventa master e nega la stessa linea in uscita. 
 
 \subsection{PCI e PCIe}
 
