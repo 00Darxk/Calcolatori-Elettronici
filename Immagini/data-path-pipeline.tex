@@ -1,0 +1,92 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\usepackage{rotating}
+\tikzset{ALU/.style={muxdemux,
+    muxdemux def={Lh=5, NL=2, Rh=2, NR=1, NB=1, NT=2, w=2,
+    inset w=1, inset Lh=2, inset Rh=0, square pins=1}},
+    REG/.style={muxdemux,
+    muxdemux def={Lh=1, Rh=1, NL=1, NB=0, NR=2, w=5}},
+    PC/.style={muxdemux,
+    muxdemux def={Lh=1, Rh=1, NL=2, NB=0, NR=1, w=5}},
+    MAR/.style={muxdemux,
+    muxdemux def={Lh=1, Rh=1, NL=2, NB=0, NR=0, w=5}},
+    MDR/.style={muxdemux,
+    muxdemux def={Lh=1, Rh=1, NL=2, NB=0, NR=2, w=5}},
+    SH/.style={muxdemux,
+    muxdemux def={Lh=1, Rh=1, NL=0, NB=1, NR=1, w=5}},
+    LATCH/.style={muxdemux,
+    muxdemux def={Lh=1, Rh=1, w=5, NB=1, NT=1, NL=0, NR=0}}}
+\begin{document}
+\begin{circuitikz}
+    \draw
+    (0,0)coordinate(o)node[MAR](mar){MAR}
+    (o)++(0,-1)coordinate(o)node[MDR](mdr){MDR}
+    (o)++(0,-1)coordinate(o)node[PC](pc){PC}
+    (o)++(0,-1)coordinate(o)node[REG](mbr1){MBR1}
+    (o)++(0,-1)coordinate(o)node[REG](mbr2){}
+    ;
+    \draw[dashed](o)++(0,-0.5)--++(0,-1)coordinate(o);
+    \draw
+    (o)++(0,-0.5)coordinate(o)node[REG](h){H}
+
+    (mdr.rpin 2)to[short]++(0.3,0)to[short,i=\mbox{}]++(0,-5.5)node[LATCH,anchor=tpin 1](a){A Latch}
+    (a.bpin 1)to[short]++(0,-1)node[ALU, anchor=lpin 2, rotate=270](alu){\rotatebox{90}{ALU}}
+    (mbr1.rpin 1)to[short,i=\mbox{}]++(0.3,0)
+    (mbr2.rpin 1)to[short,i=\mbox{}]++(0.3,0)
+    (h.rpin 1)to[short,i=\mbox{}]++(0.3,0)
+
+    (alu.lpin 1)node[LATCH,anchor=bpin 1](b){B Latch}
+
+    (mdr.rpin 1)to[short]++(2.25,0)to[short,i=\mbox{}](b.tpin 1)
+    (pc.rpin 1)to[short,i=\mbox{}]++(2.25,0)
+    (mbr1.rpin 2)to[short,i=\mbox{}]++(2.25,0)
+    (mbr2.rpin 2)to[short,i=\mbox{}]++(2.25,0)
+    (h.rpin 2)to[short,i=\mbox{}]++(2.25,0)
+
+
+
+    (alu.tpin 1)to[short,i=\mbox{},-d]++(0.5,0)node[right]{N}
+    (alu.tpin 2)to[short,i=\mbox{},-d]++(0.5,0)node[right]{Z}
+    (alu.bpin 1)++(-0.5,0)to[multiwire=6,i=\mbox{},d-](alu.bpin 1)
+    (alu.rpin 1)node[SH, anchor=north](sh){Shifter}
+    (sh.rpin 1)++(0.5,0)to[multiwire=2,i=\mbox{},d-](sh.rpin 1)
+
+    (h.lpin 1)to[short,*-]++(0,-0.5)node[LATCH,anchor=tpin 1](c){C Latch}
+    (sh.bpin 1)to[short,i=\mbox{}]++(-4,0)node[above right]{Bus C}-|(c.bpin 1)
+    (h.lpin 1)to[short,-*](pc.lpin 1)
+    to[short,-*](mdr.lpin 1)
+    to[short](mar.lpin 1)
+    
+    node[above right]at(alu.blpin 2){Bus A}
+    node[above right]at(alu.blpin 1){Bus B}
+
+    ;
+    \draw[<-, thick](mar.center)++(-1,-0.25)--++(0,-0.2);
+    \draw[<-, thick](mdr.center)++(-1,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](mdr.center)++(1,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](mdr.center)++(1.25,-0.25)--++(0,-0.2);
+    \draw[<-, thick](pc.center)++(-1,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](pc.center)++(1,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](mbr1.center)++(1.25,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](mbr1.center)++(1,-0.25)--++(0,-0.2);
+    \draw[<-,thick](mbr2.center)++(-1,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](mbr2.center)++(1.25,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](mbr2.center)++(1,-0.25)--++(0,-0.2);
+    \draw[<-, thick](h.center)++(-1,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](h.center)++(1.25,-0.25)--++(0,-0.2);
+    \draw[<-, thick, gray](h.center)++(1,-0.25)--++(0,-0.2); 
+
+    \draw[->, very thick, gray](mar.blpin 2)--++(-3.5,0);
+    \draw[<->, very thick, gray](mdr.blpin 2)--++(-3.5,0);
+    \draw[->, very thick, gray](pc.blpin 2)--++(-1.5,0);
+    \draw[<-, very thick, gray](mbr1.blpin 1)--++(-1.5,0)node[black, anchor=east,rectangle,draw,minimum height=3 cm,minimum width= 1.5 cm](ifu){IFU};
+    \draw[<-, very thick, gray](mbr2.blpin 1)--++(-1.5,0);
+    \draw[->,very thick,gray](ifu.180)--++(-0.5,0);
+
+    \draw[dashed, thick](2.5,0.5)--(-2.5,0.5)--(-2.5,-4.5)--(2.5,-4.5)--(2.5,0.5);
+
+    \node[rectangle, very thick, draw,anchor=0, minimum width=0.5cm, minimum height=0.5cm]at(mbr1.east){};
+    \node[rectangle, very thick, draw,anchor=0, minimum width=0.5cm, minimum height=0.5cm]at(mbr2.east){MBR2};
+
+\end{circuitikz}
+\end{document}

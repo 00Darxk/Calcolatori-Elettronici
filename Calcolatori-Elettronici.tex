@@ -1576,7 +1576,7 @@ Si utilizza un MPC per trasformare una singola istruzione contenuta nel MBR in u
 Per eseguire una microistruzione quindi viene incrementato il MPC, mentre il MIR contiene la microistruzione corrente. Il contenuto del MPC diventa stabile sul livello alto del clock, 
 a quel punto è pronto per essere eseguito nel periodo successivo, e viene caricata nel MIR sul fronte di discesa dell'impulso di clock. 
 
-Il comando JMPC, Jump (to) PC, indica che la prossima istruzione da essere eseguita non è una microistruzione, ma la prossima istruzione contenuta nel PC, inoltre 
+Il comando JMPC, ``Jump to PC'', indica che la prossima istruzione da essere eseguita non è una microistruzione, ma la prossima istruzione contenuta nel PC, inoltre 
 può realizzare istruzioni condizionali. 
 Per implementarle a livello di hardware si utilizzano le due uscite della ALU N, ``Negative'', e Z, ``Zero'', salvati in flip flop, ed in base al contenuto 
 del JMPC, è possibile alterare il contenuto del MPC per saltare da un'istruzione ad un'altra. 
@@ -1602,7 +1602,7 @@ Altrimenti il bit più alto di Addr è dato da:
 
 \begin{figure}[H]%
     \centering
-    \includegraphics{processore-cisc-jvm.pdf}%
+    \includegraphics[scale=0.89]{processore-cisc-jvm.pdf}%
     \caption{Microarchitettura CISC}%
 \end{figure}
 
@@ -1612,23 +1612,25 @@ rispettive microistruzioni.
 \subsection{Forme di Parallelismo}
 
 Per migliorare le prestazioni bisogna massimizzare il rapporto velocità/prezzo. Per migliorare le prestazioni si considerano tre approcci, l'approccio di aumentare la frequenza 
-di clock è stata abbandonata recentemente, per le risorse necessarie da affidare al raffreddamento del processore. Invece è possibile introdurre forme di parallelismo oppure 
-aggiungere componenti dedicate per effettuare le operazioni più lente. 
+di clock è stata abbandonata recentemente, per le risorse necessarie da affidare al raffreddamento del processore. Gli altri due approcci possibili consistono nell'inserire 
+forme di parallelismo fisico, nella forma di componenti dedicate o duplicare le componenti già presenti, ed introducendo un meccanismo di pipeline nel data path.  
 
 
 Il PC deve solo essere incrementato, e l'unico modo consiste nell'utilizzare un ciclo macchina per incrementare il suo valore e memorizzarlo sul suo registro, per risparmiare 
 questo ciclo macchina ogni volta che viene eseguita un'istruzione, si introduce una componente dedicata al caricamento di un'istruzione, la IFU ``Instruction Fetch Unit''. 
-Utilizza due registri di istruzioni, con due possibili formati da 8 bit, ed uno da 16 bit. Dentro quest'unità sono presenti dei contatori in grado di memorizzare quest istruzioni, 
+Utilizza due registri di istruzioni, con due possibili formati da 8 bit, ed uno da 16 bit, associati a due registri delle istruzioni MBR1 e MBR2. Dentro quest'unità sono presenti dei contatori in grado di memorizzare quest istruzioni, 
 ed effettua operazioni di ``pre-fetching'', per caricare più istruzioni insieme, realizzando una coda di istruzioni salvate nei due registri interni, in modo che è sempre 
 presenta un'istruzione successiva ad eseguire appena viene terminata l'esecuzione della precedente. 
 
-%% TODO img schema IFU
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{data-path-ifu.pdf}%
+    \caption{Data Path con IFU}%
+\end{figure}
 
 Il resto del data path rimane invariato, ma per evitare il collo di bottiglia sul registro accumulatore sono presenti due linee di bus, parallele collegate all'ALU, per 
 aumentare le prestazioni. Per cui sono necessarie due linee di controllo su ogni registro per scegliere tra i due registri. L'architettura è quindi più complessa nella sezione 
-di controllo per la gestione di questi nuovi bit di controllo da fornire per gestire più di un bus. 
-
-%% TODO img schema data-path migliorato
+di controllo, raddoppiando i bit necessari per il caricamento sul bus A e B. 
 
 In questo modo si riduce il numero di cicli macchina, ovvero attraversamento del data path, a costo di una maggiore complessità del sistema. 
 
@@ -1637,10 +1639,21 @@ completamenti autonomi, per cui rappresenta il primo stadio di una possibile pip
 delle frontiere, dei semplici registri, in entrata ed in uscita dall'ALU, per dividere il data path in diversi stadi autonomi. L'ultimo stadio è quindi il passaggio ai registri 
 di partenza del data path. In questo modo si sono definiti esplicitamente quattro stadi che il processore deve eseguire per realizzare un data path. 
 
-%% TODO img schema data-path in pipeline (hardware ?)
-
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.9]{data-path-pipeline.pdf}%
+    \caption{Data Path con Pipeline}%
+\end{figure}
 
 \subsection{Memorie Cache}
+
+All'interno del chip del processore sono presenti locazioni di memoria cache per non limitare la CPU dalla velocità della memoria. La vicinanza spaziale 
+tra questi componenti permette di aumentare la velocità di lettura e scrittura. 
+
+Nelle cache vengono memorizzate locazioni contigue di memoria, poiché si ha alta probabilità di accedere ad indirizzi molto vicini, e di accedere più volte 
+agli stessi indirizzi. 
+Le cache possono essere organizzate in gerarchie a due o tre livelli, inclusive, dove ognuna contiene quella del livello superiore. 
+
 
 Le cache di primo livello sono realizzate con due cache per le istruzioni ed i dati. Le cache di secondo e terzo livello sono unificate, poiché non distinguono tra dati ed 
 istruzioni, e sono condivise tra tutti i core, quella di secondo livello, e tra tutti i processori sulla stessa scheda, quella di terzo livello sulla strada tra la CPU e la 
@@ -1656,19 +1669,49 @@ può mai fare riferimento ad un'indirizzo di cache, poiché gestito solamente a 
 A livello di prestazioni invece è possibile determinare quando gli accessi a memoria vengono eseguiti tramite memoria cache o centrale, semplicemente in base al tempo di 
 esecuzione del programma. 
 
-%% TODO organizzazione della memoria, blocchi di byte
+Lo spazio di memoria è organizzato in blocchi da 4 a 64 byte, chiamate linee di cache. Ognuna linea può contenere diverse parole di un certo numero di byte, in base 
+all'architettura. Tutti i trasferimenti avvengono al livello di blocco, dalla memoria principale ad uno slot della cache, contenente uno o blocchi di memoria. 
+Questo introduce diversi livelli di granularità nella composizione della memoria. 
 
-Un singolo blocco di memoria è realizzato da un serie di parole, composte anch'esse da un certo numero di byte. Questi rappresentano diversi livelli di granularità della memoria. 
 Gli indirizzi devono anch'essi rappresentare questi livelli di granularità, per cui i primi bit di un indirizzo rappresentano in quale blocco si trova il dato a cui si vuole 
 accedere, generalmente è composto dal numero maggiore di bit, poiché una memoria presenta numerosi blocchi di memoria distinti, contenti ciascuno poche decine di byte, fino 
 a raggiungere diversi GB di dimensione complessiva. I successivi bit identificano la parola ed il singolo byte della parola dove si trova il dato cercato. 
+Si considera un indirizzo da 32 bit con 27 bit per indirizzare il blocco di memoria, 3 per indirizzare la parola e 2 per indirizzare il byte. Per cui si utilizzano blocchi 
+di memoria da 32 byte, con parole da 4 byte. 
 
-Per realizzare una memoria cache, essendo molto più piccola, ad ogni riga di memoria possono essere contenute righe diverse della memoria centrale. Per cui per indirizzare una 
-sola di queste porzioni di memoria vengono realizzati da una chiave, fornita insieme all'indirizzo. Questo tipo di memorie vengono chiamate memorie associative. 
 
-Si considera una memoria cache avente uno spazio di memoria di $2^n$ byte, diviso in blocchi da $2^r$ byte. 
+La dimensione della cache è più piccola della memoria principale quindi non è possibile ottenere una corrispondenza biunivoca tra le loro locazioni. Per cui la memoria 
+cache viene gestita come una memoria associativa, associando ad ogni blocco di memoria una chiave, o etichetta ``tag''. 
 
-%% TODO add 17/5
+Si considera una memoria con uno spazio indirizzabile di $2^n$ byte, diviso in $2^r$ blocchi di memoria. I primi $n-r$ bit più significativi 
+indirizzano il blocco di memoria, di cui $s$ bit indirizzano lo slot tra i $2^s$ indirizzabili, ed i primi $n-s-r$ contengono l'etichetta.   
+Se il blocco di memoria si trova in cache si trova in quell'indirizzo, altrimenti bisogna cercarlo in memoria centrale. 
+
+Quindi dall'indirizzo del blocco in memoria centrale da $n-r$ bit, i primi $s$ bit assumono il valore dell'etichetta, mentre i successivi $s$ bit 
+indirizzano lo slot associato della cache. 
+
+Il formato delle linee di cache rispetta la struttura dell'indirizzo, presenta un bit V per indicare se il contenuto dello slot è valido, o in uso. Il tag di $n-s-r$ bit, ed 
+il blocco di memoria di $2^r$ byte. 
+
+Tradizionalmente si memorizza a partire dal basso, da locazioni con tutti zero. 
+Per cercare un dato in cache, si considera il suo indirizzo di memoria principale, si rimuovono i primi $s$ bit di tag, e si cerca lo slot corrispondente all'indirizzo così 
+ottenuto, se il tag corrisponde si controlla il bit V, se questo bit è asserito alto, allora il dato è stato trovato, Cache Hit, altrimenti bisogna cercarlo in memoria principale, e 
+si trasferisce l'intero blocco di memoria corrispondente in cache quando viene trovato, Cache Miss. 
+Se si trasferisce un blocco di memoria in uno slot già in uso, il suo contenuto viene sovrascritto e ne viene cambiata l'etichetta, quindi è possibile che vengano sovrascritti 
+dati memorizzati in cache a seguito di una cache miss. 
+Per cui anche se è presente spazio libero nella cache il dato viene buttato, questo rappresenta una limitazione delle cache a mappatura diretta. 
+
+Questa limitazione può essere risolta utilizzando una cache associativa ad insiemi dove è possibile inserire più di un blocco in un singolo slot. Ogni slot 
+è composto da $n$ elementi composti da un bit valido un tag e l'informazione, in questo modo si evita di sovrascrivere i dati 
+significativi ad ogni cache miss. Ma quando uno slot diventa completamente pieno bisogna necessariamente eliminare un blocco di memoria salvato, in generale si sovrascrive 
+quello più vecchio. 
+
+
+In caso di scrittura, se il dato si trova in cache si possono effettuare due strategie, si aggiorna il valore in memoria principale solamente quando viene rimosso dalla cache, 
+la tecnica ``write back'' di allineamento alla fine. Altrimenti si può aggiornare il valore sia in cache che in memoria principale quando questo viene modificato, e si paga 
+l'accesso in memoria principale, la tecnica ``write through''
+Invece quando si effettua un cache miss in scrittura si può optare di portare il blocco in cache per poterlo modificare più agevolmente, ``write allocation'', oppure si 
+può effettuare direttamente la scrittura in memoria, ``write to memory''.
 
 \subsection{Intel i7}
 

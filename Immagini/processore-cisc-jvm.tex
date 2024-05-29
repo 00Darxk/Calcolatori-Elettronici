@@ -46,7 +46,7 @@
 
     (alu.tpin 1)to[short,i=\mbox{}]++(0.5,0)coordinate(N)node[above right]{N}
     (alu.tpin 2)to[short,i=\mbox{}]++(0.5,0)coordinate(Z)node[above right]{Z}
-    (alu.bpin 1)++(-0.5,0)coordinate(ALU)to[multiwire=6,i=\mbox{}](alu.bpin 1)
+    (alu.bpin 1)++(-1.2,0)coordinate(calu)to[multiwire=6,i=\mbox{}](alu.bpin 1)
     (alu.rpin 1)node[SH, anchor=north](sh){Shifter}
     (sh.rpin 1)++(0.5,0)coordinate(SH)to[multiwire=2,i=\mbox{}](sh.rpin 1)
 
@@ -65,24 +65,24 @@
     node[above right]at(alu.blpin 1){Bus B}
 
     ;
-    \draw[<-, thick](mar.center)++(-1,-0.25)--++(0,-0.2)coordinate(c1);
-    \draw[<-, thick](mdr.center)++(-1,-0.25)--++(0,-0.2)coordinate(c2);
+    \draw[<-, thick](mar.center)++(-1,-0.25)--++(0,-0.2)--++(-1.4,0)coordinate(c1);
+    \draw[<-, thick](mdr.center)++(-1,-0.25)--++(0,-0.2)--++(-1.35,0)coordinate(c2);
     \draw[<-, thick, gray](mdr.center)++(1,-0.25)--++(0,-0.2)coordinate(b1);
-    \draw[<-, thick](pc.center)++(-1,-0.25)--++(0,-0.2)coordinate(c3);
+    \draw[<-, thick](pc.center)++(-1,-0.25)--++(0,-0.2)--++(-1.3,0)coordinate(c3);
     \draw[<-, thick, gray](pc.center)++(1,-0.25)--++(0,-0.2)coordinate(b2);
     \draw[<-, thick, gray](mbr.center)++(1.25,-0.25)--++(0,-0.2)coordinate(b3);
     \draw[<-, thick, gray](mbr.center)++(1,-0.25)--++(0,-0.2)coordinate(b4);
-    \draw[<-, thick](sp.center)++(-1,-0.25)--++(0,-0.2)coordinate(c4);
+    \draw[<-, thick](sp.center)++(-1,-0.25)--++(0,-0.2)--++(-1.25,0)coordinate(c4);
     \draw[<-, thick, gray](sp.center)++(1,-0.25)--++(0,-0.2)coordinate(b5);
-    \draw[<-, thick](lv.center)++(-1,-0.25)--++(0,-0.2)coordinate(c5);
+    \draw[<-, thick](lv.center)++(-1,-0.25)--++(0,-0.2)--++(-1.2,0)coordinate(c5);
     \draw[<-, thick, gray](lv.center)++(1,-0.25)--++(0,-0.2)coordinate(b6);
-    \draw[<-, thick](cpp.center)++(-1,-0.25)--++(0,-0.2)coordinate(c6);
+    \draw[<-, thick](cpp.center)++(-1,-0.25)--++(0,-0.2)--++(-1.15,0)coordinate(c6);
     \draw[<-, thick, gray](cpp.center)++(1,-0.25)--++(0,-0.2)coordinate(b7);
-    \draw[<-, thick](tos.center)++(-1,-0.25)--++(0,-0.2)coordinate(c7);
+    \draw[<-, thick](tos.center)++(-1,-0.25)--++(0,-0.2)--++(-1.1,0)coordinate(c7);
     \draw[<-, thick, gray](tos.center)++(1,-0.25)--++(0,-0.2)coordinate(b8);
-    \draw[<-, thick](opc.center)++(-1,-0.25)--++(0,-0.2)coordinate(c8);
+    \draw[<-, thick](opc.center)++(-1,-0.25)--++(0,-0.2)--++(-1.05,0)coordinate(c8);
     \draw[<-, thick, gray](opc.center)++(1,-0.25)--++(0,-0.2)coordinate(b9);
-    \draw[<-, thick](h.center)++(-1,-0.25)--++(0,-0.2)coordinate(c9);
+    \draw[<-, thick](h.center)++(-1,-0.25)--++(0,-0.2)--++(-1,0)coordinate(c9);
 
     \draw[->, very thick, gray](mar.blpin 2)--++(-1.5,0);
     \draw[<->, very thick, gray](mdr.blpin 2)--++(-1.5,0);
@@ -128,6 +128,36 @@
     (quad.north)to[multiwire=8,i=\mbox{}]++(0,0.45)
 
     (a.east)to[multiwire=9]++(2,0)to[short,i=\mbox{}]++(0,-3)node[rectangle,draw, anchor=north,align=left, minimum width=4cm, minimum height=2cm](cs){512$\times$36 bit Control Store}
+    
+    (cs.south)to[short,i=\mbox{}]++(0,-0.5)node[rectangle,draw,anchor=north](ALU){ALU}
+    (ALU.west)node[rectangle,draw,anchor=east](jam){JAM}
+    (jam.west)node[rectangle,draw,anchor=east](addr){Addr}
+    (ALU.east)node[rectangle,draw,anchor=west](c){C}
+    (c.east)node[rectangle,draw,anchor=west](m){M}
+    (m.east)node[rectangle,draw,anchor=west](b){B}
+    
+    (addr.west)to[multiwire=8,i=\mbox{}]++(-0.5,0)-|(quad.south)
+
+    (ALU.240)|-(SH)
+    (ALU.300)to[short]++(0,-4.6)-|(calu)
+    
+    (jam.south)to[multiwire=2,i=\mbox{}]++(0,-0.5)|-(hb.0)node[above right]{JAMN/JAMZ}
+    (jam.north)--++(0,0.25)to[short,i=\mbox{}]++(-1.5,0)|-(quad.east)node[midway, right]{JMPC}
+
+    (c.230)to[short]++(0,-4.7)-|(c9)
+    (c.240)to[short]++(0,-4.75)-|(c8)
+    (c.250)to[short]++(0,-4.8)-|(c7)
+    (c.260)to[short]++(0,-4.85)-|(c6)
+    (c.270)to[short]++(0,-4.9)-|(c5)
+    (c.280)to[short]++(0,-4.95)-|(c4)
+    (c.290)to[short]++(0,-5)-|(c3)
+    (c.300)to[short]++(0,-5.05)-|(c2)
+    (c.310)to[short]++(0,-5.1)-|(c1)
+
+    (b.north)node[above]{MIR}
+    (b.east)to[short]++(0.4,0)to[multiwire=4,i=\mbox{}]++(0,7)|-(dec.lpin 1)
+
+    (m.south)--++(0,-0.25)--++(1.8,0)to[multiwire=3,i=\mbox{}]++(0,8)|-(2.6,0.4)to[short,i=\mbox{}]++(-0.1,0)
     ;
 \end{circuitikz}
 \end{document}
