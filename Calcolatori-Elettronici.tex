@@ -1706,6 +1706,7 @@ Questa limitazione può essere risolta utilizzando una cache associativa ad insi
 significativi ad ogni cache miss. Ma quando uno slot diventa completamente pieno bisogna necessariamente eliminare un blocco di memoria salvato, in generale si sovrascrive 
 quello più vecchio. 
 
+%% TODO img/schema indirizzo memoria centrale e cache
 
 In caso di scrittura, se il dato si trova in cache si possono effettuare due strategie, si aggiorna il valore in memoria principale solamente quando viene rimosso dalla cache, 
 la tecnica ``write back'' di allineamento alla fine. Altrimenti si può aggiornare il valore sia in cache che in memoria principale quando questo viene modificato, e si paga 
@@ -1713,67 +1714,115 @@ l'accesso in memoria principale, la tecnica ``write through''
 Invece quando si effettua un cache miss in scrittura si può optare di portare il blocco in cache per poterlo modificare più agevolmente, ``write allocation'', oppure si 
 può effettuare direttamente la scrittura in memoria, ``write to memory''.
 
-\subsection{Intel i7}
+\subsection{Esempi di Microarchitetture}
 
-I nomi dei processori Intel rimangono gli stessi i3, i5, i7, i9 , quello che cambia è la generazione del processore per distinguere le loro evoluzioni. Attualmente si hanno 
-processori di quattordicesima generazione, non di molto differente dalla tredicesima, per cui condividono il nome ``Raptor Lake'', con un livello di integrazione di 7 nm. 
+\subsubsection{Architettura Intel i7}
+
+Si considera una microarchitettura Intel molto diffusa l'i7. I processori moderni della Intel condividono lo stesso nome, e per distinguere processore più avanzati si dividono 
+in base alla loro evoluzione. I processori odierni sono di quattordicesima generazione, ma non contengono differenze notevoli dalla tredicesima, per cui condividono il nome 
+``Raptor Lake'', con un livello di integrazione di 7 nm. L'architettura i7 di prima generazione viene chiamata ``Sandy Bridge'' introdotta nel 2011, con un livello di 
+integrazione di 32 nm. 
 
 Il processore i7 utilizza un'architettura CISC tradizionale, a 64 bit, ed un linguaggio macchina molto complesso, con un set di istruzioni ``disordinato'', per mantenere la 
-retrocompatibilità, di lunghezza variabile da 1 a 17 byte. 
+retrocompatibilità, di lunghezza variabile da 1 a 17 byte, con otto registri interni. Questo gli permette di effettuare operazioni su interi da 8, 16 e 32 bit, ed a virgola mobile su 32 e 64 bit. 
 Per le operazioni più frequente si è realizzata un'implementazione diretta RISC, che rappresenta il nucleo del processore, è quindi un'architettura ibrida. Presenta una lunga 
 pipeline, e dai 4 ai 6 core, ed un'architettura superscalare. 
-Il processore è hyper-threaded, inserendo istruzioni, porzioni di un processo, in altre pipeline. 
+Il processore è hyper-threaded, inserendo istruzioni e porzioni di un processo, in altre pipeline, per realizzare più linee di esecuzione o thread paralleli. 
 
-Inoltre alcuni pin del processore sono dedicati a comunicare con il bus PICe. Ha bisogno di un supporto esterno invece per comunicare con altri processori e componenti del 
+La prima generazione di quest'architettura ha una frequenza di clock di 3.5 GHz, con una cache di primo livello di 32 KB per i dati e le istruzioni, una di secondo livello di 256 KB e di 
+terzo livello condivisa da 4 a 15 MB. 
+La scheda utilizza un pinout logico diverso dai precedenti con 1155 pin, alcuni pin del processore sono dedicati a comunicare con il bus PICe. Ha bisogno di un supporto esterno invece per comunicare con altri processori e componenti del 
 calcolatore. 
 
-Consuma da 17 ai 150W, e necessita quindi di un sistema di raffreddamento dedicato. 
+Consuma da 17 ai 150 W per stati differenti di consumo tramite diversi valori di voltaggio, e necessita quindi di un sistema di raffreddamento dedicato. 
 
-%% TODO specifica pinout logico
+%% TODO img pinout logico
 
-Nella piedinatura sono presenti due canali diversi per accedere alla memoria, mentre metà delle linee sono dedicata per alimentare il processore e collegarlo ad una messa a 
-terra. 
-%% TODO pinout logico (2)
+Nella piedinatura sono presenti due canali diversi da 124 linee ciascuno per accedere alla memoria, mentre metà delle linee sono dedicata per alimentare il processore e collegarlo ad una 
+messa a terra. 
+I due canali per accedere alla memoria sono indipendenti tra di loro, utilizzano linee a 64 bit con un bus sincrono a 666 MHz, per un trasferimento di dati complessivo di 20 GB/s. 
+Mentre i restanti pin sono utilizzati per collegare il processore con il bus PCIe, e per la comunicazione con i chipset DMI come SATA, USB, Audio, flash, etc. 
+Le linee per la trasmissione con il bus PCIe sono composte da 16 linee con una banda di 16 GB/s. 
 
-Per queste architetture il processore è affiancato da coprocessori per aumentarne le prestazioni, con anch'essi connessioni PICe e seriali per dispositivi di I/O.  
+I restanti pin vengono usati per il controllo dello stato del processore, 11 per la diagnostica ed uno per il segnale di clock; mentre altri 62 pin sono dedicati per un futuro e non sono assegnati ad alcuna linea o bus 
+specifici. 
+
+Le interruzioni vengono gestite allo stesso modo dei primi processori 8088, sia con l'utilizzo di un APIC, ``Advanced Programmable Interrupt Controller'' un controllore dedicato alla 
+gestione delle interruzioni. 
+
+Inoltre il monitoraggio della temperatura tramite sensori di calore permette di diminuire autonomamente la frequenza del processore per raffreddarlo, un processo chiamato 
+``thermal throttling''. 
+
+
+Per queste architetture il processore è affiancato da coprocessori per aumentarne le prestazioni, con anch'essi connessioni PICe e seriali per dispositivi di I/O. Questi coprocessori 
+sono dedicati alla comunicazione per dispositivi esterni come schede grafiche o dispositivi audio, connessi a bus USB, SATA o PCI. 
+
 
 Il bus per la comunicazione con la memoria centrale implementa una pipeline, e permette fino a 4 transazioni sovrapposte. 
 La memoria viene organizzata come una matrice di selezione, dove gli indirizzi di riga e colonna vengono inviati sullo stesso canale di indirizzo. 
 Ogni interfaccia DRAM presenta tre gruppi di linee per l'invio e l'attivazione di indirizzi, i comandi da attuare sui dati, read/write, e chiusura e preparazione per la 
 prossima transazione. Questo meccanismo funziona solamente con memorie di tipo sincrono. 
 
-Si possono individuare quattro componenti fondamentali. %% TODO ppt. pg 82 
-Una componente che comunica con la memoria e la cache di terzo livello, contenente la cache di secondo livello. Altre due componenti decodifica le istruzioni e contiene la 
-cache di primo livello per le istruzioni, un'altra contiene la ALU e la cache di primo livello per i dati. L'ultima componente decide quale istruzione eseguire. 
+Si possono individuare quattro componenti fondamentali. 
+Il componente per la comunicazione con la memoria e la cache di terzo livello, contenente la cache di secondo livello e l'interfaccia per la memoria. 
+La componente ``front end'' dedicata decodifica le istruzioni e contiene la cache di primo livello delle istruzioni, i registri contenenti le microistruzioni e la IFU. Questa componente contiene il ``branch predictor'' per eseguire istruzioni 
+future senza esplicita richiesta, se vengono ritenute probabili di essere eseguite successivamente. 
+Questa preleva le istruzioni dalla cache di secondo livello e le decodifica e le invia alla cache di primo livello per le istruzioni, scomponendole in 
+microistruzioni RISC, in appoggio ad una cache L0. 
+Un'altra componente di esecuzione contiene l'ALU e la cache di primo livello per i dati, che comunica direttamente con la cache di secondo livello e con l'ultima componente. 
+L'ultima componente gestisce il controllo dell'esecuzione scegliendo le microistruzioni da eseguire e ritira in ordine le microistruzioni eseguite. 
 
-La cache di secondo livello unificata, è a 8 vie con 256KB di memoria, mentre la cache di terzo livello ha 12 vie con 20MB. 
+Per realizzare istruzioni condizionali, l'esecuzione speculativa le esegue tutte, e dopo aver calcolato la condizione viene scelta l'istruzione opportuna. 
 
-La componente front-end preleva le istruzioni dalla cache di secondo livello e le decodifica e le invia alla cache di primo livello per le istruzioni, scomponendole in 
-microistruzioni RISC, in appoggio ad una cache L0. Il controllo dell'esecuzione sceglie le microistruzioni da eseguire e ritira in ordine le microistruzioni eseguite. 
-Infine l'unità di esecuzione esegue le microistruzioni %% TODO 
+La cache di secondo livello unificata, è a 8 vie con 256 KB di memoria ed un sistema di write back, mentre la cache di terzo livello ha 12 vie con 20 MB, entrambe le cache hanno 
+slot da 64 byte. 
 
+\subsubsection{Architettura ARM}
 
-Per realizzare istruzioni condizionali, l'esecuzione speculativa, le esegue tutte, e dopo aver calcolato la condizione viene scelta l'istruzione opportuna. 
+I processori ARM appartengono ad una famiglia dedicata principalmente alle applicazioni mobile anche se recentemente la Apple li sta utilizzando per realizzare notebook. Sono architetture 
+aperte, non prodotti da un'unica casa produttrice, poiché l'azienda ARM detiene solamente i diritti d'autore. Ogni processore viene quindi affiancato dal nome della sua casa produttrice. 
 
-\subsection{CPU ARM}
+Si considera il processore OMAP4430 della Texas Instruments, una SOC che utilizza due microprocessori ARM Cortex A9. Questi realizzano un'architettura a 32 bit con un bus di 
+memoria di 32 bit, è un'architettura RISC pura, con due livelli di cache. Presenta un livello di istruzioni ridotto e ordinato di 4 byte per istruzione, con 16 registri generali ed altri 32 
+registri opzionali per operazioni a virgola mobile. L'architettura è abbastanza semplice, superscalare con 4 core distinti ed una pipeline ad 11 stadi. 
+Questi core hanno una frequenza di clock di un GHz ed un livello di integrazione di 45 nm. 
 
-I processori ARM appartengono ad una famiglia dedicate principalmente alle applicazioni mobile. Sono architetture aperte, non prodotti da un'unica casa produttrice, poiché 
-l'azienda ARM detiene solamente i diritti d'autore. Ogni processore viene quindi affiancato dal nome della casa produttrice che l'ha prodotto. Si prediligono processori ARM 
-per applicazioni mobile e recentemente per computer portatili. 
+Il processore oltre questi due core utilizza una GPU dedicata ed un componente ISP per la manipolazione delle immagini con un'altro processore VPU per codificare e decodificare il video. 
 
-Si considera la CPU OMAP4430, realizzata da due SOC ARM Cortex A9, realizzata dalla Texas Instruments. Questo processore ha 32 bit ed un bus di memoria di 32 bit, 
-è un'architettura RISC pura, con due livelli di cache. Presenta un livello di istruzioni ridotto e ordinato, con 16 registri generali ed altri 32 
-registri opzionali per operazioni a virgola mobile. Presenta quattro core. 
-
-La CPU presenta due di queste CPU ARM, una GPU dedicata ed un componente ISP per manipolazione delle immagini con un'altro processore VPU per codificare e decodificare il video. 
 Questo tipo di architetture sono mirate all'efficienza, con un basso consumo, nell'ordine dei milli Watt, ed una gestione dinamica del voltaggio necessario. 
-Rappresenta un'architettura superscalare con 2 istruzioni per ciclo, e una cache di 32KB di primo livello per istruzioni, ed un'altra per i dati, ed una cache di secondo livello di 
-1MB. 
-Nel suo insieme è realizzato da un unico canale di comunicazione ad altissima velocità a cui sono collegati tutti i sistemi, anche la CPU, essenzialmente un bus condiviso. 
+Rappresenta un'architettura superscalare con 2 istruzioni per ciclo, e una cache di 32 KB di primo livello per istruzioni con un totale di 8000 istruzioni, ed un'altra per i dati; inoltre 
+utilizza una cache unificata di secondo livello di 1MB. 
+Nel suo insieme è realizzato da un unico canale di comunicazione ad altissima velocità a cui sono collegati tutti i sistemi, anche i microprocessori, essenzialmente un bus condiviso per 
+tutte le risorse. 
 
-%% TODO microarchitettura specifiche
+La pipeline a livello del data path viene realizzata tramite componenti fisici dedicati alle varie operazioni. Una componente di lancio preleva le istruzioni da eseguire, fino a quattro 
+per ogni ciclo di clock e le conserva in un registro buffer. L'unità successiva di esecuzione le decodifica e produce lo stack di istruzioni da eseguire. Utilizza due di queste unità in 
+parallelo, contengono ALU per somme e per prodotti con registri dedicati, un'unità di load/store alle cache di primo livello dei dati, ed un'unità per effettuare operazioni vettoriali 
+secondo la tecnica SIMD, opzionale. 
+L'interfaccia di memoria costituisce un'altra componente separata, con una massima memoria indirizzabile di 4 GB, su due canali indipendenti.  
 
-%% TODO CPU ATmega168
+\subsubsection{Microcontrollori}
+
+L'introduzione di chip a basse prestazioni negli anni '70 ha rivoluzionato permettendo di abbassare di molto i costi di produzione. Per piccole applicazioni infatti l'economicità prevale 
+sulle prestazioni dei processori. 
+
+Si analizza il microcontrollore ATmega168, un chip semplificato con meno di un milione di transistor, utilizza un'architettura RISC a 8 bit, con 32 registri eterogenei. Le 
+sue istruzioni vengono eseguite in un singolo ciclo macchina, ed implementa una pipeline a due stadi, il prelievo delle istruzioni, e la loro esecuzione. 
+La sua architettura è molto semplice, utilizzando un unico bus centrale, una memoria centrale sincrona da 1 KB per dati volatili ed una memoria EEPROM da 1 KB per dati statici. 
+Non utilizza una RAM esterna, e contiene 16 KB di memoria flash. 
+
+Questo microcontrollore viene utilizzato per applicazioni embedded, dal costo di pochi euro. La sua architettura è basata sull'ISA AVR. La sua scheda è molto piccola, con sole 28 porte. 
+23 di queste sono dedicate alla gestione dell'I/O con un interfaccia seriale, mentre tre sono utilizzate per l'alimentazione e la messa a terra. Le ultime due linee sono utilizzate per 
+configurare i circuiti analogici. 
+
+%% TODO img pinout ATmega168
+
+I suoi registri sono ad 8 bit, sono divisi in gruppi, 32 vengono utilizzati per i dati temporanei, inoltre contiene un registro di stato, oltre al PC e IR. 
+Poiché viene realizzato attraverso un bus centrale, il data path lo attraversa ad ogni ciclo macchina. Vengono usati due registri per indirizzare la memoria e tre registri per indirizzare 
+le istruzioni. 
+
+L'esecuzione di un'istruzione consiste di due stadi, nella prima l'istruzione viene prelevata dall'IR, e nella seconda viene letta dal registro sorgente, elaborata dall'ALU, ed il 
+risultato viene memorizzato nel registro destinazione. Tutto questo viene eseguito in due cicli di clock, con una frequenza da 10 a 20 MHz. 
 
 \clearpage
 
