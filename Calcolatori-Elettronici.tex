@@ -12,7 +12,7 @@
 \usepackage{bookmark}
 \usepackage{fancyhdr}
 \usepackage{romanbarpagenumber}
-%\usepackage{minted}
+\usepackage{minted}
 %\usepackage{subfig}
 \usepackage[italian]{babel}
 \usepackage{float}
@@ -1915,7 +1915,7 @@ modo dell'indirizzamento precedente.
 
 %% TODO modalità di indirizzamento tabella
 
-\subsection{Esecuzione}
+\subsection{Operazioni}
 
 Si utilizzerà un assemblatore as88 molto primitivo, con tre componenti: il programma assemblatore che prende come argomento il nome di un file contente codice assemblare as88, 
 l'emulatore o interprete dell'architettura 8088 s88; ed il programma che lancia il tracer per il debugging t88. 
@@ -1935,6 +1935,65 @@ Nel prologo possono essere definite etichette globali, per aumentare la leggibil
 Durante l'esecuzione del programma è indispensabile invocare delle routine di sistema, tramite un identificatore, o un nome simbolico, tramite la pila. Prima inserendo gli 
 argomenti nella pila ed in seguito si impila l'identificatore della chiamata di routine. Per invocare la funzione di sistema si utilizza \verb|SYS| che cerca l'identificatore 
 della funzione di sistema ed i suoi argomenti nella pila. 
+
+Convenzionalmente la chiamata di per chiudere il processo ha l'etichetta \verb|_EXIT|
+
+Per inserire un'istruzione o un dato sulla pila si utilizzano le istruzioni \verb|PUSH| e \verb|POP|, che prendono come argomento un intero. In seguito quando 
+Viene chiamata la funzione di sistema tramite \verb|SYS|, controlla sulla pila per cercare un dato valido da utilizzare come 
+identificatore di funzione, in seguito cerca sulla pila gli argomenti della funzione. 
+
+Per la funzione di uscita, il valore 0 indica che non è stato generato un errore, in caso contrario 
+bisogna inserire il valore assegnato al codice di errore corrispondente. L'argomento assegnato come 
+valore di uscita può essere intercettato dal sistema operativo per gestire l'errore. 
+
+
+L'istruzione \verb|MOV| effettua l'operazione di copia e trasferimento trasferendo un byte o una 
+parole, in questa versione formata da due byte, da una sorgente ad una destinazione. Non è possibile caricare un valore immediato in 
+un registro segmento, inoltre il registro CS non è utilizzabile come destinazione di uno spostamento. 
+Per trasferire dati di un byte viene utilizzata l'istruzione \verb|MOVB|, poiché i registri sono divisi in due sezioni 
+entrambe da un byte. Quindi lavorando con dati da un byte sono presenti otto registri di uso generale, ma due 
+non sono indirizzabili dalla \verb|MOV(B)|, i rispettivi CR e CL. 
+
+Queste operazioni ad un byte si ottengono aggiungendo \verb|B| al nome dell'istruzione, e non verranno utilizzate nei programmi considerati. 
+
+%% TODO fix ADD
+Le operazioni di somma e sottrazione vengono effettuate dalle istruzioni \verb|ADD| e \verb|SUB| applicando l'operazione al sorgente, togliendo il valore dal registro destinazione, 
+memorizzandolo nel sorgente. 
+
+La moltiplicazione prende un unico argomento \verb|MUL|, il primo operando utilizzato è implicito ed è il registro accumulatore, mentre il secondo specificato indica 
+il valore per cui moltiplicarlo. 
+La divisione ha un solo argomento \verb|DIV|, il primo operando è sempre il registro accumulatore, e divide il sorgente per l'argomento e salva il risultato nel registro AX. 
+
+
+Esistono operazioni logiche per effettuare la negazione e l'inversione di segno, per gli interi quindi complementa a due, mentre la negazione complementa ad uno, \verb|NEG| e 
+\verb|NOT|. Le istruzioni di incremento e decremento sono \verb|INC| e \verb|DEC|. Inoltre si utilizzano operazioni logiche principali, dove il primo argomento è 
+sempre AX implicito \verb|AND|, \verb|OR| e \verb|XOR|. 
+%% TODO op di shift
+
+L'istruzione \verb|JMP| effettua dei salti per trasferire il controllo all'istruzione specificata come etichetta. Esistono due tipi di salto, uno corto dove il controllo rimane 
+nel segmento di codice corrente, mentre nel salto lungo modifica il contenuto del registro CS. 
+In caso più etichette sono omonime utilizza salta alla prima etichetta che trova. 
+
+Tramite l'istruzione \verb|CMP| è possibile effettuare un confronto, sottraendo due operandi, aggiornando il registro di stato tramite i bit N e Z, se il 
+risultato è zero, oppure è negativo. 
+Per realizzare salti condizionali bisogna effettuare un confronto tramite quest'operazione controllando il contenuto del registro di stato. Sono 
+quindi presenti molti tipi di istruzioni diverse per diversi stati. 
+
+Utilizzando salti condizionati è possibile realizzare dei cicli, ma sono presenti istruzioni per semplificare l'operazione. L'istruzione \verb|LOOP| 
+consente di implementare espliciti cicli, prendendo come argomento un'etichetta, controllando il contenuto del registro CX, che viene decrementato e 
+se vale zero effettua l'istruzione successiva al LOOP, se il contenuto è diverso da zero salta all'etichetta assegnata. Un semplice ciclo si può realizzare quindi come:
+\begin{minted}{gas}
+    MOV CX, numero-cicli
+_ETICHETTA:  
+    operazioni 
+    ...
+    LOOP _ETICHETTA
+\end{minted}
+
+
+
+Digitando \verb|/| nel tracer seguito dal nome dell'etichetta viene mostrata la mappatura della memoria. 
+
 
 
 \end{document}
