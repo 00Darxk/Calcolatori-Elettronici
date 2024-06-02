@@ -32,7 +32,7 @@
 
     (h.south)to[short,i=\mbox{}]++(0,-0.25)node[ALU, anchor=lpin 2, rotate=270](alu){\rotatebox{90}{ALU}}
 
-    (mdr.rpin 1)to[short]++(0.3,0)to[short,i=\mbox{}](alu.lpin 1)
+    (mdr.rpin 1)to[short,i=\mbox{},-d]++(0.3,0)coordinate(busb)
     (pc.rpin 1)to[short,i=\mbox{}]++(0.3,0)
     (mbr.rpin 1)to[short,i=\mbox{}]++(0.3,0)
     (mbr.rpin 2)to[short,i=\mbox{}]++(0.3,0)
@@ -48,21 +48,25 @@
     (alu.rpin 1)node[SH, anchor=north](sh){Shifter}
     (sh.rpin 1)++(0.5,0)to[multiwire=2,i=\mbox{},d-](sh.rpin 1)
 
-    (sh.bpin 1)to[short,i=\mbox{}]++(-2.65,0)node[above right]{Bus C}
-    to[short,i=\mbox{},-*](h.lpin 1)
-    to[short,-*](opc.lpin 1)
-    to[short,-*](tos.lpin 1)
-    to[short,-*](cpp.lpin 1)
-    to[short,-*](lv.lpin 1)
-    to[short,-*](sp.lpin 1)
-    to[short,-*](pc.lpin 1)
-    to[short,-*](mdr.lpin 1)
-    to[short](mar.lpin 1)
+    (sh.bpin 1)to[short,i=\mbox{},-d]++(-2.65,0)node[above right]{Bus C}coordinate(busc)
+    (mar.lpin 1)to[short,i=\mbox{},d-](mar.blpin 1)
+    (mdr.lpin 1)to[short,i=\mbox{}](mdr.blpin 1)
+    (pc.lpin 1)to[short,i=\mbox{}](pc.blpin 1)
+    (sp.lpin 1)to[short,i=\mbox{}](sp.blpin 1)
+    (lv.lpin 1)to[short,i=\mbox{}](lv.blpin 1)
+    (cpp.lpin 1)to[short,i=\mbox{}](cpp.blpin 1)
+    (tos.lpin 1)to[short,i=\mbox{}](tos.blpin 1)
+    (opc.lpin 1)to[short,i=\mbox{}](opc.blpin 1)
+    (h.lpin 1)to[short,i=\mbox{}](h.blpin 1)
     
+
+
     node[above right]at(alu.blpin 2){A}
-    node[above right]at(alu.blpin 1){Bus B}
+    node[above right]at(alu.lpin 1){Bus B}
 
     ;
+    \draw[line width=2,->](busb)--(alu.blpin 1);
+    \draw[line width=2](busc)--(mar.lpin 1);
     \draw[<-, thick](mar.center)++(-1,-0.25)--++(0,-0.2);
     \draw[<-, thick](mdr.center)++(-1,-0.25)--++(0,-0.2);
     \draw[<-, thick, gray](mdr.center)++(1,-0.25)--++(0,-0.2);

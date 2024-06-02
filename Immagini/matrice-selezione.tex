@@ -1,0 +1,22 @@
+\documentclass{standalone}
+\usepackage{circuitikz,rotating}
+\tikzset{
+    dec1/.style={muxdemux,
+    muxdemux def={Lh=8, Rh=10, NL=1, NR=15, NB=0, w=2}},
+    dec2/.style={muxdemux,
+    muxdemux def={Lh=4, Rh=5, NL=1, NR=15, NB=0, w=2}}
+    }
+\begin{document}
+\begin{circuitikz}
+    \node[rectangle, draw, minimum width=6cm, minimum height=3cm](rec)at(0,0){};
+    \draw
+    (rec.north)node[dec1,rotate=270,anchor=rpin 8](d1){\rotatebox{90}{$n/2\to2^{n/2}$}}
+    (rec.west)node[dec2,anchor=rpin 8](d2){\rotatebox{90}{$n/2\to2^{n/2}$}}
+    (d1.lpin 1)to[multiwire=$n/2$,-*]++(0,0.5)coordinate(t)to[multiwire=$n/2$,-d]++(0,1)
+    (d2.lpin 1)to[multiwire=$n/2$]++(0,3)|-(t)
+    
+    (rec.20)to[short,-d]++(1,0)node[right]{RAS}
+    (rec.340)to[short,-d]++(1,0)node[right]{CAS}
+    ;
+\end{circuitikz}
+\end{document}

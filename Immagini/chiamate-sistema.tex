@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\begin{document}
+    \begin{tabular}{|c||c|c|c|c|}
+        \hline
+        Nome & ID & Operazione & Argomenti & Valore Restituito\\
+        \hline\hline
+        \verb|_EXIT|&1&Interrompe un processo&0: successo/1: errore&\\
+        \hline
+        \verb|_READ|&3&Legge n byte da fd, in buf& fd, buf, n & Numero di byte letti\\
+        \hline
+        \verb|_WRITE|&4&Scrive n byte su fd, da buf& fd, buf, n& Numero di byte scritti\\
+        \hline
+        \verb|_OPEN|&5& Apre un file in lettura/scrittura & nome, 0: rd/1: wr/2: rd-wr & Descrittore di file (fd)\\
+        \hline
+        \verb|_CLOSE|&6&Chiude un file aperto& fd& 0, se ha successo \\
+        \hline 
+        \verb|_CREATE|& 8 & Crea un nuovo file & nome, permessi UNIX & Descrittore di file (fd)\\
+        \hline
+        \verb|_LSEEK| &19& Sposta fd di offset bytes & fd, offset, 0/1/2& Nuovo fd\\
+        \hline
+        \verb|_GETCHAR| &117& Legge un carattere in input && Carattere letto, in \verb|AL|\\
+        \hline
+        \verb|_SPRINTF|&121& Stampa stringa formattata su buf&buf, stringa, args.&\\
+        \hline
+        \verb|_PUTCHAR|&122&Scrive un carattere in output &Carattere&\\
+        \hline
+        \verb|_SSCANF|&125&Legge argomenti da buf&buf, stringa, args.&\\
+        \hline
+        \verb|_PRINTF|&127&Stampa una stringa formattata in output&stringa, args.&\\
+        \hline
+    \end{tabular}
+\end{document}

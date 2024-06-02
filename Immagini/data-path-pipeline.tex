@@ -29,38 +29,44 @@
     \draw
     (o)++(0,-0.5)coordinate(o)node[REG](h){H}
 
-    (mdr.rpin 2)to[short]++(0.3,0)to[short,i=\mbox{}]++(0,-5.5)node[LATCH,anchor=tpin 1](a){A Latch}
-    (a.bpin 1)to[short]++(0,-1)node[ALU, anchor=lpin 2, rotate=270](alu){\rotatebox{90}{ALU}}
+    (mdr.rpin 2)to[short,i=\mbox{},-d]++(0.3,0)coordinate(busa)
+    ;
+    \draw[line width=2,->](busa)--++(0,-5.8)node[LATCH,anchor=btpin 1,line width=0.5](a){A Latch};
+    \draw
+    (a.bpin 1)to[short,i=\mbox{}]++(0,-1)node[ALU, anchor=lpin 2, rotate=270](alu){\rotatebox{90}{ALU}}
     (mbr1.rpin 1)to[short,i=\mbox{}]++(0.3,0)
     (mbr2.rpin 1)to[short,i=\mbox{}]++(0.3,0)
     (h.rpin 1)to[short,i=\mbox{}]++(0.3,0)
 
-    (alu.lpin 1)node[LATCH,anchor=bpin 1](b){B Latch}
+    (alu.lpin 1)++(0,0.1)node[LATCH,anchor=bpin 1](b){B Latch}
+    (b.bpin 1)to[short,i=\mbox{}](alu.lpin 1)
 
-    (mdr.rpin 1)to[short]++(2.25,0)to[short,i=\mbox{}](b.tpin 1)
+    (mdr.rpin 1)to[short,i=\mbox{},-d]++(2.25,0)coordinate(busb)
     (pc.rpin 1)to[short,i=\mbox{}]++(2.25,0)
     (mbr1.rpin 2)to[short,i=\mbox{}]++(2.25,0)
     (mbr2.rpin 2)to[short,i=\mbox{}]++(2.25,0)
     (h.rpin 2)to[short,i=\mbox{}]++(2.25,0)
-
-
-
+    ;
+    \draw[line width=2, ->](busb)--(b.btpin 1);
+    \draw
     (alu.tpin 1)to[short,i=\mbox{},-d]++(0.5,0)node[right]{N}
     (alu.tpin 2)to[short,i=\mbox{},-d]++(0.5,0)node[right]{Z}
     (alu.bpin 1)++(-0.5,0)to[multiwire=6,i=\mbox{},d-](alu.bpin 1)
     (alu.rpin 1)node[SH, anchor=north](sh){Shifter}
     (sh.rpin 1)++(0.5,0)to[multiwire=2,i=\mbox{},d-](sh.rpin 1)
 
-    (h.lpin 1)to[short,*-]++(0,-0.5)node[LATCH,anchor=tpin 1](c){C Latch}
-    (sh.bpin 1)to[short,i=\mbox{}]++(-4,0)node[above right]{Bus C}-|(c.bpin 1)
-    (h.lpin 1)to[short,-*](pc.lpin 1)
-    to[short,-*](mdr.lpin 1)
-    to[short](mar.lpin 1)
+    (h.lpin 1)++(0,-3.5)node[LATCH,anchor=tpin 1](c){C Latch}
+    (sh.bpin 1)to[short,i=\mbox{}]++(-4,0)-|(c.bpin 1)
+    (mar.lpin 1)to[short,i=\mbox{},d-](mar.blpin 1)
+    (mdr.lpin 1)to[short,i=\mbox{}](mdr.blpin 1)
+    (pc.lpin 1)to[short,i=\mbox{}](pc.blpin 1)
+    (h.lpin 1)to[short,i=\mbox{}](h.blpin 1)
+    (c.btpin 1)to[short,-d]++(0,0)node[above right]{Bus C}
     
-    node[above right]at(alu.blpin 2){Bus A}
-    node[above right]at(alu.blpin 1){Bus B}
-
+    node[above right]at(a.tpin 1){Bus A}
+    node[above right]at(b.tpin 1){Bus B}
     ;
+    \draw[line width=2](c.btpin 1)--(mar.lpin 1);
     \draw[<-, thick](mar.center)++(-1,-0.25)--++(0,-0.2);
     \draw[<-, thick](mdr.center)++(-1,-0.25)--++(0,-0.2);
     \draw[<-, thick, gray](mdr.center)++(1,-0.25)--++(0,-0.2);

@@ -1,0 +1,38 @@
+\documentclass{standalone}
+\usepackage{circuitikz}
+\begin{document}
+\ctikzset{multipoles/dipchip/pin spacing=0.2, multipoles/dipchip/width=1.8}
+\begin{circuitikz}
+    \draw
+    (0,0)node[dipchip, num pins=28,external pins width=0.6,external pad fraction=3](c){}
+    (c.pin 1)node[right, font=\tiny]{PB6}
+    (c.pin 2)node[right, font=\tiny]{PD0}
+    (c.pin 3)node[right, font=\tiny]{PD1}
+    (c.pin 4)node[right, font=\tiny]{PD2}
+    (c.pin 5)node[right, font=\tiny]{PD3}
+    (c.pin 6)node[right, font=\tiny]{PD4}
+    (c.pin 7)node[right, font=\tiny]{VCC}
+    (c.pin 8)node[right, font=\tiny]{CND}
+    (c.pin 9)node[right, font=\tiny]{PB6}
+    (c.pin 10)node[right, font=\tiny]{PB7}
+    (c.pin 11)node[right, font=\tiny]{PD5}
+    (c.pin 12)node[right, font=\tiny]{PD6}
+    (c.pin 13)node[right, font=\tiny]{PD7}
+    (c.pin 14)node[right, font=\tiny]{PB0}
+    (c.pin 15)node[left, font=\tiny]{PB1}
+    (c.pin 16)node[left, font=\tiny]{PB2}
+    (c.pin 17)node[left, font=\tiny]{PB3}
+    (c.pin 18)node[left, font=\tiny]{PB4}
+    (c.pin 19)node[left, font=\tiny]{PB5}
+    (c.pin 20)node[left, font=\tiny]{AVCC}
+    (c.pin 21)node[left, font=\tiny]{AREF}
+    (c.pin 22)node[left, font=\tiny]{GND}
+    (c.pin 23)node[left, font=\tiny]{PC0}
+    (c.pin 24)node[left, font=\tiny]{PC1}
+    (c.pin 25)node[left, font=\tiny]{PC2}
+    (c.pin 26)node[left, font=\tiny]{PC3}
+    (c.pin 27)node[left, font=\tiny]{PC4}
+    (c.pin 28)node[left, font=\tiny]{PC5}
+    ;
+\end{circuitikz}
+\end{document}

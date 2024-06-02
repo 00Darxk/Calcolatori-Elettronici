@@ -13,9 +13,10 @@
 \usepackage{fancyhdr}
 \usepackage{romanbarpagenumber}
 \usepackage{minted}
-%\usepackage{subfig}
+\usepackage{subfig}
 \usepackage[italian]{babel}
 \usepackage{float}
+\usepackage{wrapfig}
 \allowdisplaybreaks
 
 \setlength{\headheight}{12.0pt}
@@ -81,12 +82,10 @@ Università degli Studi ``Roma Tre"}}
 % cenni di assembly alla fine del corso
 % simulatori e casi di studio
 
-%% TODO Introduzione
-
 \section{Storia e Tipologia dei Calcolatori}
 
 %% TODO analisi degli aspetti hardware 
-% funzionamento di un microprocessore, facendo riferimento a processori moderni e reali. 
+%% TODO introduzione funzionamento di un microprocessore, facendo riferimento a processori moderni e reali. 
 
 \subsection{Evoluzione delle Architetture}
 
@@ -103,7 +102,7 @@ Si chiama generazione zero, l'insieme di calcolatori analogici, progettati per r
 Il primo calcolatore programmabile venne ideato da Charles Babbage. Costruì prima una macchina differenziale in grado di calcolare funzioni polinomiali, mentre progettò la 
 prima macchina programmabile, completamente analogica, in grado di leggere un input scritto su piastre di rame, e fornire un output, sempre su piastre di rame, utilizzando 
 i dati e le operazioni inserite in input. Per poter operare su questi dati di input per fornire istruzioni alla macchina è necessario un linguaggio di programmazione, e la 
-prima persona che ha tentato di implementare il linguaggio di Babbage fu Ada. %% TODO cognome 
+prima persona che ha tentato di implementare il linguaggio di Babbage fu Ada Lovelace. 
 
 
 Il passaggio seguente in questa evoluzione venne trainato principalmente dai fondi bellici per realizzare macchine elettromeccaniche. La prima generazione si indica il 
@@ -339,9 +338,10 @@ Per evitare la doppia rappresentazione dello zero si utilizza il sistema della c
 utilizza la rappresentazione posizionale, mentre per un numero negativo si rappresenta il suo modulo con la rappresentazione posizionale, si complementa bit per bit e si somma ad 
 uno. In questo modo l'intervallo di rappresentazione con $n$ bit coincide a $[-2^{n-1},2^{n-1}-1]$, ed è possibile un'unica rappresentazione dello zero. Per cambiare di segno 
 di un numerale in questa rappresentazione è sufficiente complementare a due il numerale. 
-%% TODO ppt. somma cp2  
+
 Nel sistema a complemento a due per effettuare l'operazione di somma è sufficiente svolgere una somma bit a bit, si verifica un overflow se la somma tra due numerali dello 
 stesso segno cambia il segno, altrimenti bisogna ignorare il trabocco ed il risultato è sempre corretto. Per svolgere l'operazione di differenza si cambia di segno il secondo numerale e si svolge una somma.  
+Per cambiare di segno un numerale rappresentato nel sistema posizionale, o in complemento a due, è sufficiente calcolare il suo complemento a due. 
 Le moltiplicazioni tra due numerali in questa rappresentazione si svolgono tra i valori assoluti, e se necessario si complementa il risultato. 
 
 \subsubsection{Rappresentazione ad Eccesso}
@@ -459,8 +459,8 @@ per rappresentare in maniera compatta delle stringhe binarie, partendo da destra
 
 Per codificare caratteri esistono diverse convenzioni e standard, il codice ASCII, ancora in uso nelle interfacce a linea di comando. Può rappresentare solamente 128 caratteri codificati in 8 bit, espressi in 
 esadecimale da due cifre, dove il primo bit, chiamato bit di parità, viene usato per controllare eventuali errori nella trasmissione. Ogni numerale esadecimale viene associato ad un'istruzione di testo (0-1F), 
-oppure ad un carattere (20-7F). 
-%% TODO inserire codifica ASCII
+oppure ad un carattere (20-7F).
+
 Successivamente venne introdotto il codice Unicode, codificato mediante 16 bit, in grado di codificare 65536 elementi. Codifica 336 simboli di alfabeti latini, 112 accenti e simboli diacritici, alfabeti che non 
 utilizzano caratteri latini, 21000 ideogrammi cinesi. I restanti caratteri vengono assegnati da un consorzio. 
 
@@ -488,8 +488,7 @@ volatile, sullo stesso canale di comunicazione, convenzionalmente realizzata tra
 All'interno della CPU sono presenti un numero di registri limitati, l'ALU ``Arithmetic Logic Unit'', ed un registro di uscita. Ogni istruzione esegue lo stesso percorso all'interno 
 della CPU. I dati vengono salvati sul registro interno, vengono trasferiti tramite dei bus interni sui registri di entrata ed in seguito inviati alla ALU e il risultato viene 
 salvato su un registro di uscita. Questo ciclo macchina si ripete allo stesso modo per ogni singola istruzione eseguita dalla CPU, e rappresenta il data path, attraversato da ogni singolo dato 
-gestito dal processore. 
-%% TODO img. struttura CPU
+gestito dal processore. Lo schema fisico di questo ciclo verrà analizzato più approfonditamente nella sezione \ref{sec:data-path}. 
 
 La CPU ripete continuamente una stessa serie di istruzioni; carica le istruzioni dalla memoria al registro delle istruzioni IR, in seguito il 
 PC, viene incrementato, poiché contiene l'indirizzo di memoria dove è presente la seguente istruzione. In generale le istruzioni vengono salvate 
@@ -763,6 +762,8 @@ I RAID di livello 2 e 3 permettono di effettuare una sola operazione su disco pe
 Nel RAID di livello 4 si effettua uno striping a livello di blocco, ed i drive non sono sincronizzati, la strip dell'ultimo disco contiene i bit di parità dell'insieme di bit omologhi di tutte le altre strip. Riesce 
 quindi a resistere ai guasti come un RAID 3, ma l'ultimo disco rappresenta un collo di bottiglia, poiché è necessario per ogni operazione di lettura. Per cui nel RAID 5 viene distribuita la strip di parità su tutti i 
 dischi per minimizzare l'accesso ad un singolo disco. 
+
+%% TODO img/schema RAID livelli
 
 \subsubsection{Dischi a Stato Solido}
 
@@ -1195,11 +1196,11 @@ I Latch possono commutare su livelli alti, o bassi, tramite una porta NOT a mont
 
 \begin{figure}[H]%
     \centering%
-    \includegraphics{latch-compatti.pdf}%
+    \subfloat[\centering{Livello Alto}]{\includegraphics{latch-compatti.pdf}}%
+    \qquad%
+    \subfloat[\centering{Livello Basso}]{\includegraphics{latch-compatti-alto.pdf}}%
     \caption{Simbolo Latch D}%
 \end{figure}
-
-%% TODO latch d livello basso
 
 \subsubsection{Flip-Flop}
 
@@ -1219,11 +1220,11 @@ I Flip-Flop D possono commutare ad ogni fronte di salita o di discesa, semplicem
 
 \begin{figure}[H]%
     \centering%
-    \includegraphics{flip-flop-d-compatti.pdf}%
+    \subfloat[\centering{Fronte di Salita}]{\includegraphics{flip-flop-d-compatti.pdf}}%
+    \qquad%
+    \subfloat[\centering{Fronte di Discesa}]{\includegraphics{flip-flop-d-compatti-discesa.pdf}}%    
     \caption{Simbolo Flip Flop D}%
 \end{figure}
-
-%% TODO flip flop d fronte di discesa
 
 \subsubsection{Chip di Memoria}
 
@@ -1237,7 +1238,7 @@ essere montati su un unico chip per costruire un chip di memoria contenente vari
     \caption{Registro a 4 Bit}%
 \end{figure}
 
-Ogni registro presenta varie righe di Flip-Flop per ogni word in grado di memorizzare. Dato un registro da $n$ word, presenta $log_2n$ linee di indirizzo per abilitare la specifica locazione di memoria. Questo 
+Ogni registro presenta varie righe di Flip-Flop per ogni word in grado di memorizzare. Dato un registro da $n$ word, presenta $\log_2n$ linee di indirizzo per abilitare la specifica locazione di memoria. Questo 
 viene effettuato tramite un decodificatore ed una serie di porte di abilitazione a monte dei Flip-Flop. Ogni chip di memoria inoltre presenta un segnale per specificare l'operazione da effettuare, un segnale 
 per abilitare la lettura OE, ``Output Enable''; un segnale per abilitare la scrittura WE, ``Write Enable''; ed un segnale per abilitare la chip CS, ``Chip Select'', un interruttore generale per l'intera chip. 
 Può essere presente un segnale di RD, ``Read'', per abilitare il segnale di clock e quindi la lettura e scrittura sul chip:
@@ -1269,6 +1270,7 @@ locazioni di memoria univoche all'interno dell'unico chip.
     \includegraphics{chip-memoria-compatto.pdf}%
     \caption{Chip di Memoria con n Parole da m Bit}%
 \end{figure}
+
 \subsubsection{Matrice di Selezione}
 
 Il numero dei piedini nel chip non è l'unico problema nell'indirizzamento di una specifica locazione di memoria. Un decoder a $n$ bit richiede $2^n$ porte AND per poter trasformare un 
@@ -1278,7 +1280,11 @@ Si fornisce un esempio in un caso dove ogni locazione sia composta da un bit, e 
 coordinate, è possibile quindi dividere l'indirizzo in due metà RAS, ``Raw Address Strobe'' e CAS ``Column Address Strobe''. Questa coppia di linee di controllo in uscita dalla matrice di selezione individua 
 un'univoca locazione di memoria, dimezzando il numero di piedini necessari, poiché è possibile inviare le due metà dell'indirizzo in modo seriale. 
 
-%% TODO img. matrice di selezione 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{matrice-selezione.pdf}%
+    \caption{Matrice di Selezione}%    
+\end{figure}
 
 Inviando le due metà dell'indirizzo separatamente sugli stessi piedini, è meno efficiente, ma viene preferito in caso il chip abbia bisogno di un elevato numero di linee di trasmissione. Questa tecnica inoltre 
 riduce notevolmente il numero di porte AND richieste per indirizzare una locazione di memoria. Utilizzando un singolo decoder a $n$ bit si richiedono $2^n$ porte AND, mentre utilizzando due decoder da $n/2$ bit 
@@ -1468,6 +1474,7 @@ in hardware, poiché erano già presenti architetture molto diffuse. Per impleme
 il formato delle microistruzioni e la sezione di controllo. Si considera un'architettura CISC a 32 bit, con 8 bit per le istruzioni. 
 
 \subsection{Data Path}
+\label{sec:data-path}
 
 Il data path è composto da una serie di registri e l'ALU. I primi quattro registri sono responsabili della comunicazione con la memoria centrale. Rappresentano una coppia di registri 
 sempre presenti in ogni processore. La prima coppia MAR, ``Memory Address Register'', e MDR, ``Memory Data Register'', contengono l'indirizzo di memoria del dato, il primo, ed il dato 
@@ -1669,9 +1676,15 @@ può mai fare riferimento ad un'indirizzo di cache, poiché gestito solamente a 
 A livello di prestazioni invece è possibile determinare quando gli accessi a memoria vengono eseguiti tramite memoria cache o centrale, semplicemente in base al tempo di 
 esecuzione del programma. 
 
-Lo spazio di memoria è organizzato in blocchi da 4 a 64 byte, chiamate linee di cache. Ognuna linea può contenere diverse parole di un certo numero di byte, in base 
-all'architettura. Tutti i trasferimenti avvengono al livello di blocco, dalla memoria principale ad uno slot della cache, contenente uno o blocchi di memoria. 
-Questo introduce diversi livelli di granularità nella composizione della memoria. 
+Lo spazio di memoria è organizzato in blocchi da 4 a 64 byte, chiamate linee o slot nella cache. Ognuna linea può contenere diverse parole di un certo numero di byte, in base 
+all'architettura. Tutti i trasferimenti avvengono al livello di blocco, dalla memoria principale ad uno slot della cache, contenente uno o più blocchi di memoria. 
+Questo introduce diversi livelli di granularità nella composizione della memoria: 
+
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{blocco-memoria.pdf}%
+    \caption{Blocco di Memoria Centrale}%
+\end{figure}
 
 Gli indirizzi devono anch'essi rappresentare questi livelli di granularità, per cui i primi bit di un indirizzo rappresentano in quale blocco si trova il dato a cui si vuole 
 accedere, generalmente è composto dal numero maggiore di bit, poiché una memoria presenta numerosi blocchi di memoria distinti, contenti ciascuno poche decine di byte, fino 
@@ -1683,15 +1696,27 @@ di memoria da 32 byte, con parole da 4 byte.
 La dimensione della cache è più piccola della memoria principale quindi non è possibile ottenere una corrispondenza biunivoca tra le loro locazioni. Per cui la memoria 
 cache viene gestita come una memoria associativa, associando ad ogni blocco di memoria una chiave, o etichetta ``tag''. 
 
-Si considera una memoria con uno spazio indirizzabile di $2^n$ byte, diviso in $2^r$ blocchi di memoria. I primi $n-r$ bit più significativi 
-indirizzano il blocco di memoria, di cui $s$ bit indirizzano lo slot tra i $2^s$ indirizzabili, ed i primi $n-s-r$ contengono l'etichetta.   
-Se il blocco di memoria si trova in cache si trova in quell'indirizzo, altrimenti bisogna cercarlo in memoria centrale. 
+Si considera una memoria con uno spazio indirizzabile di $2^n$ byte, diviso in $2^{n-r}$ blocchi di memoria da $2^r$ byte. I primi $n-r$ bit più significativi 
+indirizzano il blocco in memoria centrale. Di questi bit, gli ultimi $s$ corrispondono all'indirizzo della linea di cache dov'è memorizzato, tra le $2^s$ disponibili, ed i primi $n-s-r$ contengono l'etichetta.   
+Se il blocco di memoria si trova in cache si trova in quell'indirizzo, altrimenti bisogna cercarlo in memoria centrale:
+
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{indirizzo-ram-cache.pdf}%
+    \caption{Indirizzo di Memoria}%    
+\end{figure}
 
 Quindi dall'indirizzo del blocco in memoria centrale da $n-r$ bit, i primi $s$ bit assumono il valore dell'etichetta, mentre i successivi $s$ bit 
 indirizzano lo slot associato della cache. 
 
 Il formato delle linee di cache rispetta la struttura dell'indirizzo, presenta un bit V per indicare se il contenuto dello slot è valido, o in uso. Il tag di $n-s-r$ bit, ed 
-il blocco di memoria di $2^r$ byte. 
+il blocco di memoria di $2^r$ byte, quindi $2^3\cdot2^r=2^{r+3}$ bit:
+
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{linea-cache.pdf}%
+    \caption{Linea di Cache}%
+\end{figure}
 
 Tradizionalmente si memorizza a partire dal basso, da locazioni con tutti zero. 
 Per cercare un dato in cache, si considera il suo indirizzo di memoria principale, si rimuovono i primi $s$ bit di tag, e si cerca lo slot corrispondente all'indirizzo così 
@@ -1704,9 +1729,8 @@ Per cui anche se è presente spazio libero nella cache il dato viene buttato, qu
 Questa limitazione può essere risolta utilizzando una cache associativa ad insiemi dove è possibile inserire più di un blocco in un singolo slot. Ogni slot 
 è composto da $n$ elementi composti da un bit valido un tag e l'informazione, in questo modo si evita di sovrascrivere i dati 
 significativi ad ogni cache miss. Ma quando uno slot diventa completamente pieno bisogna necessariamente eliminare un blocco di memoria salvato, in generale si sovrascrive 
-quello più vecchio. 
+quello più vecchio. Questo tipo di architettura ad insiemi si chiama anche a più vie, ed ogni blocco diverso contenuto in una slot rappresenta una via della linea di cache. 
 
-%% TODO img/schema indirizzo memoria centrale e cache
 
 In caso di scrittura, se il dato si trova in cache si possono effettuare due strategie, si aggiorna il valore in memoria principale solamente quando viene rimosso dalla cache, 
 la tecnica ``write back'' di allineamento alla fine. Altrimenti si può aggiornare il valore sia in cache che in memoria principale quando questo viene modificato, e si paga 
@@ -1803,8 +1827,15 @@ L'interfaccia di memoria costituisce un'altra componente separata, con una massi
 
 \subsubsection{Microcontrollori}
 
+\begin{wrapfigure}{R}{5cm}%
+    \centering%
+    \includegraphics[width=5cm]{pinout-atmega168.pdf}%
+    \caption{Pinout Logico ATmega168}%
+\end{wrapfigure}
+
 L'introduzione di chip a basse prestazioni negli anni '70 ha rivoluzionato permettendo di abbassare di molto i costi di produzione. Per piccole applicazioni infatti l'economicità prevale 
 sulle prestazioni dei processori. 
+
 
 Si analizza il microcontrollore ATmega168, un chip semplificato con meno di un milione di transistor, utilizza un'architettura RISC a 8 bit, con 32 registri eterogenei. Le 
 sue istruzioni vengono eseguite in un singolo ciclo macchina, ed implementa una pipeline a due stadi, il prelievo delle istruzioni, e la loro esecuzione. 
@@ -1814,8 +1845,6 @@ Non utilizza una RAM esterna, e contiene 16 KB di memoria flash.
 Questo microcontrollore viene utilizzato per applicazioni embedded, dal costo di pochi euro. La sua architettura è basata sull'ISA AVR. La sua scheda è molto piccola, con sole 28 porte. 
 23 di queste sono dedicate alla gestione dell'I/O con un interfaccia seriale, mentre tre sono utilizzate per l'alimentazione e la messa a terra. Le ultime due linee sono utilizzate per 
 configurare i circuiti analogici. 
-
-%% TODO img pinout ATmega168
 
 I suoi registri sono ad 8 bit, sono divisi in gruppi, 32 vengono utilizzati per i dati temporanei, inoltre contiene un registro di stato, oltre al PC e IR. 
 Poiché viene realizzato attraverso un bus centrale, il data path lo attraversa ad ogni ciclo macchina. Vengono usati due registri per indirizzare la memoria e tre registri per indirizzare 
@@ -1837,7 +1866,7 @@ linguaggio pensato da essere usato direttamente dall'utente. I compilatori trasf
 un codice migliore. Però è possibile scrivere piccole routine locali in linguaggio assemblativo, dedicate
 La conoscenza del linguaggio assemblativo permette di comprende meglio il comportamento ed il funzionamento del processore nell'esecuzione delle istruzioni. 
 
-Molti linguaggi consentono di incorporare pezzi di codice che utilizzano linguaggio assemblativo, in C si introduce il linguaggio all'interno del corpo di \verb|asm{}|. 
+Molti linguaggi consentono di incorporare pezzi di codice che utilizzano linguaggio assemblativo, in C si introduce il linguaggio all'interno del corpo di \verb|asm{...}|. 
 
 Oltre all'assemblatore che dato questo linguaggio produce un linguaggio binario, effettuando un lavoro molto semplice, esiste un tracer, o interprete che permette di eseguire un 
 codice assemblativo un'istruzione alla volta, per simulare la sua esecuzione come un debugger. 
@@ -1860,12 +1889,14 @@ un byte.
 
 \subsection{Registri}
 
-Presenta un quattordici registri divisi in quattro gruppi funzionali: registri di uso generale AX, BX, CX, DX, divisi in due sezioni da 8 bit xH e xL per indirizzare una sezione 
-del registro; registro del sistema operativo per contenere i segmenti del 
-codice CS, dei dati DS, dello stack di esecuzione SS e la memoria aggiuntiva in caso sia necessaria ES; una serie di registri utilizzati divisi in coppie, uno per la 
-gestione degli array SI e DI, e l'altra coppia per la gestione della zona di memoria come pila SP e BP; 
-
-%% TODO tabella registri generali 8088
+Presenta un quattordici registri divisi in quattro gruppi funzionali:   una serie di registri utilizzati divisi in coppie, uno per la 
+gestione degli array \verb|SI| e \verb|DI|, e l'altra coppia per la gestione della zona di memoria come pila \verb|SP| e \verb|BP|; 
+\begin{itemize}
+    \item Registri di uso generale \verb|AX|, \verb|BX|, \verb|CX|, \verb|DX|, divisi in due sezioni da 8 bit \verb|#H|, high bits, e \verb|#L|, low bits, per indirizzare una sezione del registro;
+    \item Registri del sistema operativo per contenere i segmenti del codice \verb|CS|, ``Code Segment'', dei dati \verb|DS|, ``Data Segment'', dello stack di esecuzione \verb|SS|, ``Stack Segment'',  e la memoria aggiuntiva in caso sia necessaria \verb|ES|, ``Extra Segment'';
+    \item Registri per la gestione di indici, \verb|SI|, ``Source Index'', e \verb|DI|, ``Destination Index'', e puntatori allo stack \verb|SP|, ``Stack Pointer'', e \verb|BP|, ``Base Pointer'';
+    \item Una coppia di registri, uno per le condizioni \verb|CC|, ``Condition Codes'', ed uno per le istruzioni, \verb|IP|, ``Instruction Pointer'', contenente anche il \verb|PC|. 
+\end{itemize}
 
 I registri generali sono divisi per mantenere la retrocompatibilità con processori a 8 bit. 
 Negli anni quindi si è aggiunto a questi registri, mantenendo la retrocompatibilità contenendo queste sezioni di registri, permettendo di indirizzare queste sezioni di 
@@ -1876,124 +1907,249 @@ di operazioni e del suo stato.
 
 Il linguaggio indirizza direttamente questi registri. Le istruzioni presentano un formato semplice, sono composte da un codice operativo simbolico seguito da argomenti, 
 specifica un registro o un indirizzo di memoria principale. Per indicare un indirizzo di memoria principale bisogna specificare il numero tra parentesi. 
-Il registro AX viene usato come accumulatore per memorizzare il risultato di un'elaborazione di molte istruzioni, anche implicitamente, sovrascrivendo il valore contenuto. 
-Il registro BX viene usato come accumulatore oppure come puntatore alla memoria. Il registro CX viene usato come contatore di cicli. Il registro DX come registro di dati e come AX 
-usato per contenere le istruzioni lunghe due parole: DX:AX. 
 
-Tutti i registri vengono rappresentati come coppie di registri da 8 bit, accessibili autonomamente. Per cui è possibile salvare un dato in AX, e successivamente modificarne 
-il valore tramite riferimenti a AH e AL, modificando il valore contenuto nel registro a 16 bit AX. 
+I registri di uso generale vengono usati ciascuno per operazioni specifiche:
+\begin{itemize}
+    \item Il registro \verb|AX| viene usato come accumulatore per memorizzare il risultato di un'elaborazione di molte istruzioni, anche implicitamente, sovrascrivendo il valore contenuto;
+    \item Il registro \verb|BX| viene usato come accumulatore oppure come puntatore alla memoria;
+    \item Il registro \verb|CX| viene usato come contatore di cicli;
+    \item Il registro \verb|DX| come registro di dati e come \verb|AX| usato per contenere le istruzioni lunghe due parole: \verb|DX|:\verb|AX|. 
+\end{itemize}
 
-I registri puntatore ed indice hanno uno scopo più specifico, SP è un puntatore alla cima della pila, e BP punta alla base della pila, e vengono aggiornati automaticamente 
-dal sistema operativo. Il record di attivazione viene quindi gestito autonomamente. 
-I registri SI, indice sorgente, e DI, indice destinazione, sono sono indici usati per indirizzare un array e gestire un array, usato in combinazione con BP. 
-Il registro di stato rappresenta un insieme di registri da 1 bit, creati automaticamente dal sistema: il registro Z vale uno quando viene generato uno zero, S se il risultato è 
-negativo, O se il risultato ha causato un overflow, C se il risultato ha creato un riporto, A, riporto ausiliario su 3 bit; P parità del risultato %% TODO finire registro di stato 
+Tutti i registri vengono rappresentati come coppie di registri da 8 bit, accessibili autonomamente. Per cui è possibile salvare un dato in \verb|AX|, e successivamente modificarne 
+il valore tramite riferimenti a \verb|AH| e \verb|AL|, modificando il valore contenuto nel registro a 16 bit \verb|AX|. 
 
-I registri di segmento, gestiti dal sistema operativo puntano a quattro segmenti correntemente attivi, una porzione punta al segmento contenente le istruzioni da eseguire 
-contenuto nella memoria centrale. Questi segmenti sono di dimensione fissa, per cui se non è più sufficiente lo spaio si può usare il registro EX, segmento extra. 
+I registri puntatore ed indice hanno uno scopo più specifico, \verb|SP| è un puntatore alla cima della pila, e \verb|BP| punta alla base della pila, e vengono aggiornati automaticamente 
+dal sistema operativo. Il record di attivazione viene quindi gestito autonomamente, ma è possibile inserire o rimuovere istruzioni e dati manualmente attraverso i comandi \verb|PUSH| e \verb|POP|. 
+I registri \verb|SI|, indice sorgente, e \verb|DI|, indice destinazione, sono sono indici usati per indirizzare un array e gestire un array, usato in combinazione con \verb|BP|. 
+Il registro di stato rappresenta un insieme di registri da 1 bit, creati automaticamente dal sistema operativo, impostati da operazioni aritmetiche o di controllo per l'attività del processore:  
+\begin{itemize}
+    \item Registro \verb|Z|: il risultato è zero;
+    \item Registro \verb|N|: il risultato è negativo;
+    \item Registro \verb|O|: il risultato ha causato un overflow;
+    \item Registro \verb|C|: il risultato ha generato un riporto;
+    \item Registro \verb|A|: riporto ausiliario, oltre i 3 bit;
+    \item Registro \verb|P|: controlla la parità del risultato;
+    \item Registro \verb|I|: attiva le interruzioni;
+    \item Registro \verb|T|: abilita il tracing;
+    \item Registro \verb|D|: permette operazioni su stringhe.  
+\end{itemize}
+I restanti bit non vengono utilizzati. 
+
+
+
+I registri di segmento, gestiti dal sistema operativo puntano a quattro segmenti correntemente attivi. Il registro \verb|CS| punta al segmento contenente le istruzioni da eseguire 
+contenute nella memoria centrale, ed il \verb|DS| al segmento contenente i dati. Il registro \verb|SS| punta al segmento dello stack. 
+Questi segmenti correnti sono di dimensione fissa da 64 KB, per cui se non è più sufficiente lo spazio si può usare il registro \verb|EX|, che punta ad un segmento extra. 
 Il SO inserisce il primo elemento del segmento in questi registri a tempo di esecuzione, poiché vengono salvati sequenzialmente. 
 
-La memoria è segmentata divisa in segmenti di dimensione fissa di 64 bit. A livello del programma vede una memoria che comincia dall'indirizzo 0, ma è un indirizzo relativo 
-alla porzione di memoria indirizzata dal segmento dei dati. Per ottenere il registro effettivo viene sommato l'indirizzo relativo CS e si aggiungono 4 zeri a destra per ottenere 
-indirizzi a 20 bit e si somma all'indirizzo a 20 bit per ottenere l'indirizzo effettivo. 
+La memoria è segmentata divisa in segmenti di dimensione fissa di 64 bit. Ogni segmento rappresenta un'unità di memoria indipendente, formata da locazioni contigue di memoria. 
+Inizia ad un indirizzo di memoria multiplo di 16. A livello del programma vede una memoria che comincia dall'indirizzo 0, ma è un indirizzo relativo 
+alla porzione di memoria indirizzata dal segmento dei dati. Per ottenere il registro effettivo viene sommato l'indirizzo relativo \verb|CS| e si aggiungono 4 zeri a destra per ottenere 
+indirizzi a 20 bit e si somma all'indirizzo a 20 bit per ottenere l'indirizzo effettivo. Per cui è sempre necessario l'intervento di un indirizzo di segmento per indirizzare la memoria 
+centrale. 
 
 La gestione della pila utilizza un meccanismo simile, utilizzando due puntatori alla cima ed alla coda della pila, ed ad ogni operazione di push o di pop modificando il valore 
-contenuto in SP. Il segmento di stack è costituito da parole di 2 byte. Lo stack cresce andando dagli indirizzi alti, relativi ad un indirizzo di memoria effettivo, a quelli più 
-bassi. SS punta all'indirizzo di partenza dello stack e SP punta alla locazione in cima allo stack, indirizzo più basso di SS. 
+contenuto in \verb|SP|. Il segmento di stack è costituito da parole di 2 byte. Lo stack cresce andando dagli indirizzi alti, relativi ad un indirizzo di memoria effettivo, a quelli più 
+bassi. \verb|SS| punta all'indirizzo di partenza dello stack e \verb|SP| punta alla locazione in cima allo stack, indirizzo più basso di \verb|SS|. 
+Allo stesso modo vengono gestiti gli array, utilizzando i registri \verb|DI| e \verb|SI|. 
+
+\subsection{Indirizzamento}
+
+Per utilizzare i dati contenuti in un registro o nella memoria centrale come argomenti di un'operazione, sono possibili vari modi per indirizzarli. 
+\begin{itemize}
+    \item Indirizzamento a registro: L'operando si trova in un registro e viene specificato il nome del registro: \verb|BX|;
+    \item Indirizzamento immediato: L'operando è contenuto nell'istruzione, e rappresenta una costante di 8 o 16 bit: \verb|#|;
+    \item Indirizzamento diretto: L'operando si trova in memoria principale, l'istruzione contiene l'indirizzo dei dati in memoria tra parentesi: \verb|(#)|;
+    \item Indirizzamento indiretto a registro: L'indirizzo del dato in memoria principale si trova in un registro, BX, SI o DI, tra parentesi, ed il suo contenuto viene interpretato come indirizzo di memoria: \verb|(BX)|;
+    \item Indirizzamento indiretto a registro con spiazzamento: L'indirizzo si ottiene dalla somma di una costante con il contenuto di uno dei registri usati come indirizzo: \verb|#(BX)|; 
+    \item Indirizzamento a registro indice: L'indirizzo si ottiene dalla somma del contenuto di due registri: \verb|(BX)(SI)|;
+    \item Indirizzamento a registro indice con spiazzamento: L'indirizzo si ottiene dalla somma del contenuto di due registri con una costante: \verb|#(BX)(SI)|. 
+\end{itemize}
+Utilizzare un registro come indirizzo alla memoria principale è utile quando vengono utilizzati molti dati, come nel caso di array. 
+
+Utilizzando il registro ad indice è possibile gestire array diversi. Il registro BX in generale rappresenta la base del registro, mentre SI viene usato come indice per scorrere gli elementi 
+dell'array. 
+In generale quando non viene specificato esplicitamente un indirizzo un registro, si usa il registro \verb|AX|, il registro di default per salvare il risultato delle operazioni, essenzialmente il registro 
+accumulatore. 
+
+\subsection{Scrittura del Codice}
+
+Si utilizzerà un assemblatore as88 molto primitivo, con tre componenti: il programma assemblatore as88 che prende come argomento il nome di un file contente il codice; 
+l'emulatore o interprete s88 dell'architettura 8088; ed il programma che lancia il tracer per il debugging t88. Per eseguire questi programmi su un codice scritto in linguaggio assemblativo si utilizzano 
+i seguenti comandi:
+\begin{minted}{bash}
+> as88 nome_file.s
+> s88 nome_file
+> t88 nome_file.$
+\end{minted}
 
 
-Gli argomenti di un'operazione possono essere direttamente registri del processore, contenenti un certo valore, indirizzando il registro. Oppure indirizzamento immediato, 
-dove il secondo argomento è una costante di 8 o 16 bit, poiché il primo deve necessariamente essere un indirizzo valido poiché deve ricevere il valore. Invece per ottenere 
-un indirizzo di memoria principale si inserisce l'indirizzo tra parentesi, con indirizzamento diretto, dove l'operando è contenuto nell'indirizzo passato come parametro. 
-Se invece viene usato un registro tra parentesi, BX, SI o DI, si considera il suo contenuto interpretato come indirizzo di memoria principale dove è contenuto il dato. 
-Utilizzare un registro come puntatore alla memoria è molto utile quando vengono usati molti dati.  
-Inoltre con l'indirizzamento indiretto a registro con spiazzamento considerando come secondo argomento una costante affiancata dal registro tra parentesi, che somma la 
-costante con il registro. Invece della costante è possibile utilizzare il contenuto di un altro registro. 
-In questo modo è possibile gestire array diversi. Il registro BX in generale rappresenta la base del registro, mentre SI viene usato come indice per scorrere gli elementi 
-dell'array. Combinandoli è possibile ottenere l'indirizzamento a registro indice con spiazzamento, sommando a una costante al valore contenuto in due registri allo stesso 
-modo dell'indirizzamento precedente. 
+Un programma in assembler è composto da tre sezioni diverse individuate dalla sintassi \verb|.SECT| seguite da una delle tre etichette associate alle sezioni: 
+\begin{itemize}
+    \item \verb|.TEXT|: sezione di testo che contiene le istruzioni;
+    \item \verb|.DATA|: sezione che contiene i dati;
+    \item \verb|.BSS|: sezione che contiene i dati non inizializzati. 
+\end{itemize}
 
-%% TODO modalità di indirizzamento tabella
-
-\subsection{Operazioni}
-
-Si utilizzerà un assemblatore as88 molto primitivo, con tre componenti: il programma assemblatore che prende come argomento il nome di un file contente codice assemblare as88, 
-l'emulatore o interprete dell'architettura 8088 s88; ed il programma che lancia il tracer per il debugging t88. 
-
-
-Un programma in assembler è composto da tre sezioni diverse individuate dalla sintassi \verb|.SECT| seguite da una delle tre etichette associate alle sezioni: una che contiene 
-il codice \verb|.TEXT|, quindi le istruzioni; un'altra che contiene i dati \verb|.DATA|, ed un'altra che contiene i dati non inizializzati \verb|.BSS|. 
 A partire dall'indirizzo zero la sezione \verb|.DATA| specifica cos'è presente nella memoria principale. 
-
-%% TODO direttive ed etichette compilatore 
-Si possono definire due tipi di etichette globali e locali, le etichette globali devono essere univoche, possono essere alfanumeriche oppure numeriche, mentre le 
-etichette 
-
-Nel prologo possono essere definite etichette globali, per aumentare la leggibilità. 
+Oltre a queste direttive si utilizzano \verb|.BYTE|. \verb|.WORD| e \verb|.LONG| per salvare gli argomenti in una sequenza di byte, parole, o sequenze più lunghe di byte. Per memorizzare stringhe di caratteri, 
+necessariamente di formato ASCII, passate come argomento si utilizzano le direttive \verb|.ASCII| e \verb|ASCIZ| per memorizzare uno zero finale. 
 
 
-Durante l'esecuzione del programma è indispensabile invocare delle routine di sistema, tramite un identificatore, o un nome simbolico, tramite la pila. Prima inserendo gli 
-argomenti nella pila ed in seguito si impila l'identificatore della chiamata di routine. Per invocare la funzione di sistema si utilizza \verb|SYS| che cerca l'identificatore 
+Prima delle sezioni è possibile definire etichette globali o locali. Le etichette globali rappresentano identificatori alfanumerici univoci, mentre le etichette locali sono utilizzabili solamente nella sezione di 
+testo e costituiscono una sola cifra, possono inoltre essere utilizzate più di una volta. Entrambe le etichette vengono seguite dal simbolo ``:''. 
+Questa sezione viene chiamata prologo, in generale vengono definite etichette per aumentare la leggibilità del codice, per quanto possibile. 
+Per attribuire valori costanti alle etichette si utilizza la sintassi: \verb|nome_simbolico = costante|. 
+
+
+I valori numerici possono essere decimali, ottali, cominciano per \verb|0|, oppure esadecimali, cominciano per \verb|x0|. 
+Inoltre per commentare una linea di codice si utilizza il simbolo ``!''. 
+
+
+Il tracer permette di effettuare un'esecuzione sequenziale, di un'istruzione alla volta e monitorare lo stato ed il contenuto dei registri e della memoria. Per interagire con il tracer è possibile fornire un 
+insieme di comandi contenuti in un file, in modalità batch; oppure inserendo manualmente i comandi da tastiera, in modalità interattiva, seguiti dal tasto invio. 
+
+Per visualizzare la mappatura in memoria bisogna utilizzare il comando \textbackslash, seguito dal nome dell'etichetta il cui valore si vuole controllare. 
+
+\subsubsection{Chiamate di Sistema}
+
+Durante l'esecuzione del programma è indispensabile invocare delle routine di sistema, tramite un identificatore, o un nome simbolico, ed effettuare operazioni sulla pila. Prima inserendo gli 
+argomenti nella pila ed in seguito l'identificatore della chiamata di routine. Per invocare la funzione di sistema si utilizza \verb|SYS| che cerca l'identificatore 
 della funzione di sistema ed i suoi argomenti nella pila. 
+Gli identificatori di una chiamata di sistema vengono preceduti dal simbolo ``\_'' prima del nome della chiamata. 
+
+Il risultato di questa chiamata viene salvato nel registro \verb|AX|, o in caso sia di formato long nei registri \verb|AX:DX|. Gli argomenti di questa chiamata devono essere rimossi dallo stack dalla funzione 
+chiamante. 
+
+L'interprete as88 dispone di 12 chiamate di sistema:
+
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=0.8]{chiamate-sistema.pdf}%
+    \caption{Chiamate di Sistema}%
+\end{figure}
 
 Convenzionalmente la chiamata di per chiudere il processo ha l'etichetta \verb|_EXIT|
 
-Per inserire un'istruzione o un dato sulla pila si utilizzano le istruzioni \verb|PUSH| e \verb|POP|, che prendono come argomento un intero. In seguito quando 
-Viene chiamata la funzione di sistema tramite \verb|SYS|, controlla sulla pila per cercare un dato valido da utilizzare come 
+Per inserire un'istruzione o un dato sulla pila si utilizzano le istruzioni \verb|PUSH| e \verb|POP|, che prendono come argomento un intero, solo l'inserimento, o un indirizzo effettivo entrambe:
+\begin{minted}{gas}
+    PUSH X
+    POP Y
+\end{minted}
+Le operazioni modificano il puntatore \verb|SP|, indirizzato implicitamente. Ad ogni aggiunta viene decrementato di due byte, ed ad ogni rimozione diminuito di due byte. 
+Mentre le operazioni \verb|PUSHF| e \verb|POPF| trasferiscono il contenuto dal registro flag alla cima dello stack o viceversa. 
+
+
+In seguito quando viene chiamata la funzione di sistema tramite \verb|SYS|, controlla sulla pila per cercare un dato valido da utilizzare come 
 identificatore di funzione, in seguito cerca sulla pila gli argomenti della funzione. 
 
 Per la funzione di uscita, il valore 0 indica che non è stato generato un errore, in caso contrario 
 bisogna inserire il valore assegnato al codice di errore corrispondente. L'argomento assegnato come 
 valore di uscita può essere intercettato dal sistema operativo per gestire l'errore. 
 
+\subsubsection{Istruzioni}
 
 L'istruzione \verb|MOV| effettua l'operazione di copia e trasferimento trasferendo un byte o una 
-parole, in questa versione formata da due byte, da una sorgente ad una destinazione. Non è possibile caricare un valore immediato in 
-un registro segmento, inoltre il registro CS non è utilizzabile come destinazione di uno spostamento. 
+parola, in questa versione formata da due byte, da una sorgente \verb|Y| ad una destinazione \verb|X|, indirizzati in uno dei metodi descritti precedentemente:
+\begin{minted}{gas}
+    MOV X, Y    # X <- Y
+\end{minted}
+Mon è possibile caricare un valore immediato in 
+un registro segmento, inoltre il registro \verb|CS| non è utilizzabile come destinazione di uno spostamento. 
 Per trasferire dati di un byte viene utilizzata l'istruzione \verb|MOVB|, poiché i registri sono divisi in due sezioni 
 entrambe da un byte. Quindi lavorando con dati da un byte sono presenti otto registri di uso generale, ma due 
-non sono indirizzabili dalla \verb|MOV(B)|, i rispettivi CR e CL. 
+non sono indirizzabili dalla \verb|MOV(B)|, i rispettivi \verb|CR| e \verb|CL|. 
 
 Queste operazioni ad un byte si ottengono aggiungendo \verb|B| al nome dell'istruzione, e non verranno utilizzate nei programmi considerati. 
 
-%% TODO fix ADD
-Le operazioni di somma e sottrazione vengono effettuate dalle istruzioni \verb|ADD| e \verb|SUB| applicando l'operazione al sorgente, togliendo il valore dal registro destinazione, 
-memorizzandolo nel sorgente. 
+
+Le operazioni di somma e sottrazione vengono effettuate dalle istruzioni \verb|ADD| e \verb|SUB| effettuando l'operazione sul registro destinazione \verb|Y|, dato l'operando sorgente \verb|X|,  
+memorizzando il risultato nell'indirizzo destinazione:
+\begin{minted}{gas}
+    ADD X, Y    # Y <- Y + X    
+    SUB X, Y    # Y <- Y - X
+\end{minted}
+L'operazione \verb|ADC| e \verb|SBB| comprende nella sottrazione il flag del riporto. 
+
 
 La moltiplicazione prende un unico argomento \verb|MUL|, il primo operando utilizzato è implicito ed è il registro accumulatore, mentre il secondo specificato indica 
-il valore per cui moltiplicarlo. 
-La divisione ha un solo argomento \verb|DIV|, il primo operando è sempre il registro accumulatore, e divide il sorgente per l'argomento e salva il risultato nel registro AX. 
+il valore per cui moltiplicarlo. Se si moltiplicano parole, il risultato viene salvato in \verb|AX:DX|. 
+La divisione ha un solo argomento \verb|DIV|, il primo operando è sempre il registro accumulatore, e divide il sorgente \verb|AX| per l'argomento e salva il risultato in \verb|AL|, ed il 
+resto in \verb|AH|, mentre per divisioni di parole salva il risultato in \verb|AX| ed il resto in \verb|DX|: 
+\begin{minted}{gas}
+    MUL X   # AX(:DX) <- AX * X
+    DIV X   # AX\AL <- (DX:)AX / X; DX\AH <- C
+\end{minted}
+Quando vengono precedute dal carattere ``I'': \verb|IDIV/IMUL|, effettuano la moltiplicazione o divisione con segno. 
 
 
 Esistono operazioni logiche per effettuare la negazione e l'inversione di segno, per gli interi quindi complementa a due, mentre la negazione complementa ad uno, \verb|NEG| e 
 \verb|NOT|. Le istruzioni di incremento e decremento sono \verb|INC| e \verb|DEC|. Inoltre si utilizzano operazioni logiche principali, dove il primo argomento è 
-sempre AX implicito \verb|AND|, \verb|OR| e \verb|XOR|. 
-%% TODO op di shift
-
-L'istruzione \verb|JMP| effettua dei salti per trasferire il controllo all'istruzione specificata come etichetta. Esistono due tipi di salto, uno corto dove il controllo rimane 
-nel segmento di codice corrente, mentre nel salto lungo modifica il contenuto del registro CS. 
-In caso più etichette sono omonime utilizza salta alla prima etichetta che trova. 
-
-Tramite l'istruzione \verb|CMP| è possibile effettuare un confronto, sottraendo due operandi, aggiornando il registro di stato tramite i bit N e Z, se il 
-risultato è zero, oppure è negativo. 
-Per realizzare salti condizionali bisogna effettuare un confronto tramite quest'operazione controllando il contenuto del registro di stato. Sono 
-quindi presenti molti tipi di istruzioni diverse per diversi stati. 
-
-Utilizzando salti condizionati è possibile realizzare dei cicli, ma sono presenti istruzioni per semplificare l'operazione. L'istruzione \verb|LOOP| 
-consente di implementare espliciti cicli, prendendo come argomento un'etichetta, controllando il contenuto del registro CX, che viene decrementato e 
-se vale zero effettua l'istruzione successiva al LOOP, se il contenuto è diverso da zero salta all'etichetta assegnata. Un semplice ciclo si può realizzare quindi come:
+sempre \verb|AX| implicito \verb|AND|, \verb|OR| e \verb|XOR|. 
+Altre operazioni principali permettono lo scorrimento a destra o sinistra di un certo numero di bit o byte \verb|SHR|, \verb|SHL|, \verb|ROR| e \verb|ROL|:
 \begin{minted}{gas}
-    MOV CX, numero-cicli
-_ETICHETTA:  
-    operazioni 
-    ...
-    LOOP _ETICHETTA
+    NEG X       # X <- cp2(X)
+    NOT X       # X <- !X
+    INC X       # X <- X + 1
+    DEC X       # X <- X - 1
+    AND X, Y    # X <- X and Y
+    OR X, Y     # X <- X or Y
+    XOR X, Y    # X <- X xor Y 
+    SHR X, Y    # X <- X >> Y 
+    SHL X, Y    # X <- X << Y
+    ROR X, Y    # X <- (X >> Y) | (X << (16\32 - Y))
+    ROL X, Y    # X <- (X << Y) | (X >> (16\32 - Y))      
 \end{minted}
 
+L'istruzione \verb|JMP| effettua dei salti per trasferire il controllo all'istruzione specificata come etichetta. Esistono due tipi di salto, uno corto dove il controllo rimane 
+nel segmento di codice corrente, mentre nel salto lungo modifica il contenuto del registro \verb|CS|:
+\begin{minted}{gas}
+    JMP _tag
+    # ...
+_tag:
+    # operazioni
+\end{minted}
+In caso più etichette sono omonime utilizza salta alla prima etichetta che trova. 
 
+Tramite l'istruzione \verb|CMP| è possibile effettuare un confronto, sottraendo due operandi, aggiornando il registro di stato tramite i bit \verb|N| e \verb|Z|, se il 
+risultato è zero, oppure è negativo:
+\begin{minted}{gas}
+    CMP X, Y    # X - Y => N\Z <- 1\0
+\end{minted}
+Per realizzare salti condizionali bisogna effettuare un confronto tramite quest'operazione controllando il contenuto del registro di stato. Sono 
+quindi presenti molti tipi di istruzioni diverse per diversi stati, accomunate dal primo carattere ``J'': \verb|J#|. La verifica della condizione si basa sui valori dei registri di flag. 
+Se la condizione è verificata, passa il controllo all'istruzione di indirizzo specificato dal salto, altrimenti l'esecuzione prosegue all'istruzione successiva. 
+Utilizzando queste operazioni sono possibili salti di una massima lunghezza di 128 byte. Inoltre sono presenti vari nomi simbolici per lo stesso tipo di salto condizionato:
+\begin{minted}{gas}
+    JG _tag     # Maggiore 
+    JGE _tag    # Maggiore o Uguale
+    JL _tag     # Minore
+    JLE _tag    # Minore o Uguale
+    JE _tag     # Uguale
+    JNE _tag    # Non Uguale
+    JB _tag     # Inferiore
+    JBE _tag    # Inferiore o Uguale
+    JA _tag     # Superiore
+    JAE _tag    # Superiore o Uguale
+    JO _tag     # Overflow
+    JNO _tag    # Non Overflow
+    JS _tag     # Negativo
+    JNS _tag    # Non Negativo
+    JCXZ _tag   # CX Nullo
+\end{minted}
 
-Digitando \verb|/| nel tracer seguito dal nome dell'etichetta viene mostrata la mappatura della memoria. 
-
+Utilizzando salti condizionati è possibile realizzare dei cicli, ma sono presenti istruzioni per semplificare l'operazione. L'istruzione \verb|LOOP| 
+consente di implementare espliciti cicli, prendendo come argomento un'etichetta, controllando il contenuto del registro \verb|CX|, che viene decrementato e 
+se vale zero effettua l'istruzione successiva al \verb|LOOP|, se il contenuto è diverso da zero salta all'etichetta assegnata. Un semplice ciclo si può realizzare quindi come:
+\begin{minted}{gas}
+    MOV CX, numero-cicli
+_tag:  
+    # operazioni 
+    # ...
+    LOOP _tag
+\end{minted}
+Sono presenti altre varianti come \verb|LOOPE|, ``Loop Equal'' e \verb|LOOPNE|, ``Loop Not Equal'', che dipendono da valori diversi dei registri flag. 
 
 
 \end{document}
