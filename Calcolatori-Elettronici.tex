@@ -2151,5 +2151,49 @@ _tag:
 \end{minted}
 Sono presenti altre varianti come \verb|LOOPE|, ``Loop Equal'' e \verb|LOOPNE|, ``Loop Not Equal'', che dipendono da valori diversi dei registri flag. 
 
+\subsubsection{Chiamate di Procedura}
+
+Uno dei principi principali della programmazione è la decomposizione in moduli, scomponendo il codice in funzioni o metodi. Questi moduli diversi vengono chiamate procedure, 
+essenzialmente invocano l'esecuzione di codice contenuto in un'altra sezione o segmento di memoria. Per cui bisogna tenere un riferimento alla procedura chiamante per 
+poter restituire il controllo dell'esecuzione. Le informazioni necessarie per l'esecuzione di un modulo vengono conservate nel record di attivazione, con un riferimento al 
+modulo invocante con un indirizzo di ritorno ed il vecchio BP per aggiornarlo dopo la rimozione di questo stack. Il record di attivazione della procedura in esecuzione si 
+trova in cima alla pila. Gli stack frame non sono tutti della stessa lunghezza poiché durante l'esecuzione è possibile siano aggiunti 
+dati allo stack. La vecchia base del record permette di determinare la dimensione di questo stack per rimuoverlo ed aggiornare i nuovi SP e BP correttamente. 
+
+%% TODO schema invocazione subroutine (RDA)
+
+Per trasferire il controllo del programma ad una subroutine si effettua tramite il comando \verb|CALL| che prende come argomento un'etichetta associata ad una porzione di 
+codice. 
+Invece la funzione \verb|RET|, restituisce il controllo al programma invocante, salvato automaticamente nella pila all'invocazione della subroutine. 
+\begin{minted}{gas}
+    CALL tag
+    # ...
+tag: 
+    # ...
+    RET
+\end{minted}
+
+Prima di invocare la subroutine se sono necessari degli argomenti bisogna impilarli nello stack in ordine inverso. 
+Nel prologo della funziona invocata bisogna salvare nella pila il vecchio BP, inizializzare il nuovo record di attivazione ed inserendo variabili locali da usare nella 
+subroutine:
+\begin{minted}{gas}
+tag:
+    PUSH BP     # vecchio BP
+    MOV BP, SP  # aggiorno il BP: BP <- SP
+    SUB SB, xx  # aggiungo spazio per salvare le variabili locali
+\end{minted}
+Alternativamente si possono usare diverse \verb|PUSH| per inserire le variabili locali direttamente nello stack. Alla fine di una procedura, prima di restituire il controllo, 
+bisogna rimuovere le variabili locali, svuotando il record di attivazione, aggiornando il SP al BP del RDA della procedura invocante, e bisogna rimuovere il vecchio BP:
+\begin{minted}{gas}
+    MOVE SP, BP
+    POP BP
+    RET
+\end{minted}
+Dopo essere tornati nella procedura invocante, bisogna rimuovere gli argomenti inseriti nella pila aggiornando il SP:
+\begin{minted}{gas}
+    CALL subroutine
+    ADD SP, xx      # numero di argomenti aggiunti * 2
+\end{minted}
+
 
 \end{document}
