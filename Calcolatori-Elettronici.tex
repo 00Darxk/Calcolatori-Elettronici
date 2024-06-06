@@ -17,6 +17,7 @@
 \usepackage[italian]{babel}
 \usepackage{float}
 \usepackage{wrapfig}
+\usepackage[export]{adjustbox}
 \allowdisplaybreaks
 
 \setlength{\headheight}{12.0pt}
@@ -31,6 +32,8 @@
 \makeatletter
 \newcommand*{\textoverline}[1]{$\overline{\hbox{#1}}\m@th$}
 \makeatother
+
+\newsavebox{\tempbox} %{\raisebox{\dimexpr.5\ht\tempbox-.5\height\relax}}
 
 
 \makeatother
@@ -69,76 +72,74 @@ Università degli Studi ``Roma Tre"}}
 \clearpage
 \pagenumbering{arabic}
 
-
-% prof:
-% big data
-% LLM
-% Tirocini (Azienda/Laboratori) 
-% Incubare Startup
-
 % scopi del corso
-% 6 CFU
 % rec 80-85% programma anni precedenti
 % cenni di assembly alla fine del corso
 % simulatori e casi di studio
 
-\section{Storia e Tipologia dei Calcolatori}
+\section{Introduzione: Storia e Tipologia dei Calcolatori}
 
-%% TODO analisi degli aspetti hardware 
-%% TODO introduzione funzionamento di un microprocessore, facendo riferimento a processori moderni e reali. 
+Un calcolatore è un oggetto che fornisce un risultato, dato un insieme di dati inseriti. Per calcolatore elettronico si intende un calcolatore realizzato mediante componenti elettroniche. 
+Lo studio dei calcolatori elettronici consiste nello studio dei principi del loro funzionamento, e la relazione tra la loro architettura ed il software di base. 
+
+Verrà analizzata la loro organizzazione e la loro architettura, considerando riferimenti a processori moderni e reali, analizzando le tecniche di ottimizzazione utilizzate da quest'ultimi, utilizzando 
+simulatori e casi di studio. 
 
 \subsection{Evoluzione delle Architetture}
 
-%% TODO  ppt
+L'evoluzione delle architetture dei calcolatori elettronici si è svolta principalmente negli ultimi settant'anni. Il processo complessivo che ha portato alla nascita 
+dei calcolatori moderni viene diviso in generazioni, ed è dovuto a numerosi ``architetti'' che negli anni hanno migliorato lavorando sulle architetture precedenti. 
 
-
-Un calcolatore è un oggetto che fornisce un risultato, dato un insieme dei dati inseriti. 
-
-
-L'evoluzione delle architetture dei controllori elettronici si è svolta principalmente negli ultimi settant'anni. Il processo complessivo che ha portato alla nascita 
-dei calcolatori moderni viene divisa in generazioni. 
-Si chiama generazione zero, l'insieme di calcolatori analogici, progettati per risolvere semplici operazioni, ideati da Pascal e Leibniz. 
+Si chiama generazione zero, l'insieme di calcolatori analogici, progettati per risolvere semplici operazioni di addizione, moltiplicazione e divisione, ideati, e realizzati, da Pascal e Leibniz. 
 
 Il primo calcolatore programmabile venne ideato da Charles Babbage. Costruì prima una macchina differenziale in grado di calcolare funzioni polinomiali, mentre progettò la 
-prima macchina programmabile, completamente analogica, in grado di leggere un input scritto su piastre di rame, e fornire un output, sempre su piastre di rame, utilizzando 
+prima macchina programmabile, completamente analogica, in grado di leggere un input scritto su piastre di rame perforate, e fornire un output, sempre su piastre di rame, utilizzando 
 i dati e le operazioni inserite in input. Per poter operare su questi dati di input per fornire istruzioni alla macchina è necessario un linguaggio di programmazione, e la 
-prima persona che ha tentato di implementare il linguaggio di Babbage fu Ada Lovelace. 
+prima persona che ha tentato di implementare il linguaggio di Babbage fu Ada Lovelace. Nonostante questo progetto non venne mai realizzata, anche per le limitazioni tecnologiche dell'epoca. 
 
 
-Il passaggio seguente in questa evoluzione venne trainato principalmente dai fondi bellici per realizzare macchine elettromeccaniche. La prima generazione si indica il 
-periodo dove vennero realizzati calcolatori abbandonando componenti meccanici. La prima macchina del genere venne create da Alan Turing per decifrare il codice Enigma, 
-realizzata tramite valvole, chiamata Colossus. 
+Durante la seconda guerra mondiale vennero realizzate le prime macchine elettromeccaniche, che utilizzarono il progetto di Babbage, aggiungendo relè per realizzare un prototipo funzionante. 
+La prima macchina di questo tipo venne realizzata in Germania, ma fu distrutta durante la guerra, mentre la prima macchina che realizzò il progetto di Babbage venne costruita negli Stati Uniti chiamato 
+(Harvard) Mark I. Le istruzioni ed i dati venivano inseriti tramite schede perforate. 
 
 
+La prima generazione rappresenta il periodo dove vennero abbandonate le componenti meccaniche dei calcolatori. La prima macchina del genere venne create da Alan Turing per decifrare il codice Enigma, 
+realizzata tramite valvole, chiamata Colossus, progetto quindi mantenuto segreto. 
 
 Dopo la guerra non servirono più a scopi bellici, per cui si tentò di vendere calcolatori sul mercato, creando la prima società di sviluppo e vendita di calcolatori 
-sul mercato, Eniac. 
+sul mercato, Univac. Tuttavia i calcolatori dell'epoca rimangono limitati al campo scientifico, militare ed istituzionale. 
 
 Negli anni '50 John von Neumann descrisse l'idea di un calcolatore moderno, dove i dati vengono memorizzati su degli indirizzi di memoria. 
 
 L'IBM cominciò la sua storia vendendo calcolatori nel 1953, e continuo ad essere rilevante in questo ambito fino agli anni '80. 
-In queste macchine ogni elemento viene definito dal termine ``word'', composto da un certo numero di bit. 
+In queste macchine ogni elemento viene definito dal termine ``word'', composto da un certo numero di bit, per i primi calcolatori della IBM di 36 bit. 
 
 
-La fine degli anni '50 e l'inizio degli anni '60 vide l'avvento dei transistor, utilizzati in questi anni per la creazione di calcolatori basati su transistor, la società 
-rivale della IBM che venne creata in questo periodo fu la DEC. Utilizzando transistor vennero diminuiti i costi, e venne introdotta l'idea di utilizzare uno schermo grafico 
-per interagire con l'utente. Il primo calcolatore costruito dalla DEC, PDP-1, fu il primo calcolatore di massa. 
+La fine degli anni '50 e l'inizio degli anni '60 vide l'avvento dei transistor, che permisero di realizzare macchine molto più compatte e veloci. Da un progetto sperimentale del MIT venne fondata la società 
+rivale della IBM, la DEC. Utilizzando transistor vennero diminuiti i costi, e venne introdotta l'idea di utilizzare uno schermo grafico 
+per l'interazione con l'utente. Il primo calcolatore costruito dalla DEC, PDP-1, fu il primo calcolatore di massa. 
+
 
 Per accedere ad un calcolatore si utilizzavano dei terminali, tramite un canale di comunicazione chiamato bus, per permettere anche la comunicazione tra elementi interni al 
 calcolatore prodotti tra società differenti. 
 Si parla comunque di grossi calcolatori per applicazioni scientifiche, militari o di pubblica amministrazione, chiamati ``mainframe'', dove ogni utente accedeva al calcolatore 
-tramite terminali. 
+tramite terminali. Sistemi più piccoli venivano venduti a piccole aziende, oppure di appoggio ai mainframe. 
+
 
 Fino agli anni '80 non vennero introdotti cambiamenti radicali all'architettura dei calcolatori, invece i miglioramenti di questi periodi ai calcolatori riguardarono soprattutto 
-l'ottimizzazione del software e dell'hardware. 
+l'ottimizzazione del software e dell'hardware. Questa rappresenta la terza generazione dei calcolatori, con l'aumento delle prestazioni e la virtualizzazione delle risorse, per permettere un accesso più semplice 
+da parte dell'utente grazie ai sistemi operativi. 
+I calcolatori di questa generazione ebbero enorme successo all'interno di istituti di ricerca, soprattutto università, e con l'avvento del sistema UNIX, indipendente dalla piattaforma aumentò la facilita di 
+realizzare programmai su calcolatori diversi. 
 
-I primi ``Personal Computer'' vennero introdotti negli anni '80, dall'IBM, che fornì pubblicamente l'architettura del calcolatore. In seguito aumentò in enorme maniera 
-l'utilizzo di PC, trainato dall'aumento delle capacità della CPU, e dalla diminuzione dei costi delle memorie principali e secondarie. 
+
+I primi ``Personal Computer'' vennero introdotti negli anni '80, dall'IBM, che fornì pubblicamente l'architettura del calcolatore, questo rappresenta l'inizio della quarta generazione. In seguito aumentò in enorme 
+maniera l'utilizzo di PC, trainato dall'aumento delle capacità della CPU, e dalla diminuzione dei costi delle memorie principali e secondarie. Inoltre con l'introduzione delle interfacce grafiche da parte 
+del Macintosh e con l'introduzione dei portatili, i calcolatori divennero macchine generalmente compatte, abbassando il livello di conoscenza necessario per poterli utilizzare. 
+Inoltre l'introduzione dei calcolatori portatili rivoluzionarono la telefonia mobile, ed aumentarono considerevolmente l'accessibilità. 
 
 
-%% TODO  ppt... 
-
-% V Computer Invisibili
+Per quinta generazione si riferisce ad i calcolatori ``invisibili'', in applicazioni embedded, dopo che la Apple introdusse il primo computer palmare, PDA. 
 La maggior parte dei dispositivi moderni contengono microcontrollori, piccoli processori, distribuiti in un contesto completamente pervasivo, su ogni dispositivo collegato 
 ad una qualche fonte di energia. Questo concetto viene chiamato anche dell'``Internet of Things''.  
 
@@ -151,14 +152,14 @@ L'evoluzione reale sembra aver seguito l'andamento descritto da Moore, ma recent
 realizzazione dei transistor. Per cui esiste un limite superiore al numero di transistor su un unico chip. 
 Per misurare la quantità di transistor su un singolo chip si utilizza la grandezza ``Livello di Integrazione'', si riescono a creare chip con un livello di 
 integrazione nell'ordine di grandezza dei nanometri, ma livelli di integrazione superiore sono difficilmente realizzabili. Il limite teorico per memorizzare un bit di informazione 
-corrisponde allo spin di un elettrone, per cui ci si aspetta una riduzione in questo andamento nei prossimi anni. 
+corrisponde allo spin di un elettrone, per cui ci si aspetta una riduzione ulteriore nei prossimi anni. 
 
 Oltre alla legge di Moore son presenti diverse statistiche per misurare l'evoluzione tecnologica dei processori. Dagli anni 2000 si utilizzano più di un core su un unico 
-processo, introducendo semplice forme di parallelismo. Uno dei motivi principali per cui vennero introdotte queste architetture deriva dal limite alla frequenza di funzionamento 
-di un processore, poiché all'aumentare della frequenza aumenta il calore prodotto da un processore. Le frequenze maggiori raggiunte da processori si trovano nell'ordine dei 
-GHz, queste producono calore fino a 100 Watt. Per aumentare le prestazioni senza aumentare la frequenza, si introducono quindi forme di parallelismo nei processori. Una forma 
-semplice consiste nella duplicazione dei componenti, oppure della ``pipeline'', che realizza le stesse prestazioni senza introdurre parallelismo fisico. 
-Gia dal 2000 quindi la frequenza operazionale dei processori è rimasta costante, ed ha subito una leggera diminuzione, allo stesso modo del calore generato da un singolo 
+processo, introducendo semplici forme di parallelismo. Uno dei motivi principali per cui vennero introdotte queste architetture deriva dal limite alla frequenza di funzionamento 
+di un processore, poiché all'aumentare della frequenza aumenta il suo calore prodotto. Le frequenze maggiori raggiunte da processori si trovano nell'ordine dei 
+GHz, queste producono calore negli ordini delle centinaia di Watt, che necessitano di dispositivi di raffreddamento dedicato ed efficienti. Per aumentare le prestazioni senza aumentare la frequenza, si 
+introducono quindi forme di parallelismo nei processori. Una forma semplice consiste nella duplicazione dei componenti, oppure della ``pipeline'', che realizza le stesse prestazioni senza introdurre 
+parallelismo fisico. Gia dal 2000 quindi la frequenza operazionale dei processori è rimasta costante, ed ha subito una leggera diminuzione, allo stesso modo del calore generato da un singolo 
 processore. Anche se è possibile realizzare processori mono-core che lavorano a frequenze molto elevate, il costo associato al raffreddamento dei componenti non lo rende un 
 approccio economicamente attuabile. 
 
@@ -228,18 +229,26 @@ parte dei dati ``In Premise''.
 
 
 
-Verranno trattati tre diversi tipi di processori, appartenenti alla famiglia Intel e ARM, ed un processore appartenente alla famiglia dei microcontrollori della famiglia AVR.
+Verranno trattati tre diversi tipi di processori, appartenenti alla famiglia Intel, ARM, ed un processore appartenente alla famiglia dei microcontrollori della famiglia AVR.
+
 \subsubsection{Architettura Intel}
-%% TODO ppt
 
 Il primo processore commercializzato dalla Intel è il 4004, con una frequenze tra le frazioni di un MHz, ed in grado di gestire poche centinaia di bit di memoria. Una variante 
-di questo processore, specializzato per microcontrollori il 8008, fornì la base per la creazione del primo processore ``general purpose'' su un circuito integrato, il 8080.  
+di questo processore, specializzato per microcontrollori il 8008, fornì la base per la creazione del primo processore ``general purpose'' su un circuito integrato, il 8080, a 8 bit.  
 
 La prima cifra nel nome corrisponde al tipo di architettura del processore, indica il numero di bit in cui vengono salvati e gestiti i dati sui registri del processore. 
 A partire dagli anni '90 si cominciò ad utilizzare nomi diversi dai numeri per indicare i processori. Si introdussero memorie cache, ed all'inizio degli anni 2000 si introdussero 
 diverse forme di parallelismo fisico, e non solo, mantenendo le frequenze inferiori ai 4 GHz. Per molti anni si utilizzava lo stesso processore anche per la gestione 
-dello schermo, ma già da parecchi anni è la norma utilizzare due processori separati. 
-%% core i3, i5, i7, i9, xeon
+dello schermo, ma già da parecchi anni è la norma utilizzare un processore dedicato per questo scopo. 
+
+I processori moderni si differenziano in diverse categorie, rappresentanti diversi settori di mercato:
+\begin{itemize}
+    \item Intel Core i3;
+    \item Intel Core i5;
+    \item Intel Core i7;
+    \item Intel Core i9;
+    \item Xeon. 
+\end{itemize}
 Tutti i processori moderni della stessa famiglia sono compatibili con lo stesso linguaggio macchina. La denominazione di un processore indica le sue prestazioni, e sono 
 quindi destinati a diversi settori di mercato, per cui l'evoluzione non dipende più dal nome del processore, ma dalla generazione dei processori. Attualmente ci si trova 
 in una generazione intermedia tra la tredicesima e la quattordicesima, in generale un salto generazionale viene definito dal livello di integrazione, i processori moderni 
@@ -252,9 +261,7 @@ Utilizzando un'unica catena di produzione, in base alla qualità in cui vengono 
 correttamente sul processore, e si vendono quindi come dei processori aventi prestazioni minori rispetto ad una versione completamente funzionante. 
 
 Il processore Intel Core i7 presenta sei core abilitati su otto core disponibili, la sua versione completamente abilitata corrisponde al processore Xeon. Presenta poco più di 
-un miliardo di transistor ed un livello di integrazione nell'ordine dei 22 nanometri. 
-
-%% TODO ppt. 
+un miliardo di transistor ed un livello di integrazione nell'ordine dei 22 nanometri. Verrà analizzato in dettaglio nella sezione sulle microarchitetture \ref{sec:i7}. 
 
 \subsubsection{Architetture ARM}
 
@@ -263,9 +270,10 @@ un processore integrato ed a basso consumo energetico. Presenta un modello di co
 permette a diverse case produttrici di realizzare questi processori, vendendo le licenze per poter produrre il processore. Ogni processore ARM viene quindi accompagnato dal nome 
 dell'azienda che l'ha realizzato. 
 
-Si analizzerà in seguito l'Nvidia Tegra 2, un SOC ``System Of a Chip'' contenente due processori della famiglia ARM, una piccola GPU ed ulteriori componenti.  
+Si analizzerà in seguito l'Nvidia Tegra 2, un SOC ``System Of a Chip'' contenente due processori della famiglia ARM, una piccola GPU ed ulteriori componenti, \ref{sec:arm}. 
 
 \subsubsection{Architettura AVR}
+
 L'architettura AVR corrisponde a processori progettati per elettro-domestici, e per funzioni specifiche. Nacque da un progetto universitario del NIT nel 1996, dal nome dei 
 suoi creatori Alf and Vergard RISC Processor. Presenta lo stesso pinout dell'8051 Intel. Presenta vari timer, un orologio interno, trasmettitore di impulso, interfaccia 
 di sensori, convertitori analogico-digitali, transponder e comparatore di tensioni. Presenta memorie nell'ordine delle centinaia dei kilobyte per la memoria persistente Flash, 
@@ -275,13 +283,29 @@ una memoria programmabile da poche migliaia di byte ``EEPROM'', ed una memoria p
 
 \section{Sistemi di Numerazione Binaria}
 
-%% TODO unità di misura (ppt.) 
-
-Quando si misura la memoria si utilizza l'unità di misura byte, corrispondente a 8 bit, e si tende ad utilizzare potenze di due invece di potenze di dieci, utilizzando 
-i bit quando si considera una velocità. 
+Quando si misura la memoria si utilizza l'unità di misura byte, corrispondente a 8 bit, e si tende ad utilizzare potenze di due invece di potenze di dieci. Invece quando si considera una velocità 
+si utilizzano bit, e potenze di dieci.  
 
 Si utilizza questa notazione per la struttura fisica della memoria, la cua dimensione viene definita dal numero di bit di un indirizzo binario. Dato un indirizzo definito da 
 $n$ bit, sono possibili $2^n$ indirizzi distinti di memoria. Per cui è più semplice lavorare con potenze di due quando si analizza la memoria. 
+
+\begin{center}
+    \begin{tabular}{|c|c|c||c|c|c|}
+        \multicolumn{3}{c}{Byte}&\multicolumn{3}{c}{Bit}\\
+        \hline&&&&& \\[-1em]
+        $2^0$ & B & Byte&$10^0$& b& bit\\
+        \hline &&&&& \\[-1em]
+        $2^{10}$ & KB (KiB) & KiloByte (KibiByte)&$10^{10}$& Kb& Kilobit\\
+        \hline  &&&&& \\[-1em]
+        $2^{20}$ & MB (MiB)& MegaByte (MebiByte)&$10^{20}$& Mb& Megabit\\
+        \hline  &&&&& \\[-1em]
+        $2^{30}$ & GB (GiB) & GigaByte (GigiByte)&$10^{30}$& Gb& Gigabit\\
+        \hline  &&&&& \\[-1em]
+        $2^{40}$ & TB (TiB) & TeraByte (TebiByte)&$10^{40}$& Tb& Terabit\\
+        \hline 
+
+    \end{tabular}
+\end{center}
 
 Nei sistemi di numerazione binaria è presente una differenza sostanziale tra il concetto di numero, un entità astratta, ed il concetto di numerale, 
 una sua possibile rappresentazione in un dato sistema di numerazione. 
@@ -663,7 +687,8 @@ viene rappresentato dalla curva rossa nella figura seguente:
 \begin{figure}[H]%
     \centering%
     \includegraphics{overhead.pdf}%
-    \caption{Bit da Aggiungere per Correggere un Errore Singolo}
+    \caption{Bit da Aggiungere per Correggere un Errore Singolo}%
+    \label{fig:overhead}
 \end{figure}
 
 \subsubsection{Caching}
@@ -751,19 +776,48 @@ Nel RAID il singolo dato viene diviso e memorizzato su più dischi, tramite un p
 
 Sono possibili diverse configurazioni, da RAID 0 a 5, cambiando il numero dei dischi e la distribuzione dei blocchi di dati di un file su di essi. Il RAID di livello 0 consiste nel utilizzare $n$ dischi 
 per memorizzare un singolo dato, guadagnano un fattore $n$ sia in lettura che in scrittura. Ma peggiore la frequenza degli errori, MTBF ``Mean Time Between Failures'', e non sono presenti meccanismi di 
-resistenza ai guasti, non c'è ridondanza. 
-Il RAID di livello 1 consiste in un RAID 0 dove tutti i dischi sono duplicati, una tecnica di shadowing, avendo la possibilità di resistere a guasti multipli, inoltre offre la possibilità di bilanciare il carico. 
-Il RAID di livello 2 introduce un sistema di correzione di errori introducendo un bit di parità e dividendo il singolo dato a livello di word o di byte, ed ogni porzione di byte, nibble, o bit vengono salvati sul disco. In questo modo si ha 
+resistenza ai guasti, non c'è ridondanza: 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{raid-0.pdf}%
+    \caption{RAID Livello 0 con Due Dischi}%
+\end{figure}
+Il RAID di livello 1 consiste in un RAID 0 dove tutti i dischi sono duplicati, una tecnica di shadowing, avendo la possibilità di resistere a guasti multipli, inoltre offre la possibilità di bilanciare il carico: 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{raid-1.pdf}%
+    \caption{RAID Livello 1 con Quattro Dischi}%
+\end{figure}
+Il RAID di livello 2 introduce un sistema di correzione di errori introducendo un overhead ed un bit di parità; dividendo il singolo dato a livello di word o di byte, ed ogni porzione di byte, nibble, o bit vengono salvati sul disco. In questo modo si ha 
 una resistenza a guasti semplici e guadagna un fattore in lettura e scrittura in base al numero di dischi utilizzati. Ma per ottenere ciò i dischi devono essere sincronizzati in rotazione. Questo sistema è più efficiente all'aumentare dei 
-dischi, per diminuire la percentuale di bit ridondanti da inserire. 
-Il RAID di livello 3 rappresenta una versione semplificata del RAID 2, consente una distribuzione a livello di bit, ed un overhead contenuto, permette di recuperare i dati persi in caso di guasto sapendo quale 
-disco è rotto. 
+dischi, per diminuire la percentuale di bit ridondanti da inserire, come mostrato nella figura \ref{fig:overhead}:
+\begin{figure}[H]%
+    \centering%
+    \includegraphics[scale=.8]{raid-2.pdf}%
+    \caption{RAID Livello 2 con Sette Dischi}%
+\end{figure}
+Il RAID di livello 3 rappresenta una versione semplificata del RAID 2, consente una distribuzione a livello di bit, ed un overhead contenuto realizzato da un bit di parità, permette di recuperare i dati persi in caso di guasto sapendo quale 
+disco è rotto: 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{raid-3.pdf}%
+    \caption{RAID Livello 3 con Cinque Dischi}%
+\end{figure}
 I RAID di livello 2 e 3 permettono di effettuare una sola operazione su disco per volta, poiché ogni operazione coinvolge tutti i dischi.  
-Nel RAID di livello 4 si effettua uno striping a livello di blocco, ed i drive non sono sincronizzati, la strip dell'ultimo disco contiene i bit di parità dell'insieme di bit omologhi di tutte le altre strip. Riesce 
+Nel RAID di livello 4 si effettua uno striping a livello di blocco, ed i drive non sono sincronizzati, la strip dell'ultimo disco contiene i bit di parità dell'insieme di bit omologhi di tutte le altre strip:
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{raid-4.pdf}%
+    \caption{RAID Livello 4 con Cinque Dischi}%
+\end{figure}
+Riesce 
 quindi a resistere ai guasti come un RAID 3, ma l'ultimo disco rappresenta un collo di bottiglia, poiché è necessario per ogni operazione di lettura. Per cui nel RAID 5 viene distribuita la strip di parità su tutti i 
-dischi per minimizzare l'accesso ad un singolo disco. 
-
-%% TODO img/schema RAID livelli
+dischi per minimizzare l'accesso ad un singolo disco: 
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{raid-5.pdf}%
+    \caption{RAID Livello 5 con Cinque Dischi}%
+\end{figure}
 
 \subsubsection{Dischi a Stato Solido}
 
@@ -928,7 +982,17 @@ Il NOT si rappresenta sinteticamente come un pallino, quando si vuole negare l'e
 Le porte internamente sono realizzate da due transistor, tutte le porte a due input, e da un transistor, la porta NOT, tranne la porta Buffer poiché non modificando l'input non necessita di alcun componente circuitale 
 aggiuntivo. I transistor permettono un tempo di commutazione ad altissima velocità:  
 
-%% TODO img. interne porte logiche (transistor), copia da E&E 
+\begin{figure}[H]%
+    \centering%
+    \savebox{\tempbox}{\hbox{\includegraphics{nand-transistor.pdf}}}%
+    \subfloat[\centering{Porta NOT}]{\raisebox{\dimexpr.5\ht\tempbox-.5\height\relax}{\includegraphics{not-transistor.pdf}}}%
+    \qquad%
+    \subfloat[\centering{Porta NAND}]{\usebox{\tempbox}}%
+    \qquad%
+    \subfloat[\centering{Porta NOR}]{\raisebox{\dimexpr.5\ht\tempbox-.5\height\relax}{\includegraphics{nor-transistor.pdf}}}%
+    \caption{Realizzazione Porte Logiche}%
+\end{figure}
+
 
 I valori di zero ed uno vengono rappresentati come valori alti o bassi di tensione, differenziati da pochi volt. In base alle scelte di progetto un segnale provoca l'azione corrispondente se è alto o basso, per 
 identificare questo si definisce il segnale asserito, quando assume il valore che provoca l'azione, mentre si parla di segnale negato altrimenti. 
@@ -951,7 +1015,7 @@ Si mostra ora la completezza delle porte NAND e NOR:
 Inoltre la porta XOR, ``EXCLUSIVE OR'', può essere realizzata utilizzando due porte AND ed una OR, oppure solamente porte NAND:
 \begin{figure}[H]%
     \centering%
-    \includegraphics{porta-xor.pdf}%
+    \includegraphics[scale=0.8]{porta-xor.pdf}%
     \caption{Porta XOR Realizzata Utilizzando AND, OR e NAND}%
 \end{figure}
 
@@ -1111,13 +1175,14 @@ Le prime tre sono operazioni logiche implementate tramite singole porte logiche,
 input vengono forniti altri due input di controllo per scegliere quale operazione F$_0$ e F$_1$ tramite un decoder di controllo. Sono presenti inoltre due porte di abilitazione per gli ingressi A e B, ed i loro due 
 ingressi di controllo ENA e ENB. Inoltre poiché applica l'operazione di negazione sull'input B, si può disabilitare l'input A tramite il segnale INVA. Poiché viene montato in serie ad altre 
 ALU ha bisogno di input ed output per il riporto della somma:
-\begin{figure}[H]%
-    \centering%
-    \includegraphics{alu-1-bit-compatta.pdf}%
-\end{figure}
+
 \begin{figure}[H]%
     \centering%
     \includegraphics[scale=0.84]{alu-1-bit.pdf}%
+\end{figure}
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{alu-1-bit-compatta.pdf}%
     \caption{ALU ad 1 Bit}%
 \end{figure}
 
@@ -1348,8 +1413,13 @@ Questo protocollo temporizzato deve rispettare le caratteristiche dei dispositiv
 asserito per interi di cicli di bus, e determina la durata complessiva della trasmissione, mentre i segnali di RD e MREQ vengono asseriti al fronte di discesa del clock. 
 
 \begin{figure}[H]%
-    \centering%
-    \includegraphics{bus-sincrono.pdf}%
+    \centering
+    \subfloat{%
+        \includegraphics{bus-sincrono.pdf}%
+    }\\
+    \subfloat{%
+        \includegraphics{bit-color-bus.pdf}%
+    }
     \caption{Bus Sincrono}%
 \end{figure}
 
@@ -1360,7 +1430,16 @@ dal master per avvertire lo slave che ha effettuato un'operazione. In seguito do
 SSYN per indicare che i segnali sono pronti sul bus. Non è quindi necessario un esplicito segnale di WAIT, poiché l'attesa per la stabilità dei dati viene indicata 
 direttamente dal dispositivo slave. Anche questi due segnali vengono trasmessi negati \textoverline{MSYN} e \textoverline{SSYN}. 
 
-%% TODO gantt bus asincrono
+\begin{figure}[H]%
+    \centering
+    \subfloat{%
+        \includegraphics{bus-asincrono.pdf}%
+    }\\
+    \subfloat{%
+        \includegraphics{bit-color-bus.pdf}%
+    }
+    \caption{Bus Asincrono}%
+\end{figure}
 
 \subsection{Arbitraggio}
 
@@ -1741,7 +1820,7 @@ può effettuare direttamente la scrittura in memoria, ``write to memory''.
 \subsection{Esempi di Microarchitetture}
 
 \subsubsection{Architettura Intel i7}
-
+\label{sec:i7}
 Si considera una microarchitettura Intel molto diffusa l'i7. I processori moderni della Intel condividono lo stesso nome, e per distinguere processore più avanzati si dividono 
 in base alla loro evoluzione. I processori odierni sono di quattordicesima generazione, ma non contengono differenze notevoli dalla tredicesima, per cui condividono il nome 
 ``Raptor Lake'', con un livello di integrazione di 7 nm. L'architettura i7 di prima generazione viene chiamata ``Sandy Bridge'' introdotta nel 2011, con un livello di 
@@ -1759,8 +1838,6 @@ La scheda utilizza un pinout logico diverso dai precedenti con 1155 pin, alcuni 
 calcolatore. 
 
 Consuma da 17 ai 150 W per stati differenti di consumo tramite diversi valori di voltaggio, e necessita quindi di un sistema di raffreddamento dedicato. 
-
-%% TODO img pinout logico
 
 Nella piedinatura sono presenti due canali diversi da 124 linee ciascuno per accedere alla memoria, mentre metà delle linee sono dedicata per alimentare il processore e collegarlo ad una 
 messa a terra. 
@@ -1802,7 +1879,7 @@ La cache di secondo livello unificata, è a 8 vie con 256 KB di memoria ed un si
 slot da 64 byte. 
 
 \subsubsection{Architettura ARM}
-
+\label{sec:arm}
 I processori ARM appartengono ad una famiglia dedicata principalmente alle applicazioni mobile anche se recentemente la Apple li sta utilizzando per realizzare notebook. Sono architetture 
 aperte, non prodotti da un'unica casa produttrice, poiché l'azienda ARM detiene solamente i diritti d'autore. Ogni processore viene quindi affiancato dal nome della sua casa produttrice. 
 
@@ -2115,27 +2192,27 @@ In caso più etichette sono omonime utilizza salta alla prima etichetta che trov
 Tramite l'istruzione \verb|CMP| è possibile effettuare un confronto, sottraendo due operandi, aggiornando il registro di stato tramite i bit \verb|N| e \verb|Z|, se il 
 risultato è zero, oppure è negativo:
 \begin{minted}{gas}
-    CMP X, Y    # X - Y => N\Z <- 1\0
+    CMP X, Y    # X - Y 0 => N\Z <- 1\0
 \end{minted}
 Per realizzare salti condizionali bisogna effettuare un confronto tramite quest'operazione controllando il contenuto del registro di stato. Sono 
 quindi presenti molti tipi di istruzioni diverse per diversi stati, accomunate dal primo carattere ``J'': \verb|J#|. La verifica della condizione si basa sui valori dei registri di flag. 
 Se la condizione è verificata, passa il controllo all'istruzione di indirizzo specificato dal salto, altrimenti l'esecuzione prosegue all'istruzione successiva. 
 Utilizzando queste operazioni sono possibili salti di una massima lunghezza di 128 byte. Inoltre sono presenti vari nomi simbolici per lo stesso tipo di salto condizionato:
 \begin{minted}{gas}
-    JG _tag     # Maggiore 
-    JGE _tag    # Maggiore o Uguale
-    JL _tag     # Minore
-    JLE _tag    # Minore o Uguale
-    JE _tag     # Uguale
-    JNE _tag    # Non Uguale
-    JB _tag     # Inferiore
-    JBE _tag    # Inferiore o Uguale
-    JA _tag     # Superiore
-    JAE _tag    # Superiore o Uguale
-    JO _tag     # Overflow
-    JNO _tag    # Non Overflow
-    JS _tag     # Negativo
-    JNS _tag    # Non Negativo
+    JG   _tag   # Maggiore 
+    JGE  _tag   # Maggiore o Uguale
+    JL   _tag   # Minore
+    JLE  _tag   # Minore o Uguale
+    JE   _tag   # Uguale
+    JNE  _tag   # Non Uguale
+    JB   _tag   # Inferiore
+    JBE  _tag   # Inferiore o Uguale
+    JA   _tag   # Superiore
+    JAE  _tag   # Superiore o Uguale
+    JO   _tag   # Overflow
+    JNO  _tag   # Non Overflow
+    JS   _tag   # Negativo
+    JNS  _tag   # Non Negativo
     JCXZ _tag   # CX Nullo
 \end{minted}
 
@@ -2156,11 +2233,15 @@ Sono presenti altre varianti come \verb|LOOPE|, ``Loop Equal'' e \verb|LOOPNE|, 
 Uno dei principi principali della programmazione è la decomposizione in moduli, scomponendo il codice in funzioni o metodi. Questi moduli diversi vengono chiamate procedure, 
 essenzialmente invocano l'esecuzione di codice contenuto in un'altra sezione o segmento di memoria. Per cui bisogna tenere un riferimento alla procedura chiamante per 
 poter restituire il controllo dell'esecuzione. Le informazioni necessarie per l'esecuzione di un modulo vengono conservate nel record di attivazione, con un riferimento al 
-modulo invocante con un indirizzo di ritorno ed il vecchio BP per aggiornarlo dopo la rimozione di questo stack. Il record di attivazione della procedura in esecuzione si 
+modulo invocante con un indirizzo di ritorno ed il vecchio \verb|BP| per aggiornarlo dopo la rimozione di questo stack. Il record di attivazione della procedura in esecuzione si 
 trova in cima alla pila. Gli stack frame non sono tutti della stessa lunghezza poiché durante l'esecuzione è possibile siano aggiunti 
-dati allo stack. La vecchia base del record permette di determinare la dimensione di questo stack per rimuoverlo ed aggiornare i nuovi SP e BP correttamente. 
+dati allo stack. La vecchia base del record permette di determinare la dimensione di questo stack per rimuoverlo ed aggiornare i nuovi \verb|SP| e \verb|BP| correttamente. 
 
-%% TODO schema invocazione subroutine (RDA)
+\begin{figure}[H]%
+    \centering%
+    \includegraphics{rda-subroutine.pdf}%
+    \caption{Stack di una Subroutine}%
+\end{figure}
 
 Per trasferire il controllo del programma ad una subroutine si effettua tramite il comando \verb|CALL| che prende come argomento un'etichetta associata ad una porzione di 
 codice. 
@@ -2174,7 +2255,7 @@ tag:
 \end{minted}
 
 Prima di invocare la subroutine se sono necessari degli argomenti bisogna impilarli nello stack in ordine inverso. 
-Nel prologo della funziona invocata bisogna salvare nella pila il vecchio BP, inizializzare il nuovo record di attivazione ed inserendo variabili locali da usare nella 
+Nel prologo della funziona invocata bisogna salvare nella pila il vecchio \verb|BP|, inizializzare il nuovo record di attivazione ed inserendo variabili locali da usare nella 
 subroutine:
 \begin{minted}{gas}
 tag:
@@ -2183,16 +2264,31 @@ tag:
     SUB SB, xx  # aggiungo spazio per salvare le variabili locali
 \end{minted}
 Alternativamente si possono usare diverse \verb|PUSH| per inserire le variabili locali direttamente nello stack. Alla fine di una procedura, prima di restituire il controllo, 
-bisogna rimuovere le variabili locali, svuotando il record di attivazione, aggiornando il SP al BP del RDA della procedura invocante, e bisogna rimuovere il vecchio BP:
+bisogna rimuovere le variabili locali, svuotando il record di attivazione, aggiornando il \verb|SP| al \verb|BP| del RDA della procedura invocante, e bisogna rimuovere il vecchio \verb|BP|:
 \begin{minted}{gas}
     MOVE SP, BP
     POP BP
     RET
 \end{minted}
-Dopo essere tornati nella procedura invocante, bisogna rimuovere gli argomenti inseriti nella pila aggiornando il SP:
+Dopo essere tornati nella procedura invocante, bisogna rimuovere gli argomenti inseriti nella pila aggiornando il \verb|SP|:
 \begin{minted}{gas}
     CALL subroutine
     ADD SP, xx      # numero di argomenti aggiunti * 2
+\end{minted}
+
+In generale quindi una chiamata di procedura ha una sintassi simile al codice seguente:
+\begin{minted}{gas}
+    CALL tag
+    ADD SP, xx      # numero di argomenti aggiunti * 2
+    # ...
+tag:
+    PUSH BP         # vecchio BP
+    MOV BP, SP      # aggiorno il BP: BP <- SP
+    SUB SB, xx      # aggiungo spazio per salvare le variabili locali
+    # ...
+    MOVE SP, BP
+    POP BP
+    RET
 \end{minted}
 
 

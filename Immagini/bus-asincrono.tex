@@ -1,0 +1,34 @@
+\documentclass{standalone}
+\usepackage{pgfgantt}
+\makeatletter
+\newcommand*{\textoverline}[1]{$\overline{\hbox{#1}}\m@th$}
+\makeatother
+\begin{document}
+\begin{ganttchart}[y unit title=0.5cm,
+    y unit chart=0.75cm,
+    x unit=1 cm,
+    title label anchor/.style={below=-1.6ex},
+    title left shift=.05,
+    title right shift=-.05,
+    title height=1,
+    bar height=0.5,
+    group right shift=0,
+    group top shift=.6
+]{1}{10}
+    \gantttitle{Bus Asincrono}{10}\\
+    \ganttbar[bar/.append style={fill=darkgray}]{}{1}{1}\ganttbar{ADDR}{2}{8}\ganttbar[bar/.append style={fill=darkgray},name=addr]{}{9}{10}\\
+    \ganttbar[bar/.append style={fill=lightgray}]{\textoverline{MREQ}}{1}{1}\ganttbar[bar/.append style={fill=gray}]{}{2}{9}\ganttbar[bar/.append style={fill=lightgray},name=mreq]{}{9}{10}\\
+    \ganttbar[bar/.append style={fill=lightgray}]{\textoverline{RD}}{1}{1}\ganttbar[bar/.append style={fill=gray}]{}{2}{9}\ganttbar[bar/.append style={fill=lightgray},name=rd]{}{9}{10}\\
+    \ganttbar[bar/.append style={fill=lightgray}, name=msyn1]{\textoverline{MSYN}}{1}{2}\ganttbar[bar/.append style={fill=gray},name=msyn3]{}{3}{8}\ganttbar[bar/.append style={fill=lightgray},name=msyn2]{}{9}{10}\\
+    \ganttbar[bar/.append style={fill=darkgray},name=data2]{}{1}{6}\ganttbar[name=data1]{DATA}{7}{9}\ganttbar[bar/.append style={fill=darkgray},name=data3]{}{10}{10}\\
+    \ganttbar[bar/.append style={fill=lightgray}]{\textoverline{SSYN}}{1}{8}\ganttbar[bar/.append style={fill=gray},name=ssyn1]{}{8}{9}\ganttbar[bar/.append style={fill=lightgray},name=ssyn2]{}{10}{10}
+    \ganttlink[link mid=0.9]{msyn1}{data1}
+    \ganttlink[link mid=0.72]{msyn1}{ssyn1}
+    \ganttlink{data2}{addr}
+    \ganttlink{data2}{mreq}
+    \ganttlink{data2}{rd}
+    \ganttlink{data2}{msyn2}
+    \ganttlink{msyn3}{data3}
+    \ganttlink{msyn3}{ssyn2}
+\end{ganttchart}
+\end{document}

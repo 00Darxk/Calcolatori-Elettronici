@@ -7,57 +7,57 @@
     %% NOT
     node[nand port](a)at(0,0){}
     (a.in 1)to[short](a.in 2)
-    (-1.5,0)node[left]{$A$}to[short,-*](-1.08,0)
-    node[right]at(a.out){$\bar{A}$}
+    (-1.5,0)node[left]{A}to[short,-*](-1.08,0)
+    node[right]at(a.out){$\mathrm{\bar{A}}$}
 
     node[nor port](a)at(0,-2.25){}
     (a.in 1)to[short](a.in 2)
-    (-1.5,-2.25)node[left]{$A$}to[short,-*](-1.08,-2.25)
-    node[right]at(a.out){$\bar{A}$}
+    (-1.5,-2.25)node[left]{A}to[short,-*](-1.08,-2.25)
+    node[right]at(a.out){$\mathrm{\bar{A}}$}
     
     node[below]at(0,-3.5){NOT}
 
     %% AND
     node[nand port](a)at(4,0){}
-    node[left]at(a.in 1){$A$}
-    node[left]at(a.in 2){$B$}
+    node[left]at(a.in 1){A}
+    node[left]at(a.in 2){B}
     node[nand port](a1)at(6.25,0){}
     (a1.in 1)to[short](a1.in 2)
     (a.out)to[short,-*](5.17,0)
-    node[right]at(a1.out){$A\cdot B$}
+    node[right]at(a1.out){A$\cdot$ B}
     
     node[nor port](a1)at(6.25,-2.25){}
-    node[right]at(a1.out){$A\cdot B$}
+    node[right]at(a1.out){A$\cdot $B}
     node[nor port](a)at(4,-1.5){}
     (a.in 1)to[short](a.in 2)
-    (2.5,-1.5)node[left]{$A$}to[short,-*](2.92,-1.5)
+    (2.5,-1.5)node[left]{A}to[short,-*](2.92,-1.5)
     (a.out)to[short](a1.in 1)
     node[nor port](a)at(4,-3){}
     (a.in 1)to[short](a.in 2)
-    (2.5,-3)node[left]{$B$}to[short,-*](2.92,-3)
+    (2.5,-3)node[left]{B}to[short,-*](2.92,-3)
     (a.out)to[short](a1.in 2)
     
     node[below]at(5.125,-3.5){AND}
 
     %% OR
     node[nand port](a1)at(12.75,0){}
-    node[right]at(a1.out){$A+ B$}
+    node[right]at(a1.out){A + B}
     node[nand port](a)at(10.5,0.75){}
     (a.in 1)to[short](a.in 2)
-    (9,0.75)node[left]{$A$}to[short,-*](9.42,0.75)
+    (9,0.75)node[left]{A}to[short,-*](9.42,0.75)
     (a.out)to[short](a1.in 1)
     node[nand port](a)at(10.5,-0.75){}
     (a.in 1)to[short](a.in 2)
-    (9,-0.75)node[left]{$B$}to[short,-*](9.42,-0.75)
+    (9,-0.75)node[left]{B}to[short,-*](9.42,-0.75)
     (a.out)to[short](a1.in 2)
 
     node[nor port](a)at(10.5,-2.25){}
-    node[left]at(a.in 1){$A$}
-    node[left]at(a.in 2){$B$}
+    node[left]at(a.in 1){A}
+    node[left]at(a.in 2){B}
     node[nor port](a1)at(12.75,-2.25){}
     (a1.in 1)to[short](a1.in 2)
     (a.out)to[short,-*](11.67,-2.25)
-    node[right]at(a1.out){$A+ B$}
+    node[right]at(a1.out){A + B}
 
     node[below]at(11.625,-3.5){OR};
 \end{circuitikz}

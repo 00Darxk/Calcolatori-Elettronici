@@ -1,0 +1,39 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+    \draw
+
+    (0,0)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 1}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 5}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 1}
+    
+    (3,0)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 2}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 6}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 2}
+
+
+    (6,0)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 3}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 7}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 3}
+    
+    (9,0)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 4}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){Strip 8}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 4}
+
+    (12,0)node[rectangle,fill=lightgray, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){P. Strip 1}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){P. Strip 2}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=2cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco di Parità}
+    ;
+\end{tikzpicture}
+\end{document}

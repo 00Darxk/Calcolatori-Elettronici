@@ -1,0 +1,51 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}
+    \draw
+
+    (0,0)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 1}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 8}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 1}
+    
+    (2.75,0)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 2}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 9}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 2}
+
+    (5.5,0)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 3}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 10}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 3}
+
+    (8.25,0)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 4}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 11}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco 4}
+
+    (11,0)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 5}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 12}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco Overhead 1}
+    
+    (13.75,0)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 6}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 13}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco Overhead 2}
+
+
+    (16.5,0)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 7}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){Bit 14}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[rectangle,fill=lightgray, draw, minimum width=1.75cm, minimum height=0.5cm,anchor=north](a){$\cdots$}
+    (a.south)node[below]{Disco Overhead 3}
+    ;
+\end{tikzpicture}
+\end{document}
