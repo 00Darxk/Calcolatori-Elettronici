@@ -2228,6 +2228,35 @@ _tag:
 \end{minted}
 Sono presenti altre varianti come \verb|LOOPE|, ``Loop Equal'' e \verb|LOOPNE|, ``Loop Not Equal'', che dipendono da valori diversi dei registri flag. 
 
+
+Per effettuare operazioni su stringhe ed array, ovvero su dati contenuti nella memoria principale esistono un insieme di istruzioni apposite. Si 
+utilizza l'istruzione \verb|MOVSB| per spostare l'indirizzo di un byte nella memoria principale memorizzato nell'indirizzo \verb|SI| all'indirizzo 
+di memoria principale puntato da \verb|DI|. Gli indirizzi nei registri \verb|SI| e \verb|DI| vengono incrementati o decrementati in base al valore del 
+bit di direzione nel registro di flag. Con il comando \verb|CLD| si indica che devono essere incrementati, mentre con l'istruzione \verb|STD| gli 
+indirizzi vengono decrementati. Per effettuare operazioni su parole, due byte, si utilizza il comando \verb|MOVSW|. 
+
+Utilizzano l'istruzione \verb|REP| come prefisso si itera l'esecuzione dell'operazione \verb|MOVSB| su un numero di volte definito dal valore contenuto 
+nel registro \verb|CX|, inizializzato alla lunghezza della stringa o del vettore, decrementato fino a zero. Gli indirizzi \verb|SI| e \verb|DI| sono 
+inizializzati con l'indirizzo della stringa o array sorgente e l'indirizzo della stringa o dell'array destinazione. Ad ogni iterazione viene incrementato 
+o decrementato il valore dei due registri. 
+
+
+L'istruzione \verb|LODSB| trasferisce il contenuto del byte di memoria indirizzato da \verb|DI| nel registro \verb|AL|. Al termine dell'operazione il 
+registro dell'indirizzo viene incrementato o decrementato in base al valore contenuto nel registro di flag. 
+Come per lo spostamento tra indirizzi di memoria, si può usare \verb|LODSW| per indirizzare parole di 16 bit, al registro \verb|AX|. 
+
+L'istruzione \verb|STOSB| trasferisce in memoria il contenuto del registro \verb|AL| nella locazione indirizzata da \verb|DI|. Come per le precedenti 
+operazioni il registro di indirizzo viene incrementato o decrementato, a seconda del registro di flag. Per spostare parole si utilizza \verb|STOSW|. 
+
+Per confrontare due byte indirizzati in memoria principale si utilizza \verb|CMPSB| dai registri \verb|SI| e \verb|DI|, salva il risultato nei 
+registri di flag. Per confrontare due parole si utilizza \verb|CMPSW|. 
+
+Invece per confrontare il contenuto di un registro \verb|AL| con un indirizzo di memoria principale, indirizzato da \verb|DI|, si utilizza 
+l'istruzione \verb|SCASB|. Per confrontare parole si utilizza l'istruzione \verb|SCASW| con il registro \verb|AX|. 
+
+Per ripetere queste istruzioni oltre ad \verb|REP| si possono utilizzare due varianti \verb|REPE| e \verb|REPNE| che si ripetono fino a quando 
+il confronto fallisce oppure ha successo. 
+
 \subsubsection{Chiamate di Procedura}
 
 Uno dei principi principali della programmazione è la decomposizione in moduli, scomponendo il codice in funzioni o metodi. Questi moduli diversi vengono chiamate procedure, 
